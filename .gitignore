@@ -1,0 +1,26 @@
+# Large files and assets
+*.png
+*.jpg
+*.jpeg
+*.zip
+*.mp4
+*.mp3
+*.pdf
+*.docx
+*.xlsx
+*.pptx
+*.gif
+
+# Build artifacts
+.gradle/
+build/
+local.properties
+.idea/
+*.iml
+bin/
+gen/
+out/
+
+# OS
+.DS_Store
+Thumbs.db

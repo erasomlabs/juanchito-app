@@ -1,0 +1,71 @@
+<package version="2.0" xmlns="http://www.idpf.org/2007/opf" unique-identifier="{d5147178-4954-4129-b46d-0129a4777ede}">
+    <metadata xmlns:opf="http://www.idpf.org/2007/opf" xmlns:dc="http://purl.org/dc/elements/1.1/">
+        <meta content="children" name="book-type"/>
+        <meta content="true" name="region-mag"/>
+        <meta content="true" name="fixed-layout"/>
+        <meta content="true" name="zero-gutter"/>
+        <meta content="true" name="zero-margin"/>
+        <meta content="KindleComicCreator-1.0" name="generator"/>
+        <dc:title>Lola ya no juega</dc:title>
+        <dc:language>es</dc:language>
+        <dc:creator>Juan E</dc:creator>
+        <dc:publisher>Juanchito Recreaciones</dc:publisher>
+        <meta content="portrait" name="orientation-lock"/>
+        <meta content="horizontal-lr" name="primary-writing-mode"/>
+        <meta content="1440x1920" name="original-resolution"/>
+        <meta content="singlepage" name="ke-layout-type"/>
+        <meta content="start-right" name="ke-start-side"/>
+        <meta content="true" name="ke-hd-images"/>
+        <meta content="cover-image" name="cover"/>
+        <dc:source>KKBC/1.003/fd00ee5/win</dc:source>
+    </metadata>
+    <manifest>
+        <item href="toc.ncx" id="ncx" media-type="application/x-dtbncx+xml"/>
+        <item href="cover-image.jpg" id="cover-image" media-type="image/jpg"/>
+        <item href="misc/ke_book.log" id="ke-book-log" media-type="amazon/data-log"/>
+        <item href="html/Page-0.html" id="item-3" media-type="application/xhtml+xml"/>
+        <item href="html/Page-1.html" id="item-4" media-type="application/xhtml+xml"/>
+        <item href="html/Page-2.html" id="item-5" media-type="application/xhtml+xml"/>
+        <item href="html/Page-3.html" id="item-6" media-type="application/xhtml+xml"/>
+        <item href="html/Page-4.html" id="item-7" media-type="application/xhtml+xml"/>
+        <item href="html/Page-5.html" id="item-8" media-type="application/xhtml+xml"/>
+        <item href="html/Page-6.html" id="item-9" media-type="application/xhtml+xml"/>
+        <item href="html/Page-7.html" id="item-10" media-type="application/xhtml+xml"/>
+        <item href="html/Page-8.html" id="item-11" media-type="application/xhtml+xml"/>
+        <item href="html/Page-9.html" id="item-12" media-type="application/xhtml+xml"/>
+        <item href="html/Page-10.html" id="item-13" media-type="application/xhtml+xml"/>
+        <item href="html/Page-11.html" id="item-14" media-type="application/xhtml+xml"/>
+        <item href="html/Page-12.html" id="item-15" media-type="application/xhtml+xml"/>
+        <item href="html/Page-13.html" id="item-16" media-type="application/xhtml+xml"/>
+        <item href="html/Page-14.html" id="item-17" media-type="application/xhtml+xml"/>
+        <item href="html/Page-15.html" id="item-18" media-type="application/xhtml+xml"/>
+        <item href="html/Page-16.html" id="item-19" media-type="application/xhtml+xml"/>
+        <item href="html/Page-17.html" id="item-20" media-type="application/xhtml+xml"/>
+        <item href="html/Page-18.html" id="item-21" media-type="application/xhtml+xml"/>
+        <item href="html/Page-19.html" id="item-22" media-type="application/xhtml+xml"/>
+        <item href="html/Page-20.html" id="item-23" media-type="application/xhtml+xml"/>
+    </manifest>
+    <spine toc="ncx">
+        <itemref idref="item-3" linear="yes"/>
+        <itemref idref="item-4" linear="yes"/>
+        <itemref idref="item-5" linear="yes"/>
+        <itemref idref="item-6" linear="yes"/>
+        <itemref idref="item-7" linear="yes"/>
+        <itemref idref="item-8" linear="yes"/>
+        <itemref idref="item-9" linear="yes"/>
+        <itemref idref="item-10" linear="yes"/>
+        <itemref idref="item-11" linear="yes"/>
+        <itemref idref="item-12" linear="yes"/>
+        <itemref idref="item-13" linear="yes"/>
+        <itemref idref="item-14" linear="yes"/>
+        <itemref idref="item-15" linear="yes"/>
+        <itemref idref="item-16" linear="yes"/>
+        <itemref idref="item-17" linear="yes"/>
+        <itemref idref="item-18" linear="yes"/>
+        <itemref idref="item-19" linear="yes"/>
+        <itemref idref="item-20" linear="yes"/>
+        <itemref idref="item-21" linear="yes"/>
+        <itemref idref="item-22" linear="yes"/>
+        <itemref idref="item-23" linear="yes"/>
+    </spine>
+</package>

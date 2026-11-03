@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Juanchito Console</string>
+    <string name="console_title">JUANCHITO CONSOLE</string>
+    <string name="select_game">Selecciona un juego</string>
+    <string name="back">Volver</string>
+    <string name="pause">Pausa</string>
+    <string name="resume">Reanudar</string>
+    <string name="restart">Reiniciar</string>
+    <string name="score">Puntaje</string>
+    <string name="high_score">Mejor</string>
+    <string name="game_over">GAME OVER</string>
+    <string name="play_again">Jugar de nuevo</string>
+    <string name="controls_hint">Controles: D-pad + A/B</string>
+    <string name="customize_pad">Personalizar mando</string>
+    <string name="pad_size">Tamaño</string>
+    <string name="pad_opacity">Opacidad</string>
+    <string name="pad_position">Posición</string>
+    <string name="save">Guardar</string>
+    <string name="reset">Restablecer</string>
+</resources>
