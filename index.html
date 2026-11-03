@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juanchito Console | Mini Consola Retro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { charcoal: '#1E2229', orange: '#FF6B1A', yellow: '#FFD700', sand: '#F7F4F0', dark: '#0A0A0F' } } }
+        }
+    </script>
+</head>
+<body class="bg-dark text-white font-mono antialiased">
+    <header class="py-12 px-6 text-center border-b border-orange/30">
+        <div class="w-20 h-20 mx-auto rounded-lg bg-orange/20 flex items-center justify-center mb-4 border border-orange">
+            <span class="text-4xl">🎮</span>
+        </div>
+        <h1 class="text-3xl font-bold text-orange">Juanchito Console</h1>
+        <p class="text-yellow font-medium mt-1">Mini consola retro de juegos</p>
+        <p class="text-gray-400 max-w-xl mx-auto mt-3 text-sm">Interfaz estilo Atari, mando virtual personalizable. Juegos clásicos rediseñados para una experiencia moderna.</p>
+    </header>
+    <main class="max-w-4xl mx-auto px-6 py-10">
+        <h2 class="text-xl font-bold text-orange mb-6 text-center">Juegos Disponibles</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="bg-gray-900 rounded-xl p-4 border border-orange/30 text-center">
+                <div class="text-3xl mb-2">🐍</div>
+                <h3 class="text-orange font-bold text-sm">Snake</h3>
+                <p class="text-gray-500 text-xs">Arcade</p>
+            </div>
+            <div class="bg-gray-900 rounded-xl p-4 border border-orange/30 text-center">
+                <div class="text-3xl mb-2">🏓</div>
+                <h3 class="text-orange font-bold text-sm">Pong</h3>
+                <p class="text-gray-500 text-xs">Arcade</p>
+            </div>
+            <div class="bg-gray-900 rounded-xl p-4 border border-orange/30 text-center">
+                <div class="text-3xl mb-2">🧱</div>
+                <h3 class="text-orange font-bold text-sm">Breakout</h3>
+                <p class="text-gray-500 text-xs">Arcade</p>
+            </div>
+            <div class="bg-gray-900 rounded-xl p-4 border border-gray-700 text-center opacity-50">
+                <div class="text-3xl mb-2">⚔️</div>
+                <h3 class="text-gray-400 font-bold text-sm">Chrono Trigger</h3>
+                <p class="text-gray-600 text-xs">RPG — Próximamente</p>
+            </div>
+            <div class="bg-gray-900 rounded-xl p-4 border border-gray-700 text-center opacity-50">
+                <div class="text-3xl mb-2">🏎️</div>
+                <h3 class="text-gray-400 font-bold text-sm">Top Gear 2</h3>
+                <p class="text-gray-600 text-xs">Carreras — Próximamente</p>
+            </div>
+            <div class="bg-gray-900 rounded-xl p-4 border border-gray-700 text-center opacity-50">
+                <div class="text-3xl mb-2">🎮</div>
+                <h3 class="text-gray-400 font-bold text-sm">+8 juegos</h3>
+                <p class="text-gray-600 text-xs">Próximamente</p>
+            </div>
+        </div>
+        <div class="text-center mt-10">
+            <p class="text-gray-500 text-sm mb-4">Disponible en Google Play Store</p>
+            <a href="https://erasomlabs.netlify.app" class="text-orange hover:underline text-sm">&larr; Volver a Eraso M Labs</a>
+        </div>
+    </main>
+    <footer class="border-t border-gray-800 py-6 text-center text-gray-600 text-sm">
+        <p>&copy; 2026 Juanchito Console — Eraso M Labs</p>
+    </footer>
+</body>
+</html>
