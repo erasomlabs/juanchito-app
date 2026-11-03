@@ -8,9 +8,6 @@ android {
     compileSdk 34
 
     defaultConfig {
-        // IMPORTANTE: si tu app antigua ya estaba registrada en Google Play,
-        // reemplaza este applicationId por el ID antiguo exacto para
-        // conservar instalaciones, reseñas y posición en la tienda.
         applicationId "erasom.juanchito.app"
         minSdk 24
         targetSdk 34
@@ -42,5 +39,4 @@ dependencies {
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.recyclerview:recyclerview:1.3.2'
-    // Juegos 2D nativos con Canvas (sin dependencias externas)
 }

@@ -18,6 +18,7 @@ class GameView @JvmOverloads constructor(
     private var lastTime = 0L
     private var onScoreChanged: ((Int) -> Unit)? = null
     private var onGameOver: ((Boolean) -> Unit)? = null
+    private var initialized = false
 
     init {
         holder.addCallback(this)
@@ -25,9 +26,11 @@ class GameView @JvmOverloads constructor(
 
     fun setGame(g: Game) {
         game = g
+        initialized = false
         if (width > 0 && height > 0) {
             g.init(width, height)
             g.reset()
+            initialized = true
         }
     }
 
@@ -47,7 +50,12 @@ class GameView @JvmOverloads constructor(
                         lastTime = now
                         val g = game
                         if (g != null) {
-                            if (!g.isGameOver) {
+                            if (!initialized && width > 0 && height > 0) {
+                                g.init(width, height)
+                                g.reset()
+                                initialized = true
+                            }
+                            if (initialized && !g.isGameOver) {
                                 g.update(dt, input)
                             }
                             g.draw(canvas)
@@ -67,13 +75,11 @@ class GameView @JvmOverloads constructor(
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
         game?.init(width, height)
         game?.reset()
+        initialized = true
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         running = false
         thread?.join(500)
     }
-
-    fun pauseGame() { input.start = false }
-    fun resumeGame() { }
 }
