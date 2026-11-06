@@ -17,6 +17,8 @@ class MortalKombatGame : Game {
     private var p1blocking = false; private var p2blocking = false
     private var p1Cooldown = 0f; private var p2Cooldown = 0f
     private var p1Stun = 0f; private var p2Stun = 0f
+    private val fireballs = mutableListOf<Fireball>()
+    private data class Fireball(var x: Float, var y: Float, val vx: Float, val owner: Int)
     private var round = 1; private val rounds = 2
     private var p1Wins = 0; private var p2Wins = 0
     private var roundTimer = 60f
@@ -61,10 +63,15 @@ class MortalKombatGame : Game {
             if (input.right) p1x += 200f * dt
             p1x = p1x.coerceIn(20f, w/2f - 20f)
             p1blocking = input.down
-            if (input.a && p1Cooldown <= 0f && !p1blocking) { // punch
-                p1Cooldown = 0.4f
-                if (kotlin.math.abs(p1x - p2x) < 80f && !p2blocking) { p2hp -= 8; p2Stun = 0.3f }
-                else if (kotlin.math.abs(p1x - p2x) < 80f && p2blocking) { /* blocked */ }
+            if (input.a && p1Cooldown <= 0f && !p1blocking) {
+                if (input.down) {
+                    // special: fireball
+                    p1Cooldown = 0.6f
+                    fireballs.add(Fireball(p1x + 20f, groundY - 40f, 400f, 1))
+                } else {
+                    p1Cooldown = 0.4f
+                    if (kotlin.math.abs(p1x - p2x) < 80f && !p2blocking) { p2hp -= 8; p2Stun = 0.3f }
+                }
             }
             if (input.b && p1Cooldown <= 0f && !p1blocking) { // kick
                 p1Cooldown = 0.5f
@@ -85,6 +92,19 @@ class MortalKombatGame : Game {
                     p2Cooldown = 0.6f
                     if (!p1blocking) { p1hp -= 14; p1Stun = 0.45f }
                 }
+            }
+        }
+        // fireballs
+        val fi = fireballs.iterator()
+        while (fi.hasNext()) {
+            val f = fi.next()
+            f.x += f.vx * dt * (if (f.owner == 1) 1 else -1)
+            if (f.x < 0f || f.x > w) { fi.remove(); continue }
+            val target = if (f.owner == 1) p2x else p1x
+            val targetHp = if (f.owner == 1) { p2hp } else { p1hp }
+            if (kotlin.math.abs(f.x - target) < 20f) {
+                if (f.owner == 1) { if (!p2blocking) p2hp -= 12; p2Stun = 0.3f } else { if (!p1blocking) p1hp -= 12; p1Stun = 0.3f }
+                fi.remove()
             }
         }
         // check round end
@@ -117,6 +137,9 @@ class MortalKombatGame : Game {
         canvas.drawRoundRect(RectF(p1x - 12f, (if (p1blocking) groundY - 30f else p1y), p1x + 12f, groundY), 4f, 4f, p1Paint)
         val p2h = if (p2blocking) 30f else 50f
         canvas.drawRoundRect(RectF(p2x - 12f, (if (p2blocking) groundY - 30f else p2y), p2x + 12f, groundY), 4f, 4f, p2Paint)
+        // fireballs
+        val fp = Paint().apply { color = Color.parseColor("#FC9838"); isAntiAlias = false }
+        for (f in fireballs) canvas.drawCircle(f.x, f.y, 6f, fp)
         // HP bars
         hpPaint.color = Color.parseColor("#FF6B6B")
         canvas.drawRect(20f, 20f, 20f + (w/2f - 40f) * (p1hp / 100f), 40f, hpPaint)
