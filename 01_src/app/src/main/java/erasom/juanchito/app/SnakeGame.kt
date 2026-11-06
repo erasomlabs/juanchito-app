@@ -108,7 +108,7 @@ class SnakeGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#0A0A0F"))
+        canvas.drawColor(Color.parseColor("#1A1A2E"))
         // Food
         val fr = RectF(food.first * gridSize + 2f, food.second * gridSize + 2f,
             (food.first + 1) * gridSize - 2f, (food.second + 1) * gridSize - 2f)
