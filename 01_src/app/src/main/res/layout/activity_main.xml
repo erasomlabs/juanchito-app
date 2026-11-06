@@ -31,6 +31,26 @@
             android:fontFamily="monospace" />
 
         <TextView
+            android:id="@+id/tvCoins"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/atari_yellow"
+            android:textSize="14sp"
+            android:text="🪙 50"
+            android:layout_marginEnd="12dp"
+            android:fontFamily="monospace" />
+
+        <Button
+            android:id="@+id/btnRemoveAds"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="NO ADS"
+            android:textSize="10sp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/btn_pad_small"
+            android:textColor="@color/atari_white" />
+
+        <TextView
             android:id="@+id/tvScore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,6 +60,15 @@
             android:visibility="gone" />
     </LinearLayout>
 
+    <!-- Banner Ad Container in Menu -->
+    <FrameLayout
+        android:id="@+id/bannerContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <!-- Game selection grid -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvGames"
@@ -47,7 +76,7 @@
         android:layout_height="0dp"
         android:padding="12dp"
         android:clipToPadding="false"
-        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintTop_toBottomOf="@id/bannerContainer"
         app:layout_constraintBottom_toTopOf="@id/gamepadContainer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

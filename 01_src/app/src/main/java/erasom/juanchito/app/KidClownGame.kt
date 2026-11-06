@@ -7,7 +7,7 @@ import android.graphics.RectF
 import kotlin.random.Random
 
 class KidClownGame : Game {
-    override val name = "Kid the Clown"
+    override val name = "Circus Run"
     override val genre = "Plataformas"
     private var w = 0; private var h = 0
     private val groundY get() = h * 0.8f

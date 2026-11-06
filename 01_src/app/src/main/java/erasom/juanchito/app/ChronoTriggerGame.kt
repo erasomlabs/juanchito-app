@@ -7,7 +7,7 @@ import android.graphics.RectF
 import kotlin.random.Random
 
 class ChronoTriggerGame : Game {
-    override val name = "Chrono Trigger"
+    override val name = "Chronicles RPG"
     override val genre = "RPG"
     private var w = 0; private var h = 0
     private var state = 0 // 0 explore, 1 battle, 2 victory/defeat

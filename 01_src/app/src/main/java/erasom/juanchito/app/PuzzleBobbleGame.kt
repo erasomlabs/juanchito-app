@@ -8,7 +8,7 @@ import kotlin.math.sin
 import kotlin.random.Random
 
 class PuzzleBobbleGame : Game {
-    override val name = "Puzzle Bobble"
+    override val name = "Bubble Pop"
     override val genre = "Puzzle"
     private var w = 0; private var h = 0
     private val rows = 8; private val cols = 8
@@ -21,7 +21,7 @@ class PuzzleBobbleGame : Game {
     private var flying = false
     private var nextColor = 1
     private var curColor = 1
-    private val colors = listOf("#1A1A2E", "#00D9FF", "#FF6B6B", "#FECA57", "#48DBFB")
+    private val colors = listOf("#000000", "#5C98FC", "#D82800", "#F8D878", "#00A800")
     private val paint = Paint().apply { isAntiAlias = true }
     private val textPaint = Paint().apply { color = Color.parseColor("#F5F5F5"); textSize = 28f; isAntiAlias = true; textAlign = Paint.Align.CENTER }
     private val smallPaint = Paint().apply { color = Color.parseColor("#48DBFB"); textSize = 20f; isAntiAlias = true; textAlign = Paint.Align.CENTER }
@@ -97,7 +97,7 @@ class PuzzleBobbleGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#1A1A2E"))
+        canvas.drawColor(Color.parseColor("#000000"))
         val ox = (w - cols*cell)/2f; val oy = 40f
         // grid
         for (r in 0 until rows) for (c in 0 until cols) {

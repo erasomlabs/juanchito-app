@@ -20,16 +20,16 @@ class SnakeGame : Game {
     private var dir = Direction.RIGHT
     private var nextDir = Direction.RIGHT
     private var moveTimer = 0f
-    private val moveInterval = 0.15f
+    private var moveInterval = 0.15f
     override var isGameOver = false
     override var score = 0
     private var highScore = 0
 
-    private val snakePaint = Paint().apply { color = Color.parseColor("#39FF14"); isAntiAlias = true }
-    private val headPaint = Paint().apply { color = Color.parseColor("#FF6B1A"); isAntiAlias = true }
-    private val foodPaint = Paint().apply { color = Color.parseColor("#E63946"); isAntiAlias = true }
-    private val textPaint = Paint().apply { color = Color.parseColor("#F5F5F5"); textSize = 36f; isAntiAlias = true; textAlign = Paint.Align.CENTER }
-    private val smallPaint = Paint().apply { color = Color.parseColor("#FFD700"); textSize = 24f; isAntiAlias = true; textAlign = Paint.Align.CENTER }
+    private val snakePaint = Paint().apply { color = Color.parseColor("#00A800"); isAntiAlias = false }
+    private val headPaint = Paint().apply { color = Color.parseColor("#F8D878"); isAntiAlias = false }
+    private val foodPaint = Paint().apply { color = Color.parseColor("#D82800"); isAntiAlias = false }
+    private val textPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); textSize = 36f; isAntiAlias = false; textAlign = Paint.Align.CENTER }
+    private val smallPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); textSize = 24f; isAntiAlias = false; textAlign = Paint.Align.CENTER }
 
     private enum class Direction { UP, DOWN, LEFT, RIGHT }
 
@@ -71,6 +71,8 @@ class SnakeGame : Game {
         if (input.left && dir != Direction.RIGHT) nextDir = Direction.LEFT
         if (input.right && dir != Direction.LEFT) nextDir = Direction.RIGHT
 
+        // Speed increases with length (Nokia Snake style)
+        moveInterval = (0.18f - snake.size * 0.002f).coerceAtLeast(0.06f)
         moveTimer += dt
         if (moveTimer < moveInterval) return
         moveTimer = 0f
@@ -108,7 +110,7 @@ class SnakeGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#1A1A2E"))
+        canvas.drawColor(Color.parseColor("#000000"))
         // Food
         val fr = RectF(food.first * gridSize + 2f, food.second * gridSize + 2f,
             (food.first + 1) * gridSize - 2f, (food.second + 1) * gridSize - 2f)

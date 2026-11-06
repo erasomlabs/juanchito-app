@@ -7,7 +7,7 @@ import android.graphics.RectF
 import kotlin.random.Random
 
 class CapcomSoccerGame : Game {
-    override val name = "Capcom Soccer"
+    override val name = "Arcade Soccer"
     override val genre = "Deportes"
     private var w = 0; private var h = 0
     private val players = mutableListOf<Player>()

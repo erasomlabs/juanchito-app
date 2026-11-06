@@ -7,7 +7,7 @@ import android.graphics.RectF
 import kotlin.random.Random
 
 class TopGearGame : Game {
-    override val name = "Top Gear 2"
+    override val name = "Nitro Speed"
     override val genre = "Carreras"
     private var w = 0; private var h = 0
     private var px = 0f; private var py = 0f

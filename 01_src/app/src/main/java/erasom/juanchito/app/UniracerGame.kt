@@ -7,7 +7,7 @@ import android.graphics.RectF
 import kotlin.random.Random
 
 class UniracerGame : Game {
-    override val name = "Uniracer"
+    override val name = "Cycle Dash"
     override val genre = "Carreras"
     private var w = 0; private var h = 0
     private var px = 100f; private var py = 0f

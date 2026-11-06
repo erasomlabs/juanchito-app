@@ -35,12 +35,12 @@ class BreakoutGame : Game {
     private var highScore = 0
     private var won = false
 
-    private val paddlePaint = Paint().apply { color = Color.parseColor("#FF6B1A"); isAntiAlias = true }
-    private val ballPaint = Paint().apply { color = Color.parseColor("#FFD700"); isAntiAlias = true }
-    private val brickColors = listOf("#E63946", "#FF6B1A", "#FFD700", "#39FF14", "#00D9FF")
-    private val brickPaint = Paint().apply { isAntiAlias = true }
-    private val textPaint = Paint().apply { color = Color.parseColor("#F5F5F5"); textSize = 48f; isAntiAlias = true; textAlign = Paint.Align.CENTER }
-    private val smallPaint = Paint().apply { color = Color.parseColor("#39FF14"); textSize = 24f; isAntiAlias = true; textAlign = Paint.Align.CENTER }
+    private val paddlePaint = Paint().apply { color = Color.parseColor("#F8F8F8"); isAntiAlias = false }
+    private val ballPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); isAntiAlias = false }
+    private val brickColors = listOf("#D82800", "#FC9838", "#F8D878", "#00A800", "#5C94FC")
+    private val brickPaint = Paint().apply { isAntiAlias = false }
+    private val textPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); textSize = 48f; isAntiAlias = false; textAlign = Paint.Align.CENTER }
+    private val smallPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); textSize = 24f; isAntiAlias = false; textAlign = Paint.Align.CENTER }
 
     override fun init(width: Int, height: Int) {
         w = width; h = height
@@ -132,7 +132,7 @@ class BreakoutGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#0A0A0F"))
+        canvas.drawColor(Color.parseColor("#000000"))
         // Bricks
         bricks.forEachIndexed { i, b ->
             if (!brickAlive[i]) return@forEachIndexed
@@ -145,7 +145,8 @@ class BreakoutGame : Game {
         // Ball
         canvas.drawCircle(ballX + ballSize / 2f, ballY + ballSize / 2f, ballSize / 2f, ballPaint)
         // Score
-        canvas.drawText("Score: $score", w / 2f, 40f, textPaint.apply { textSize = 28f })
+        canvas.drawText("Score: $score", w / 2f, 40f, textPaint.apply { textSize = 28f; color = Color.parseColor("#F5F5F5") })
+        canvas.drawText("Best: $highScore", w / 2f, 70f, smallPaint.apply { textSize = 20f; color = Color.parseColor("#39FF14") })
         if (isGameOver) {
             val msg = if (won) "¡GANASTE!" else "GAME OVER"
             val gameOverColor = if (won) Color.parseColor("#39FF14") else Color.parseColor("#E63946")

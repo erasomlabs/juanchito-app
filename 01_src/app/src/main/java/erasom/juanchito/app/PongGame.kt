@@ -28,11 +28,11 @@ class PongGame : Game {
     private var aiScore = 0
     private var highScore = 0
 
-    private val paddlePaint = Paint().apply { color = Color.parseColor("#FF6B1A"); isAntiAlias = true }
-    private val ballPaint = Paint().apply { color = Color.parseColor("#FFD700"); isAntiAlias = true }
-    private val textPaint = Paint().apply { color = Color.parseColor("#F5F5F5"); textSize = 48f; isAntiAlias = true; textAlign = Paint.Align.CENTER }
-    private val smallPaint = Paint().apply { color = Color.parseColor("#39FF14"); textSize = 24f; isAntiAlias = true; textAlign = Paint.Align.CENTER }
-    private val linePaint = Paint().apply { color = Color.parseColor("#3A3A4A"); strokeWidth = 2f }
+    private val paddlePaint = Paint().apply { color = Color.parseColor("#F8D878"); isAntiAlias = false }
+    private val ballPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); isAntiAlias = false }
+    private val textPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); textSize = 48f; isAntiAlias = false; textAlign = Paint.Align.CENTER }
+    private val smallPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); textSize = 24f; isAntiAlias = false; textAlign = Paint.Align.CENTER }
+    private val linePaint = Paint().apply { color = Color.parseColor("#F8F8F8"); strokeWidth = 2f }
 
     override fun init(width: Int, height: Int) {
         w = width; h = height
@@ -115,7 +115,7 @@ class PongGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#0A0A0F"))
+        canvas.drawColor(Color.parseColor("#000000"))
         // Center line
         var y = 0f
         while (y < h) {

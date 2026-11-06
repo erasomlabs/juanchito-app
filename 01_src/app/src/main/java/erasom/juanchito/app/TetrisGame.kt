@@ -7,7 +7,7 @@ import android.graphics.RectF
 import kotlin.random.Random
 
 class TetrisGame : Game {
-    override val name = "Tetris"
+    override val name = "Block Drop"
     override val genre = "Puzzle"
     private var w = 0; private var h = 0
     private val cols = 10; private val rows = 20
@@ -21,7 +21,7 @@ class TetrisGame : Game {
     override var score = 0
     private var level = 1; private var lines = 0
     private var highScore = 0
-    private val colors = listOf("#1A1A2E", "#00D9FF", "#FF6B6B", "#FECA57", "#48DBFB", "#A29BFE", "#55EFC4", "#FD79A8")
+    private val colors = listOf("#000000", "#5C94FC", "#00A800", "#FC9838", "#F8D878", "#D82800", "#8814A8", "#F8F8F8")
     private val paint = Paint().apply { isAntiAlias = true }
     private val textPaint = Paint().apply { color = Color.parseColor("#F5F5F5"); textSize = 28f; isAntiAlias = true; textAlign = Paint.Align.CENTER }
     private val smallPaint = Paint().apply { color = Color.parseColor("#48DBFB"); textSize = 20f; isAntiAlias = true; textAlign = Paint.Align.CENTER }
@@ -122,7 +122,7 @@ class TetrisGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#1A1A2E"))
+        canvas.drawColor(Color.parseColor("#000000"))
         val ox = (w - cols * cell) / 2f
         val oy = (h - rows * cell) / 2f
         // board

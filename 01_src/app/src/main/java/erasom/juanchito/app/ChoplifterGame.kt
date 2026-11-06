@@ -7,7 +7,7 @@ import android.graphics.RectF
 import kotlin.random.Random
 
 class ChoplifterGame : Game {
-    override val name = "Choplifter 3"
+    override val name = "Rescue Chopper"
     override val genre = "Acción"
     private var w = 0; private var h = 0
     private var hx = 100f; private var hy = 100f

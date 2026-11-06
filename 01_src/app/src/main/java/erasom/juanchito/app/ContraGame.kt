@@ -7,7 +7,7 @@ import android.graphics.RectF
 import kotlin.random.Random
 
 class ContraGame : Game {
-    override val name = "Contra 3"
+    override val name = "Cyber Commando"
     override val genre = "Run & Gun"
     private var w = 0; private var h = 0
     private val groundY get() = h * 0.8f
