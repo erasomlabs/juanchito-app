@@ -1,4 +1,10 @@
 <resources>
+    <!-- Brand palette (Eraso M Labs) -->
+    <color name="brand_ocre">#D4A017</color>
+    <color name="brand_olive">#556B2F</color>
+    <color name="brand_slate">#5A7D9A</color>
+    <color name="brand_charcoal">#1E2229</color>
+    <color name="brand_sand">#F7F4F0</color>
     <!-- Atari palette -->
     <color name="atari_bg">#0A0A0F</color>
     <color name="atari_panel">#15151F</color>
