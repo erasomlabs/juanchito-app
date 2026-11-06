@@ -31,3 +31,6 @@ Thumbs.db
 .agents/
 
 03_build/
+
+# Netlify staging
+.deploy/
