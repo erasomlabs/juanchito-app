@@ -4,6 +4,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import kotlin.math.abs
 
 class BreakoutGame : Game {
     override val name = "Breakout"
@@ -147,8 +148,8 @@ class BreakoutGame : Game {
         canvas.drawText("Score: $score", w / 2f, 40f, textPaint.apply { textSize = 28f })
         if (isGameOver) {
             val msg = if (won) "¡GANASTE!" else "GAME OVER"
-            val color = if (won) Color.parseColor("#39FF14") else Color.parseColor("#E63946")
-            canvas.drawText(msg, w / 2f, h / 2f, textPaint.apply { textSize = 56f; this.color = color })
+            val gameOverColor = if (won) Color.parseColor("#39FF14") else Color.parseColor("#E63946")
+            canvas.drawText(msg, w / 2f, h / 2f, textPaint.apply { textSize = 56f; color = gameOverColor })
             canvas.drawText("Pulsa START", w / 2f, h / 2f + 60f, smallPaint.apply { textSize = 24f; color = Color.parseColor("#F5F5F5") })
         }
     }

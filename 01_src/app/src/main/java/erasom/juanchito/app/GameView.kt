@@ -12,13 +12,14 @@ class GameView @JvmOverloads constructor(
 ) : SurfaceView(context, attrs), SurfaceHolder.Callback {
 
     private var game: Game? = null
-    val input = GameInput()
-    private var running = false
+    val gameInput = GameInput()
+    @Volatile private var running = false
     private var thread: Thread? = null
     private var lastTime = 0L
     private var onScoreChanged: ((Int) -> Unit)? = null
     private var onGameOver: ((Boolean) -> Unit)? = null
     private var initialized = false
+    private var reportedGameOver = false
 
     init {
         holder.addCallback(this)
@@ -27,6 +28,7 @@ class GameView @JvmOverloads constructor(
     fun setGame(g: Game) {
         game = g
         initialized = false
+        reportedGameOver = false
         if (width > 0 && height > 0) {
             g.init(width, height)
             g.reset()
@@ -56,11 +58,18 @@ class GameView @JvmOverloads constructor(
                                 initialized = true
                             }
                             if (initialized && !g.isGameOver) {
-                                g.update(dt, input)
+                                g.update(dt, gameInput)
                             }
                             g.draw(canvas)
                             onScoreChanged?.invoke(g.score)
-                            if (g.isGameOver) onGameOver?.invoke(true)
+                            if (g.isGameOver) {
+                                if (!reportedGameOver) {
+                                    reportedGameOver = true
+                                    onGameOver?.invoke(true)
+                                }
+                            } else {
+                                reportedGameOver = false
+                            }
                         }
                     } finally {
                         holder.unlockCanvasAndPost(canvas)
@@ -76,10 +85,12 @@ class GameView @JvmOverloads constructor(
         game?.init(width, height)
         game?.reset()
         initialized = true
+        reportedGameOver = false
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         running = false
         thread?.join(500)
+        thread = null
     }
 }
