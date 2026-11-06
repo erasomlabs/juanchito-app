@@ -7,7 +7,7 @@ import android.graphics.RectF
 import kotlin.random.Random
 
 class CapcomSoccerGame : Game {
-    override val name = "Arcade Soccer"
+    override val name = "Capcom Soccer"
     override val genre = "Deportes"
     private var w = 0; private var h = 0
     private val players = mutableListOf<Player>()
@@ -16,29 +16,30 @@ class CapcomSoccerGame : Game {
     private var scoreP = 0; private var scoreAI = 0
     private var timeLeft = 180f
     private var activePlayer = 0
+    private var hasBall = -1 // index of player with ball, -1 none
     override var isGameOver = false
     override var score = 0
     private var highScore = 0
 
-    private data class Player(var x: Float, var y: Float, val team: Int) // 0 player, 1 ai
+    private data class Player(var x: Float, var y: Float, val team: Int, var hasBall: Boolean)
 
-    private val playerPaint = Paint().apply { color = Color.parseColor("#FECA57"); isAntiAlias = true }
-    private val aiPaint = Paint().apply { color = Color.parseColor("#FF6B6B"); isAntiAlias = true }
-    private val ballPaint = Paint().apply { color = Color.parseColor("#F5F5F5"); isAntiAlias = true }
-    private val fieldPaint = Paint().apply { color = Color.parseColor("#2D3748"); isAntiAlias = true }
-    private val textPaint = Paint().apply { color = Color.parseColor("#F5F5F5"); textSize = 28f; isAntiAlias = true; textAlign = Paint.Align.CENTER }
-    private val smallPaint = Paint().apply { color = Color.parseColor("#48DBFB"); textSize = 20f; isAntiAlias = true; textAlign = Paint.Align.CENTER }
+    private val playerPaint = Paint().apply { color = Color.parseColor("#F8D878"); isAntiAlias = false }
+    private val aiPaint = Paint().apply { color = Color.parseColor("#D82800"); isAntiAlias = false }
+    private val ballPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); isAntiAlias = false }
+    private val fieldPaint = Paint().apply { color = Color.parseColor("#00A800"); isAntiAlias = false }
+    private val linePaint = Paint().apply { color = Color.parseColor("#F8F8F8"); strokeWidth = 2f; isAntiAlias = false }
+    private val goalPaint = Paint().apply { color = Color.parseColor("#F8D878"); strokeWidth = 4f; isAntiAlias = false }
+    private val textPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); textSize = 14f; isAntiAlias = false; textAlign = Paint.Align.CENTER }
+    private val smallPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); textSize = 11f; isAntiAlias = false; textAlign = Paint.Align.CENTER }
 
     override fun init(width: Int, height: Int) { w = width; h = height; reset() }
 
     override fun reset() {
         players.clear()
-        // player team (bottom)
-        for (i in 0 until 5) players.add(Player(w * (0.1f + i * 0.2f), h * 0.75f, 0))
-        // ai team (top)
-        for (i in 0 until 5) players.add(Player(w * (0.1f + i * 0.2f), h * 0.25f, 1))
-        ballX = w/2f; ballY = h/2f; ballVx = 0f; ballVy = 0f
-        scoreP = 0; scoreAI = 0; timeLeft = 180f; activePlayer = 0
+        for (i in 0 until 5) players.add(Player(w * (0.15f + i * 0.17f), h * 0.72f, 0, false))
+        for (i in 0 until 5) players.add(Player(w * (0.15f + i * 0.17f), h * 0.28f, 1, false))
+        ballX = w / 2f; ballY = h / 2f; ballVx = 0f; ballVy = 0f
+        scoreP = 0; scoreAI = 0; timeLeft = 180f; activePlayer = 0; hasBall = -1
         isGameOver = false; score = 0
     }
 
@@ -48,91 +49,144 @@ class CapcomSoccerGame : Game {
         if (timeLeft <= 0f) { isGameOver = true; score = scoreP * 100; if (score > highScore) highScore = score; return }
         // move active player
         val p = players[activePlayer]
-        if (input.up) p.y -= 200f * dt
-        if (input.down) p.y += 200f * dt
-        if (input.left) p.x -= 200f * dt
-        if (input.right) p.x += 200f * dt
-        p.x = p.x.coerceIn(20f, w - 20f); p.y = p.y.coerceIn(h*0.5f, h - 20f)
-        // change player
+        if (input.up) p.y -= 220f * dt
+        if (input.down) p.y += 220f * dt
+        if (input.left) p.x -= 220f * dt
+        if (input.right) p.x += 220f * dt
+        p.x = p.x.coerceIn(20f, w - 20f); p.y = p.y.coerceIn(h * 0.5f, h - 20f)
         if (input.select) { activePlayer = (activePlayer + 1) % 5; input.select = false }
-        // pass
+        // claim ball if near
+        for (i in 0 until 5) {
+            val pl = players[i]
+            val dx = ballX - pl.x; val dy = ballY - pl.y
+            if (dx * dx + dy * dy < 30f * 30f && hasBall == -1) { hasBall = i; pl.hasBall = true }
+        }
+        // pass (A)
         if (input.a) {
-            val dx = ballX - p.x; val dy = ballY - p.y
-            if (dx*dx + dy*dy < 40f*40f) {
-                ballVx = ((if (input.right) 1 else 0) - (if (input.left) 1 else 0)) * 300f
-                ballVy = ((if (input.down) 1 else 0) - (if (input.up) 1 else 0)) * 300f
-                if (ballVx == 0f && ballVy == 0f) ballVy = -400f
+            if (hasBall in 0..4) {
+                val pl = players[hasBall]
+                pl.hasBall = false
+                var pvx = 0f; var pvy = 0f
+                if (input.up) pvy = -1f
+                if (input.down) pvy = 1f
+                if (input.left) pvx = -1f
+                if (input.right) pvx = 1f
+                if (pvx == 0f && pvy == 0f) { pvx = if (ballX < w / 2f) 1f else -1f; pvy = -1f }
+                val len = kotlin.math.sqrt(pvx * pvx + pvy * pvy)
+                ballVx = pvx / len * 400f; ballVy = pvy / len * 400f
+                hasBall = -1
             }
             input.a = false
         }
-        // shoot
+        // shoot (B)
         if (input.b) {
-            val dx = ballX - p.x; val dy = ballY - p.y
-            if (dx*dx + dy*dy < 40f*40f) {
-                ballVx = (if (ballX < w/2f) 1 else -1) * 0f
-                ballVy = -600f
+            if (hasBall in 0..4) {
+                val pl = players[hasBall]
+                pl.hasBall = false
+                ballVx = 0f; ballVy = -700f
+                hasBall = -1
             }
             input.b = false
         }
-        // ball physics
-        ballX += ballVx * dt; ballY += ballVy * dt
-        ballVx *= 0.98f; ballVy *= 0.98f
-        ballX = ballX.coerceIn(10f, w - 10f)
-        if (ballY < 10f) { ballY = 10f; ballVy = -ballVy }
-        if (ballY > h - 10f) { ballY = h - 10f; ballVy = -ballVy }
-        // AI movement
-        for (pl in players.filter { it.team == 1 }) {
-            val dx = ballX - pl.x; val dy = ballY - pl.y
-            if (dx*dx + dy*dy > 25f*25f) {
-                pl.x += (dx).coerceIn(-1f, 1f) * 120f * dt
-                pl.y += (dy).coerceIn(-1f, 1f) * 120f * dt
-            }
-            pl.x = pl.x.coerceIn(20f, w - 20f); pl.y = pl.y.coerceIn(20f, h*0.5f)
+        // if hasBall, ball follows player
+        if (hasBall in 0..4) {
+            val pl = players[hasBall]
+            ballX = pl.x; ballY = pl.y - 12f
+            ballVx = 0f; ballVy = 0f
+        } else {
+            ballX += ballVx * dt; ballY += ballVy * dt
+            ballVx *= 0.97f; ballVy *= 0.97f
+            ballX = ballX.coerceIn(10f, w - 10f)
+            if (ballY < 10f) { ballY = 10f; ballVy = -ballVy }
+            if (ballY > h - 10f) { ballY = h - 10f; ballVy = -ballVy }
         }
-        // AI kick if near ball
-        for (pl in players.filter { it.team == 1 }) {
+        // AI movement
+        for (i in 5 until 10) {
+            val pl = players[i]
             val dx = ballX - pl.x; val dy = ballY - pl.y
-            if (dx*dx + dy*dy < 30f*30f && Random.nextFloat() < 0.02f) {
-                ballVx = (if (ballX > w/2f) 1 else -1) * 200f
-                ballVy = 400f
+            if (dx * dx + dy * dy > 20f * 20f) {
+                pl.x += (dx).coerceIn(-1f, 1f) * 130f * dt
+                pl.y += (dy).coerceIn(-1f, 1f) * 130f * dt
+            }
+            pl.x = pl.x.coerceIn(20f, w - 20f); pl.y = pl.y.coerceIn(20f, h * 0.5f)
+        }
+        // AI claim ball
+        for (i in 5 until 10) {
+            val pl = players[i]
+            val dx = ballX - pl.x; val dy = ballY - pl.y
+            if (dx * dx + dy * dy < 25f * 25f && hasBall == -1) { hasBall = i; pl.hasBall = true }
+        }
+        // AI shoot/pass
+        if (hasBall in 5..9) {
+            val pl = players[hasBall]
+            if (Random.nextFloat() < 0.015f) {
+                pl.hasBall = false
+                if (pl.y > h * 0.35f || Random.nextFloat() < 0.3f) {
+                    ballVx = (if (ballX > w / 2f) 1 else -1) * 150f
+                    ballVy = 500f
+                } else {
+                    val mate = players[5 + Random.nextInt(5)]
+                    val dx = mate.x - pl.x; val dy = mate.y - pl.y
+                    val len = kotlin.math.sqrt(dx * dx + dy * dy)
+                    if (len > 0f) { ballVx = dx / len * 350f; ballVy = dy / len * 350f }
+                }
+                hasBall = -1
             }
         }
         // goals
-        if (ballY < 20f && ballX in w*0.4f..w*0.6f) { scoreP++; score = scoreP * 100; resetBall(); }
-        if (ballY > h - 20f && ballX in w*0.4f..w*0.6f) { scoreAI++; resetBall(); }
+        if (ballY < 22f && ballX in w * 0.4f..w * 0.6f) { scoreP++; score = scoreP * 100; resetBall() }
+        if (ballY > h - 22f && ballX in w * 0.4f..w * 0.6f) { scoreAI++; resetBall() }
     }
 
-    private fun resetBall() { ballX = w/2f; ballY = h/2f; ballVx = 0f; ballVy = 0f }
+    private fun resetBall() { ballX = w / 2f; ballY = h / 2f; ballVx = 0f; ballVy = 0f; hasBall = -1; for (p in players) p.hasBall = false }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#1A1A2E"))
-        // field
-        canvas.drawRect(40f, 40f, w - 40f, h - 40f, fieldPaint)
+        // sky + field
+        canvas.drawColor(Color.parseColor("#5C94FC"))
+        canvas.drawRect(0f, h * 0.08f, w.toFloat(), h.toFloat(), fieldPaint)
+        // grass stripes
+        val stripePaint = Paint().apply { color = Color.parseColor("#008000"); isAntiAlias = false }
+        var yy = h * 0.08f
+        while (yy < h) { canvas.drawRect(0f, yy, w.toFloat(), yy + 8f, stripePaint); yy += 16f }
+        // field lines
+        canvas.drawRect(40f, h * 0.08f, w - 40f, h.toFloat(), Paint().apply { color = Color.parseColor("#00A800"); style = Paint.Style.STROKE; strokeWidth = 2f; isAntiAlias = false })
+        canvas.drawLine(40f, h / 2f, w - 40f, h / 2f, linePaint)
+        // center circle
+        val cp = Paint().apply { color = Color.parseColor("#F8F8F8"); style = Paint.Style.STROKE; strokeWidth = 2f; isAntiAlias = false }
+        canvas.drawCircle(w / 2f, h / 2f, 40f, cp)
         // goals
-        val goalPaint = Paint().apply { color = Color.parseColor("#48DBFB"); strokeWidth = 4f }
-        canvas.drawLine(w*0.4f, 40f, w*0.6f, 40f, goalPaint)
-        canvas.drawLine(w*0.4f, h - 40f, w*0.6f, h - 40f, goalPaint)
-        // midline
-        val lp = Paint().apply { color = Color.parseColor("#F5F5F5"); strokeWidth = 2f; alpha = 80 }
-        canvas.drawLine(40f, h/2f, w - 40f, h/2f, lp)
+        canvas.drawLine(w * 0.4f, h * 0.08f, w * 0.6f, h * 0.08f, goalPaint)
+        canvas.drawLine(w * 0.4f, h - 8f, w * 0.6f, h - 8f, goalPaint)
+        // goal posts
+        canvas.drawRect(w * 0.4f - 4f, h * 0.08f - 12f, w * 0.4f, h * 0.08f, goalPaint)
+        canvas.drawRect(w * 0.6f, h * 0.08f - 12f, w * 0.6f + 4f, h * 0.08f, goalPaint)
+        canvas.drawRect(w * 0.4f - 4f, h - 8f, w * 0.4f, h + 4f, goalPaint)
+        canvas.drawRect(w * 0.6f, h - 8f, w * 0.6f + 4f, h + 4f, goalPaint)
         // players
         for (p in players) {
             val paint = if (p.team == 0) playerPaint else aiPaint
-            canvas.drawCircle(p.x, p.y, 14f, paint)
+            canvas.drawCircle(p.x, p.y, 12f, paint)
+            if (p.hasBall) {
+                val bp = Paint().apply { color = Color.parseColor("#F8F8F8"); isAntiAlias = false }
+                canvas.drawCircle(p.x, p.y - 14f, 5f, bp)
+            }
         }
         // ball
-        canvas.drawCircle(ballX, ballY, 8f, ballPaint)
+        canvas.drawCircle(ballX, ballY, 7f, ballPaint)
         // HUD
-        textPaint.textSize = 32f
-        canvas.drawText("$scoreP - $scoreAI", w/2f, 36f, textPaint)
+        textPaint.textSize = 16f
+        canvas.drawText("$scoreP - $scoreAI", w / 2f, 20f, textPaint)
         smallPaint.textAlign = Paint.Align.LEFT
-        canvas.drawText("Tiempo: ${timeLeft.toInt()}s", 20f, h - 10f, smallPaint)
+        canvas.drawText("Tiempo: ${timeLeft.toInt()}s", 8f, 14f, smallPaint)
+        canvas.drawText("A: Pase  B: Tiro  SELECT: Cambiar", 8f, h - 8f, smallPaint)
         smallPaint.textAlign = Paint.Align.CENTER
         if (isGameOver) {
-            val msg = if (scoreP > scoreAI) "¡GANASTE!" else "PERDISTE"
-            val col = if (scoreP > scoreAI) Color.parseColor("#55EFC4") else Color.parseColor("#FF6B6B")
-            canvas.drawText(msg, w/2f, h/2f, textPaint.apply { textSize = 56f; color = col })
-            canvas.drawText("Pulsa START", w/2f, h/2f + 60f, smallPaint.apply { textSize = 24f; color = Color.parseColor("#F5F5F5") })
+            val msg = if (scoreP > scoreAI) "¡GANASTE!" else if (scoreP < scoreAI) "PERDISTE" else "EMPATE"
+            val col = if (scoreP > scoreAI) Color.parseColor("#00A800") else if (scoreP < scoreAI) Color.parseColor("#D82800") else Color.parseColor("#F8D878")
+            textPaint.textSize = 32f; textPaint.color = col
+            canvas.drawText(msg, w / 2f, h / 2f, textPaint)
+            textPaint.textSize = 12f; textPaint.color = Color.parseColor("#F8F8F8")
+            canvas.drawText("Pulsa START", w / 2f, h / 2f + 24f, smallPaint.apply { textSize = 14f; color = Color.parseColor("#F8F8F8"); textAlign = Paint.Align.CENTER })
         }
     }
 }
