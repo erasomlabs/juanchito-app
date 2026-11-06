@@ -2,7 +2,7 @@ package erasom.juanchito.app
 
 object GameLibrary {
     val games: List<Game> = listOf(
-        // Clásicos originales con nombres seguros
+        // Clásicos (Lote 1)
         SnakeGame(),
         PongGame(),
         BreakoutGame(),
@@ -18,8 +18,7 @@ object GameLibrary {
         MortalKombatGame(),
         ChronoTriggerGame(),
         CapcomSoccerGame(),
-
-        // 15 Nuevos juegos Arcade de tu lista
+        // Juegos Pixel (Lote 2-5)
         PixelSmashGame(),
         FusionPixelGame(),
         PixelBlocksGame(),

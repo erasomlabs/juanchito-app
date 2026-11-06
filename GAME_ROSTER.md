@@ -53,7 +53,56 @@ Todos los juegos comparten la estética minimalista moderno (fondo `#1A1A2E`, pa
 
 ---
 
-## Total: 33 juegos
+## Juegos Pixel (15) — originales del ecosistema
+
+### Arcade / Ritmo
+- **Pixel Smash** — Romper bloques con física rápida y power-ups.
+- **Reflejos** — Prueba de reflejos, reacciona a estímulos visuales.
+- **Pixel Invaders** — Disparar a invasores que bajan en formación.
+
+### Plataformas
+- **Pixel Runner** — Carrera infinita esquivando obstáculos.
+
+### Puzzle
+- **Fusion Pixel** — Fusionar píxeles del mismo color.
+- **Pixel Blocks** — Encajar bloques (tipo Tetris variant).
+- **Pixel Draw** — Dibujar siguiendo patrones.
+- **Pixel Puzzles** — Puzzles de lógica con piezas pixel.
+
+### Estrategia
+- **Pixel Minas** — Buscaminas clásico.
+- **Pixel Tictactoe** — Tres en raya.
+
+### Ritmo
+- **Pixel Ritmo** — Ritmo musical, pulsar al compás.
+
+### Carreras
+- **Carreras** — Carrera arcade simple.
+
+### Cartas / Azar / Trivia
+- **Solitario** — Solitario clásico.
+- **Pixel Dados** — Juego de dados.
+- **Pixel Charades** — Adivina la palabra/dibujo.
+
+## Total: 30 juegos (15 clásicos + 15 Pixel)
+
+### Prioridad de elaboración (fieles al original)
+1. **Pitfall** ✅ (refinado)
+2. **Snake** ✅ (refinado)
+3. **Pong** ✅ (refinado)
+4. **Breakout** ✅ (refinado)
+5. **Tetris** ✅ (refinado)
+6. **Puzzle Bobble** ✅ (refinado)
+7. Bomberman 3
+8. Contra 3
+9. Choplifter 3
+10. Uniracers
+11. Top Gear 2
+12. Kid Klown
+13. Mortal Kombat
+14. Chrono Trigger
+15. Capcom Soccer
+16-30. Juegos Pixel (uno por uno)
 
 ## Prioridad de implementación (por lotes)
 
