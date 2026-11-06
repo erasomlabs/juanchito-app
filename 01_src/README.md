@@ -8,7 +8,7 @@
 ## Cómo abrir
 1. Abre Android Studio.
 2. Selecciona "Open" y busca la carpeta:
-   `D:\Antigravity\20@erasomlabs\juanchito.app\01_src`
+   `D:\Antigravity\erasomlabs\juanchito.app\01_src`
 3. Espera a que Gradle sincronice.
 4. Conecta un dispositivo Android o inicia un emulador.
 5. Haz clic en Run (▶).
