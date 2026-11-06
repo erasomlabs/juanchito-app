@@ -54,16 +54,16 @@ class PixelDrawGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#1A1A2E"))
-        paint.color = Color.parseColor("#00D9FF")
+        canvas.drawColor(Color.parseColor("#000000"))
+        paint.color = Color.parseColor("#5C94FC")
         paint.style = Paint.Style.STROKE
         for (i in 0 until path.size - 1) {
             canvas.drawLine(path[i].first, path[i].second, path[i+1].first, path[i+1].second, paint)
         }
         paint.style = Paint.Style.FILL
-        paint.color = Color.parseColor("#FECA57")
+        paint.color = Color.parseColor("#F8D878")
         for ((px, py) in points) canvas.drawCircle(px, py, 14f, paint)
-        paint.color = Color.parseColor("#FF6B6B")
+        paint.color = Color.parseColor("#D82800")
         canvas.drawCircle(curX, curY, 12f, paint)
     }
 }
@@ -112,15 +112,15 @@ class PixelMinasGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#1A1A2E"))
+        canvas.drawColor(Color.parseColor("#000000"))
         val size = 50f
         val ox = (w - size * 5) / 2f; val oy = (h - size * 5) / 2f
         for (r in 0..4) {
             for (c in 0..4) {
                 paint.color = if (revealed[r][c]) {
-                    if (grid[r][c]) Color.parseColor("#FF6B6B") else Color.parseColor("#2D3748")
+                    if (grid[r][c]) Color.parseColor("#D82800") else Color.parseColor("#2D3748")
                 } else {
-                    if (r == selY && c == selX) Color.parseColor("#FECA57") else Color.parseColor("#48DBFB")
+                    if (r == selY && c == selX) Color.parseColor("#F8D878") else Color.parseColor("#F8F8F8")
                 }
                 canvas.drawRect(RectF(ox + c * size + 3, oy + r * size + 3, ox + (c + 1) * size - 3, oy + (r + 1) * size - 3), paint)
             }
@@ -176,12 +176,12 @@ class PixelRunnerGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#1A1A2E"))
+        canvas.drawColor(Color.parseColor("#000000"))
         paint.color = Color.parseColor("#2D3748")
         canvas.drawRect(0f, h * 0.7f + 25f, w.toFloat(), h.toFloat(), paint)
-        paint.color = Color.parseColor("#00D9FF")
+        paint.color = Color.parseColor("#5C94FC")
         canvas.drawRoundRect(RectF(100f, py - 20f, 135f, py + 25f), 4f, 4f, paint)
-        paint.color = Color.parseColor("#FF6B6B")
+        paint.color = Color.parseColor("#D82800")
         for (ox in obstacles) {
             canvas.drawRect(ox, h * 0.7f - 10f, ox + 30f, h * 0.7f + 25f, paint)
         }
@@ -225,7 +225,7 @@ class ReflejosGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        val color = if (state == 1) Color.parseColor("#55EFC4") else Color.parseColor("#1A1A2E")
+        val color = if (state == 1) Color.parseColor("#00A800") else Color.parseColor("#000000")
         canvas.drawColor(color)
         paint.color = Color.WHITE
         paint.textSize = 32f

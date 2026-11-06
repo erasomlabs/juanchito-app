@@ -73,14 +73,14 @@ class PixelSmashGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#1A1A2E"))
-        paint.color = Color.parseColor("#FECA57")
+        canvas.drawColor(Color.parseColor("#000000"))
+        paint.color = Color.parseColor("#F8D878")
         canvas.drawRoundRect(RectF(paddleX, h - 60f, paddleX + paddleWidth, h - 42f), 6f, 6f, paint)
 
-        paint.color = Color.parseColor("#00D9FF")
+        paint.color = Color.parseColor("#5C94FC")
         canvas.drawCircle(ballX, ballY, 10f, paint)
 
-        paint.color = Color.parseColor("#FF6B6B")
+        paint.color = Color.parseColor("#D82800")
         for (b in bricks) {
             canvas.drawRoundRect(b, 4f, 4f, paint)
         }
@@ -158,7 +158,7 @@ class FusionPixelGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#1A1A2E"))
+        canvas.drawColor(Color.parseColor("#000000"))
         val size = 70f
         val startX = (w - size * 4) / 2f
         val startY = (h - size * 4) / 2f
@@ -168,11 +168,11 @@ class FusionPixelGame : Game {
                 val v = grid[r][c]
                 paint.color = when (v) {
                     0 -> Color.parseColor("#2D3748")
-                    2 -> Color.parseColor("#48DBFB")
-                    4 -> Color.parseColor("#00D9FF")
-                    8 -> Color.parseColor("#FECA57")
-                    16 -> Color.parseColor("#FF6B6B")
-                    else -> Color.parseColor("#FD79A8")
+                    2 -> Color.parseColor("#F8F8F8")
+                    4 -> Color.parseColor("#5C94FC")
+                    8 -> Color.parseColor("#F8D878")
+                    16 -> Color.parseColor("#D82800")
+                    else -> Color.parseColor("#FC9838")
                 }
                 val rect = RectF(startX + c * size + 4, startY + r * size + 4, startX + (c + 1) * size - 4, startY + (r + 1) * size - 4)
                 canvas.drawRoundRect(rect, 8f, 8f, paint)
@@ -218,10 +218,10 @@ class PixelBlocksGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#1A1A2E"))
-        paint.color = Color.parseColor("#48DBFB")
+        canvas.drawColor(Color.parseColor("#000000"))
+        paint.color = Color.parseColor("#F8F8F8")
         canvas.drawRect(RectF(w / 2f - 40f, 0f, w / 2f + 40f, h.toFloat()), Paint().apply { color = Color.parseColor("#2D3748") })
-        paint.color = Color.parseColor("#00D9FF")
+        paint.color = Color.parseColor("#5C94FC")
         canvas.drawRoundRect(RectF(blockX, h * 0.45f, blockX + 120f, h * 0.45f + 45f), 8f, 8f, paint)
     }
 }
@@ -263,10 +263,10 @@ class PixelRitmoGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#1A1A2E"))
-        paint.color = Color.parseColor("#FECA57")
+        canvas.drawColor(Color.parseColor("#000000"))
+        paint.color = Color.parseColor("#F8D878")
         canvas.drawLine(0f, h - 70f, w.toFloat(), h - 70f, paint)
-        paint.color = Color.parseColor("#FF6B6B")
+        paint.color = Color.parseColor("#D82800")
         for (y in notes) {
             canvas.drawCircle(w / 2f, y, 22f, paint)
         }

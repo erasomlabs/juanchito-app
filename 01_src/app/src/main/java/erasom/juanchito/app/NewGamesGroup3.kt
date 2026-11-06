@@ -41,7 +41,7 @@ class PixelPuzzlesGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#1A1A2E"))
+        canvas.drawColor(Color.parseColor("#000000"))
         paint.textSize = 24f
         paint.color = Color.WHITE
         canvas.drawText("Objetivo: Bloque ${pattern[step % pattern.size] + 1}", w / 2f, h * 0.25f, paint)
@@ -49,7 +49,7 @@ class PixelPuzzlesGame : Game {
         val size = 60f
         val startX = (w - size * 3) / 2f
         for (i in 0..2) {
-            paint.color = if (i == pos) Color.parseColor("#FECA57") else Color.parseColor("#00D9FF")
+            paint.color = if (i == pos) Color.parseColor("#F8D878") else Color.parseColor("#5C94FC")
             val r = RectF(startX + i * size + 6, h * 0.5f, startX + (i + 1) * size - 6, h * 0.5f + size)
             canvas.drawRoundRect(r, 6f, 6f, paint)
         }
@@ -105,19 +105,19 @@ class CarrerasGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#1A1A2E"))
+        canvas.drawColor(Color.parseColor("#000000"))
         val laneWidth = 70f
         val roadX = (w - laneWidth * 3) / 2f
         paint.color = Color.parseColor("#2D3748")
         canvas.drawRect(roadX, 0f, roadX + laneWidth * 3, h.toFloat(), paint)
 
         // Jugador
-        paint.color = Color.parseColor("#00D9FF")
+        paint.color = Color.parseColor("#5C94FC")
         val px = roadX + lane * laneWidth + 15f
         canvas.drawRoundRect(RectF(px, h - 80f, px + laneWidth - 30f, h - 30f), 6f, 6f, paint)
 
         // Tráfico
-        paint.color = Color.parseColor("#FF6B6B")
+        paint.color = Color.parseColor("#D82800")
         for ((tLane, y) in traffic) {
             val tx = roadX + tLane * laneWidth + 15f
             canvas.drawRoundRect(RectF(tx, y, tx + laneWidth - 30f, y + 50f), 6f, 6f, paint)
@@ -174,13 +174,13 @@ class SolitarioGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#1A1A2E"))
+        canvas.drawColor(Color.parseColor("#000000"))
         val cardW = 50f; val cardH = 75f
         val startX = (w - cardW * 6) / 2f
         paint.textSize = 24f
         for (i in 0..5) {
             val r = RectF(startX + i * cardW + 4, h / 2f - cardH / 2f, startX + (i + 1) * cardW - 4, h / 2f + cardH / 2f)
-            paint.color = if (i == sel) Color.parseColor("#FECA57") else Color.parseColor("#48DBFB")
+            paint.color = if (i == sel) Color.parseColor("#F8D878") else Color.parseColor("#F8F8F8")
             canvas.drawRoundRect(r, 6f, 6f, paint)
             if (revealed[i]) {
                 paint.color = Color.BLACK
@@ -225,8 +225,8 @@ class PixelDadosGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#1A1A2E"))
-        paint.color = Color.parseColor("#00D9FF")
+        canvas.drawColor(Color.parseColor("#000000"))
+        paint.color = Color.parseColor("#5C94FC")
         val size = 90f
         val r = RectF(w / 2f - size / 2f, h / 2f - size / 2f, w / 2f + size / 2f, h / 2f + size / 2f)
         canvas.drawRoundRect(r, 12f, 12f, paint)

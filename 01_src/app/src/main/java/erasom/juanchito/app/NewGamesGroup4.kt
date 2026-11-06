@@ -47,7 +47,7 @@ class PixelCharadesGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#1A1A2E"))
+        canvas.drawColor(Color.parseColor("#000000"))
         paint.color = Color.WHITE
         paint.textSize = 28f
         canvas.drawText("Elige: ${names[targetIndex]}", w / 2f, h * 0.28f, paint)
@@ -119,7 +119,7 @@ class PixelTictactoeGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#1A1A2E"))
+        canvas.drawColor(Color.parseColor("#000000"))
         val size = 65f
         val startX = (w - size * 3) / 2f
         val startY = (h - size * 3) / 2f
@@ -128,14 +128,14 @@ class PixelTictactoeGame : Game {
         for (i in 0..8) {
             val r = i / 3; val c = i % 3
             val rect = RectF(startX + c * size + 4, startY + r * size + 4, startX + (c + 1) * size - 4, startY + (r + 1) * size - 4)
-            paint.color = if (i == cur) Color.parseColor("#FECA57") else Color.parseColor("#2D3748")
+            paint.color = if (i == cur) Color.parseColor("#F8D878") else Color.parseColor("#2D3748")
             canvas.drawRoundRect(rect, 6f, 6f, paint)
 
             if (board[i] == 1) {
-                paint.color = Color.parseColor("#00D9FF")
+                paint.color = Color.parseColor("#5C94FC")
                 canvas.drawText("X", rect.centerX(), rect.centerY() + 12, paint)
             } else if (board[i] == 2) {
-                paint.color = Color.parseColor("#FF6B6B")
+                paint.color = Color.parseColor("#D82800")
                 canvas.drawText("O", rect.centerX(), rect.centerY() + 12, paint)
             }
         }
@@ -209,19 +209,19 @@ class PixelInvadersGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#1A1A2E"))
+        canvas.drawColor(Color.parseColor("#000000"))
         // Nave
-        paint.color = Color.parseColor("#00D9FF")
+        paint.color = Color.parseColor("#5C94FC")
         canvas.drawRoundRect(RectF(shipX - 18f, h - 50f, shipX + 18f, h - 30f), 4f, 4f, paint)
 
         // Balas
-        paint.color = Color.parseColor("#FECA57")
+        paint.color = Color.parseColor("#F8D878")
         for ((bx, by) in bullets) {
             canvas.drawRect(bx - 3f, by - 8f, bx + 3f, by, paint)
         }
 
         // Alienígenas
-        paint.color = Color.parseColor("#FF6B6B")
+        paint.color = Color.parseColor("#D82800")
         for (a in aliens) {
             canvas.drawRoundRect(a, 4f, 4f, paint)
         }
