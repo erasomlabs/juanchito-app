@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/atari_bg">
 
-    <!-- Top bar -->
+    <!-- Top Console Wood / Panel Bar -->
     <LinearLayout
         android:id="@+id/topBar"
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="40dp"
         android:background="@color/atari_panel"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -24,29 +25,39 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/console_title"
+            android:text="★ ATARI 2600 / NES RETRO CONSOLE ★"
             android:textColor="@color/atari_orange"
-            android:textSize="18sp"
+            android:textSize="12sp"
             android:textStyle="bold"
             android:fontFamily="monospace" />
+
+        <Button
+            android:id="@+id/btnThemeSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:text="🎨 APARIENCIA"
+            android:textSize="9sp"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/btn_pad_small"
+            android:textColor="@color/atari_white" />
 
         <TextView
             android:id="@+id/tvCoins"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/atari_yellow"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:text="🪙 50"
-            android:layout_marginEnd="12dp"
+            android:layout_marginEnd="8dp"
             android:fontFamily="monospace" />
 
         <Button
             android:id="@+id/btnRemoveAds"
             android:layout_width="wrap_content"
-            android:layout_height="32dp"
+            android:layout_height="28dp"
             android:text="NO ADS"
-            android:textSize="10sp"
-            android:layout_marginEnd="8dp"
+            android:textSize="9sp"
+            android:layout_marginEnd="6dp"
             android:background="@drawable/btn_pad_small"
             android:textColor="@color/atari_white" />
 
@@ -55,12 +66,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/atari_yellow"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:fontFamily="monospace"
             android:visibility="gone" />
     </LinearLayout>
 
-    <!-- Banner Ad Container in Menu -->
+    <!-- Banner Ad Container -->
     <FrameLayout
         android:id="@+id/bannerContainer"
         android:layout_width="wrap_content"
@@ -69,19 +80,128 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Game selection grid -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvGames"
+    <!-- Central Showcase Screen (Atari TV Screen & Cartridge Carousel) -->
+    <LinearLayout
+        android:id="@+id/menuContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="12dp"
-        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:padding="8dp"
         app:layout_constraintTop_toBottomOf="@id/bannerContainer"
         app:layout_constraintBottom_toTopOf="@id/gamepadContainer"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <!-- Game canvas (hidden by default) -->
+        <!-- CRT TV Frame / Game Showcase Panel -->
+        <LinearLayout
+            android:id="@+id/screenShowcase"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_pad"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:gravity="center_vertical">
+
+            <!-- Left: Retro Badge / Screen Display -->
+            <LinearLayout
+                android:layout_width="160dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="#101018"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/tvPreviewGenre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NES CLASSIC"
+                    android:textColor="@color/atari_orange"
+                    android:textSize="10sp"
+                    android:fontFamily="monospace"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvPreviewTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CHRONO TRIGGER"
+                    android:textColor="@color/atari_yellow"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:fontFamily="monospace"
+                    android:gravity="center"
+                    android:layout_marginTop="4dp" />
+
+                <Button
+                    android:id="@+id/btnLaunchGame"
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:text="▶ INSERTAR CARTUCHO"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/atari_white"
+                    android:background="@drawable/btn_action"
+                    android:layout_marginTop="10dp" />
+            </LinearLayout>
+
+            <!-- Right: Lore, Storyline, Missions & Boss details -->
+            <ScrollView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginStart="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvPreviewChapter"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Capítulo 1: El Portal del Tiempo"
+                        android:textColor="@color/atari_cyan"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:fontFamily="monospace" />
+
+                    <TextView
+                        android:id="@+id/tvPreviewSynopsis"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Año 1000 d.C. Crono viaja a través del tiempo..."
+                        android:textColor="@color/atari_white"
+                        android:textSize="11sp"
+                        android:fontFamily="monospace"
+                        android:lineSpacingExtra="2dp"
+                        android:layout_marginTop="6dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="★ SISTEMA: Historia completa + Fases + Diálogos + Boss Final"
+                        android:textColor="@color/atari_yellow"
+                        android:textSize="10sp"
+                        android:fontFamily="monospace"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+
+        <!-- Continuous Horizontal Cartridge Carousel Bar -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvGames"
+            android:layout_width="match_parent"
+            android:layout_height="88dp"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal"
+            android:clipToPadding="false" />
+    </LinearLayout>
+
+    <!-- Game canvas (Active when playing) -->
     <erasom.juanchito.app.GameView
         android:id="@+id/gameView"
         android:layout_width="0dp"
@@ -92,14 +212,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Virtual gamepad -->
+    <!-- Virtual gamepad console panel -->
     <LinearLayout
         android:id="@+id/gamepadContainer"
         android:layout_width="0dp"
-        android:layout_height="140dp"
+        android:layout_height="125dp"
         android:background="@color/atari_panel"
         android:orientation="horizontal"
-        android:padding="8dp"
+        android:padding="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -113,8 +233,8 @@
 
             <Button
                 android:id="@+id/btnUp"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
                 android:layout_gravity="top|center_horizontal"
                 android:background="@drawable/btn_pad"
                 android:text="▲"
@@ -123,8 +243,8 @@
 
             <Button
                 android:id="@+id/btnLeft"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
                 android:layout_gravity="center_vertical|start"
                 android:background="@drawable/btn_pad"
                 android:text="◀"
@@ -133,8 +253,8 @@
 
             <Button
                 android:id="@+id/btnRight"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
                 android:layout_gravity="center_vertical|end"
                 android:background="@drawable/btn_pad"
                 android:text="▶"
@@ -143,8 +263,8 @@
 
             <Button
                 android:id="@+id/btnDown"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
                 android:layout_gravity="bottom|center_horizontal"
                 android:background="@drawable/btn_pad"
                 android:text="▼"
@@ -152,7 +272,7 @@
                 android:textSize="12sp" />
         </FrameLayout>
 
-        <!-- Center buttons -->
+        <!-- Center console buttons (SELECT, START, EXIT/BACK) -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -162,22 +282,32 @@
 
             <Button
                 android:id="@+id/btnSelect"
-                android:layout_width="60dp"
+                android:layout_width="65dp"
                 android:layout_height="32dp"
                 android:background="@drawable/btn_pad_small"
                 android:text="SELECT"
                 android:textColor="@color/atari_white"
-                android:textSize="10sp"
+                android:textSize="9sp"
                 android:layout_marginEnd="8dp" />
 
             <Button
                 android:id="@+id/btnStart"
-                android:layout_width="60dp"
+                android:layout_width="65dp"
                 android:layout_height="32dp"
                 android:background="@drawable/btn_pad_small"
                 android:text="START"
                 android:textColor="@color/atari_white"
-                android:textSize="10sp" />
+                android:textSize="9sp"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnMenu"
+                android:layout_width="65dp"
+                android:layout_height="32dp"
+                android:background="@drawable/btn_pad_small"
+                android:text="CARTUCHOS"
+                android:textColor="@color/atari_orange"
+                android:textSize="8sp" />
         </LinearLayout>
 
         <!-- A/B buttons (right) -->
@@ -188,24 +318,24 @@
 
             <Button
                 android:id="@+id/btnB"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
                 android:layout_gravity="center_vertical|start"
                 android:background="@drawable/btn_action"
                 android:text="B"
                 android:textColor="@color/atari_white"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
             <Button
                 android:id="@+id/btnA"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
                 android:layout_gravity="center_vertical|end"
                 android:background="@drawable/btn_action"
                 android:text="A"
                 android:textColor="@color/atari_white"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold" />
         </FrameLayout>
     </LinearLayout>

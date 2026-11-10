@@ -10,248 +10,371 @@ class ContraGame : Game {
     override val name = "Contra 3"
     override val genre = "Run & Gun"
     private var w = 0; private var h = 0
-    private val groundY get() = h * 0.82f
-    private var px = 80f; private var py = 0f
-    private var vy = 0f; private var onGround = true
-    private var facing = 1
-    private var crouching = false
-    private var lives = 3
-    private var continues = 3
-    private var invuln = 0f
-    private var fireCooldown = 0f
-    private var weapon = 0 // 0 machine,1 spread,2 laser,3 homing,4 flame
-    private var bullets = mutableListOf<Bullet>()
-    private var enemies = mutableListOf<Enemy>()
-    private var pickups = mutableListOf<Pickup>()
-    private var boss: Boss? = null
-    private var level = 1
-    private var scrollX = 0f
-    private var distance = 0f
-    private var levelLen = 4000f
-    private var spawnTimer = 0f
-    private var bossActive = false
+
+    // Estados: 0=Prólogo, 1=Gameplay Misión, 2=Diálogo de Radio, 3=Victoria Misión
+    private var gameState = 0
     override var isGameOver = false
     override var score = 0
-    private var highScore = 0
-    private var won = false
 
-    private data class Bullet(var x: Float, var y: Float, val vx: Float, val vy: Float, val type: Int, var life: Float)
-    private data class Enemy(var x: Float, var y: Float, var vx: Float, val type: Int, var hp: Int, var shootTimer: Float)
-    private data class Pickup(var x: Float, var y: Float, val type: Int)
-    private data class Boss(var x: Float, var y: Float, var hp: Int, var maxHp: Int, var shootTimer: Float, val type: Int)
+    private var currentPhase = 1
+    private var dialogueIndex = 0
+    private var dialogueQueue = mutableListOf<Pair<String, String>>()
 
-    private val playerPaint = Paint().apply { color = Color.parseColor("#F8D878"); isAntiAlias = false }
-    private val bulletPaint = Paint().apply { color = Color.parseColor("#5C94FC"); isAntiAlias = false }
-    private val spreadPaint = Paint().apply { color = Color.parseColor("#FC9838"); isAntiAlias = false }
-    private val laserPaint = Paint().apply { color = Color.parseColor("#D82800"); isAntiAlias = false }
-    private val enemyPaint = Paint().apply { color = Color.parseColor("#00A800"); isAntiAlias = false }
-    private val turretPaint = Paint().apply { color = Color.parseColor("#8814A8"); isAntiAlias = false }
-    private val bossPaint = Paint().apply { color = Color.parseColor("#D82800"); isAntiAlias = false }
-    private val pickupPaint = Paint().apply { color = Color.parseColor("#F8D878"); isAntiAlias = false }
-    private val groundPaint = Paint().apply { color = Color.parseColor("#2D3748"); isAntiAlias = false }
-    private val textPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); textSize = 14f; isAntiAlias = false; textAlign = Paint.Align.CENTER }
-    private val smallPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); textSize = 12f; isAntiAlias = false; textAlign = Paint.Align.CENTER }
+    // Jugador (Bill Rizer)
+    private var px = 80f; private var py = 0f
+    private var vy = 0f
+    private var onGround = true
+    private var facing = 1
+    private var lives = 3
+    private var invulnTimer = 0f
+    private var weaponType = "M" // M=Machine Gun, S=Spread, L=Laser
+    private var reloadTimer = 0f
 
-    override fun init(width: Int, height: Int) { w = width; h = height; reset() }
+    // Nivel con scroll horizontal
+    private var scrollX = 0f
+    private val levelLength = 2400f
+    private val groundY get() = h * 0.75f
 
-    override fun reset() {
-        px = 80f; py = groundY - 40f; vy = 0f; onGround = true; facing = 1; crouching = false
-        lives = 3; continues = 3; invuln = 0f; fireCooldown = 0f; weapon = 0
-        bullets.clear(); enemies.clear(); pickups.clear(); boss = null; bossActive = false
-        level = 1; scrollX = 0f; distance = 0f; levelLen = 4000f; spawnTimer = 0f
-        isGameOver = false; won = false; score = 0
+    // Proyectiles y Enemigos
+    data class Bullet(var x: Float, var y: Float, val vx: Float, val vy: Float, val isEnemy: Boolean, val color: Int)
+    private val bullets = mutableListOf<Bullet>()
+
+    data class AlienTrooper(var x: Float, var y: Float, var vx: Float, var hp: Int, var shootCooldown: Float)
+    private val troopers = mutableListOf<AlienTrooper>()
+
+    // Boss de fin de nivel: "Nave Nodriza / Núcleo Blindado"
+    private var bossActive = false
+    private var bossHp = 220
+    private val bossMaxHp = 220
+    private var bossShootTimer = 0f
+
+    // Input debounce
+    private var btnAPressed = false
+    private var btnBPressed = false
+    private var btnStartPressed = false
+
+    private val pText = Paint().apply { color = Color.parseColor("#F8F8F8"); textSize = 11f; isAntiAlias = false }
+
+    override fun init(width: Int, height: Int) {
+        w = width; h = height
+        reset()
     }
 
-    private fun resetLevel() {
-        bullets.clear(); enemies.clear(); pickups.clear(); boss = null; bossActive = false
-        distance = 0f; spawnTimer = 0f; px = 80f; py = groundY - 40f
+    override fun reset() {
+        gameState = 0
+        score = 0
+        isGameOver = false
+        lives = 3
+        currentPhase = 1
+        weaponType = "M"
+        bossActive = false
+        bossHp = 220
+        scrollX = 0f
+        px = 80f
+        py = groundY
+        vy = 0f
+        bullets.clear()
+        troopers.clear()
+
+        // Spawnea soldados iniciales
+        for (i in 1..8) {
+            troopers.add(AlienTrooper(x = 400f + i * 240f, y = groundY, vx = -70f, hp = 1, shootCooldown = Random.nextFloat() * 2f))
+        }
     }
 
     override fun update(dt: Float, input: GameInput) {
-        if (isGameOver) { if (input.start) reset(); return }
-        invuln = (invuln - dt).coerceAtLeast(0f)
-        fireCooldown = (fireCooldown - dt).coerceAtLeast(0f)
-        crouching = input.down && onGround
+        val aDown = input.a && !btnAPressed
+        val bDown = input.b && !btnBPressed
+        val startDown = input.start && !btnStartPressed
+        btnAPressed = input.a
+        btnBPressed = input.b
+        btnStartPressed = input.start
 
-        // movement
-        if (input.left) { px -= 200f * dt; facing = -1 }
-        if (input.right) { px += 200f * dt; facing = 1 }
-        px = px.coerceIn(20f, w * 0.45f)
-        if (input.b && onGround) { vy = -650f; onGround = false; input.b = false }
-        vy += 1600f * dt
-        py += vy * dt
-        if (py >= groundY - 40f) { py = groundY - 40f; vy = 0f; onGround = true }
-
-        // fire
-        if (input.a && fireCooldown <= 0f) {
-            fireCooldown = 0.12f
-            val by = if (crouching) py + 20f else py + 10f
-            when (weapon) {
-                0 -> bullets.add(Bullet(px + facing * 16f, by, facing * 600f, 0f, 0, 1f))
-                1 -> for (ang in listOf(-0.3f, 0f, 0.3f)) bullets.add(Bullet(px + facing * 16f, by, facing * 500f * kotlin.math.cos(ang), 500f * kotlin.math.sin(ang), 1, 1f))
-                2 -> bullets.add(Bullet(px + facing * 16f, by, facing * 900f, 0f, 2, 0.4f))
-                3 -> bullets.add(Bullet(px + facing * 16f, by, facing * 400f, 0f, 3, 2f))
-                4 -> bullets.add(Bullet(px + facing * 16f, by, facing * 300f, 0f, 4, 0.6f))
-            }
-        }
-
-        // scroll
-        if (!bossActive) {
-            scrollX += 80f * dt; distance += 80f * dt
-            if (distance >= levelLen) { bossActive = true; spawnBoss() }
-        }
-
-        // update bullets
-        bullets.removeAll { it.x < -20f || it.x > w + 20f || it.life <= 0f }
-        for (b in bullets) { b.x += b.vx * dt; b.y += b.vy * dt; b.life -= dt }
-
-        // spawn enemies
-        if (!bossActive) {
-            spawnTimer += dt
-            if (spawnTimer > 1.8f) {
-                spawnTimer = 0f
-                val ey = if (Random.nextFloat() < 0.5f) groundY - 30f else groundY - 70f
-                enemies.add(Enemy(w + 20f, ey, -100f, Random.nextInt(3), 1, Random.nextFloat() * 2f + 1f))
-                // pickup chance
-                if (Random.nextFloat() < 0.25f) {
-                    val pt = Random.nextInt(5)
-                    pickups.add(Pickup(w + 20f, ey - 20f, pt))
+        when (gameState) {
+            0 -> { // Prólogo
+                if (aDown || startDown) {
+                    gameState = 2
+                    dialogueQueue.clear()
+                    dialogueQueue.add("COMANDANTE HQ" to "¡Soldados Bill y Lance! Las fuerzas alienígenas de Red Falcon han tomado Neo City.")
+                    dialogueQueue.add("BILL RIZER" to "Entendido HQ. Desplegando en la autopista principal. ¡Fuego a discreción!")
+                    dialogueIndex = 0
                 }
             }
-        }
-
-        // update enemies
-        val ei = enemies.iterator()
-        while (ei.hasNext()) {
-            val e = ei.next()
-            e.x += e.vx * dt
-            e.shootTimer -= dt
-            if (e.x < -40f) { ei.remove(); continue }
-            // shoot at player
-            if (e.shootTimer <= 0f && e.type == 2) {
-                e.shootTimer = 2f
-                val dx = px - e.x; val dy = py - e.y
-                val len = kotlin.math.sqrt(dx * dx + dy * dy)
-                if (len > 0f) bullets.add(Bullet(e.x, e.y, dx / len * 300f, dy / len * 300f, 5, 3f))
-            }
-            // bullet hit
-            val hit = bullets.any { b -> b.type < 5 && kotlin.math.abs(b.x - e.x) < 20f && kotlin.math.abs(b.y - e.y) < 20f }
-            if (hit) {
-                bullets.removeAll { b -> b.type < 5 && kotlin.math.abs(b.x - e.x) < 20f && kotlin.math.abs(b.y - e.y) < 20f }
-                e.hp--
-                if (e.hp <= 0) {
-                    score += 10 * (e.type + 1); if (score > highScore) highScore = score; ei.remove()
-                    // weapon pickup chance
-                    if (Random.nextFloat() < 0.3f) pickups.add(Pickup(e.x, e.y, Random.nextInt(5)))
-                }
-            }
-            // player collision
-            if (invuln <= 0f && kotlin.math.abs(e.x - px) < 24f && kotlin.math.abs(e.y - py) < 30f) {
-                lives--; invuln = 2f
-                if (lives <= 0) {
-                    if (continues > 0) { continues--; lives = 3; resetLevel() } else isGameOver = true
-                }
-            }
-        }
-
-        // update pickups
-        val pi = pickups.iterator()
-        while (pi.hasNext()) {
-            val p = pi.next()
-            p.x -= 80f * dt
-            if (p.x < -20f) { pi.remove(); continue }
-            if (kotlin.math.abs(p.x - px) < 24f && kotlin.math.abs(p.y - py) < 30f) {
-                weapon = p.type; score += 50; pi.remove()
-            }
-        }
-
-        // boss
-        if (bossActive) {
-            val b = boss
-            if (b != null) {
-                b.shootTimer -= dt
-                if (b.shootTimer <= 0f) {
-                    b.shootTimer = 1.5f
-                    for (i in -2..2) bullets.add(Bullet(b.x, b.y + 20f, (i * 0.3f) * 200f - 100f, 300f, 5, 3f))
-                }
-                // bullet hit boss
-                val hit = bullets.count { bb -> bb.type < 5 && kotlin.math.abs(bb.x - b.x) < 40f && kotlin.math.abs(bb.y - b.y) < 40f }
-                if (hit > 0) {
-                    bullets.removeAll { bb -> bb.type < 5 && kotlin.math.abs(bb.x - b.x) < 40f && kotlin.math.abs(bb.y - b.y) < 40f }
-                    b.hp -= hit
-                    if (b.hp <= 0) {
-                        score += 1000; if (score > highScore) highScore = score
-                        if (level >= 4) { won = true; isGameOver = true }
-                        else { level++; resetLevel() }
+            2 -> { // Diálogo de Radio
+                if (aDown) {
+                    dialogueIndex++
+                    if (dialogueIndex >= dialogueQueue.size) {
+                        gameState = 1
                     }
                 }
-                // boss collision with player
-                if (invuln <= 0f && kotlin.math.abs(b.x - px) < 40f && kotlin.math.abs(b.y - py) < 40f) {
-                    lives--; invuln = 2f
-                    if (lives <= 0) {
-                        if (continues > 0) { continues--; lives = 3; resetLevel() } else isGameOver = true
-                    }
+            }
+            1 -> { // Gameplay
+                updateGameplay(dt, input, aDown, bDown)
+            }
+            3 -> { // Victoria de Misión
+                if (aDown || startDown) {
+                    currentPhase++
+                    reset()
                 }
             }
         }
     }
 
-    private fun spawnBoss() {
-        bossActive = true
-        boss = Boss(w / 2f, 60f, 40 + level * 10, 40 + level * 10, 1.5f, level)
+    private fun updateGameplay(dt: Float, input: GameInput, aDown: Boolean, bDown: Boolean) {
+        if (invulnTimer > 0f) invulnTimer -= dt
+
+        // Movimiento horizontal
+        val moveSpeed = 160f
+        if (input.left) {
+            px -= moveSpeed * dt
+            facing = -1
+        }
+        if (input.right) {
+            px += moveSpeed * dt
+            facing = 1
+        }
+
+        // Scroll de cámara
+        if (px - scrollX > w * 0.55f && scrollX < levelLength - w) {
+            scrollX = px - w * 0.55f
+        }
+
+        // Salto NES clásico con altura variable
+        if (input.b && onGround) {
+            vy = -430f
+            onGround = false
+        }
+        vy += 1100f * dt
+        py += vy * dt
+
+        if (py >= groundY) {
+            py = groundY
+            vy = 0f
+            onGround = true
+        }
+
+        // Disparo con [A]
+        reloadTimer -= dt
+        if (input.a && reloadTimer <= 0f) {
+            reloadTimer = if (weaponType == "S") 0.35f else 0.16f
+            val bx = px + facing * 18f
+            val by = py - 12f
+
+            if (weaponType == "S") { // Spread Gun (3 balas en abanico)
+                bullets.add(Bullet(bx, by, facing * 450f, 0f, false, Color.parseColor("#E6B800")))
+                bullets.add(Bullet(bx, by, facing * 420f, -90f, false, Color.parseColor("#E6B800")))
+                bullets.add(Bullet(bx, by, facing * 420f, 90f, false, Color.parseColor("#E6B800")))
+            } else {
+                bullets.add(Bullet(bx, by, facing * 500f, 0f, false, Color.parseColor("#00E5FF")))
+            }
+        }
+
+        // Activación del Boss al final de la ruta
+        if (px >= levelLength - w * 0.5f && !bossActive) {
+            bossActive = true
+            gameState = 2
+            dialogueQueue.clear()
+            dialogueQueue.add("RED FALCON CORE" to "¡Humanos insignificantes! ¡Neo City será el nido de nuestra prole!")
+            dialogueQueue.add("BILL RIZER" to "¡Apunta a las torretas gemelas y al núcleo central!")
+            dialogueIndex = 0
+            return
+        }
+
+        // Actualizar Balas
+        val bIt = bullets.iterator()
+        while (bIt.hasNext()) {
+            val b = bIt.next()
+            b.x += b.vx * dt
+            b.y += b.vy * dt
+
+            // Fuera de pantalla
+            if (b.x < scrollX - 50f || b.x > scrollX + w + 50f || b.y < 0 || b.y > h) {
+                bIt.remove()
+                continue
+            }
+
+            if (!b.isEnemy) {
+                // Impacto en soldados
+                val tIt = troopers.iterator()
+                while (tIt.hasNext()) {
+                    val t = tIt.next()
+                    if (kotlin.math.abs(b.x - t.x) < 18f && kotlin.math.abs(b.y - t.y) < 22f) {
+                        t.hp--
+                        bIt.remove()
+                        if (t.hp <= 0) {
+                            tIt.remove()
+                            score += 50
+                            if (Random.nextFloat() < 0.25f) weaponType = "S" // Drop Spread Gun
+                        }
+                        break
+                    }
+                }
+
+                // Impacto en Boss
+                if (bossActive && b.x >= levelLength - 160f) {
+                    bossHp -= 6
+                    bIt.remove()
+                    if (bossHp <= 0) {
+                        bossActive = false
+                        score += 1000
+                        gameState = 3 // Victoria
+                    }
+                    break
+                }
+            } else {
+                // Bala enemiga impacta en jugador
+                if (invulnTimer <= 0f && kotlin.math.abs(b.x - px) < 14f && kotlin.math.abs(b.y - py) < 20f) {
+                    bIt.remove()
+                    lives--
+                    invulnTimer = 2.0f
+                    if (lives <= 0) isGameOver = true
+                }
+            }
+        }
+
+        // Actualizar Soldados
+        for (t in troopers) {
+            if (t.x > scrollX - 30f && t.x < scrollX + w + 30f) {
+                t.x += t.vx * dt
+                t.shootCooldown -= dt
+                if (t.shootCooldown <= 0f) {
+                    t.shootCooldown = 2.4f
+                    val bvx = if (px < t.x) -220f else 220f
+                    bullets.add(Bullet(t.x, t.y - 12f, bvx, 0f, true, Color.parseColor("#E63946")))
+                }
+            }
+        }
+
+        // Boss dispara proyectiles
+        if (bossActive) {
+            bossShootTimer -= dt
+            if (bossShootTimer <= 0f) {
+                bossShootTimer = 1.3f
+                val bossX = levelLength - 120f
+                bullets.add(Bullet(bossX, groundY - 45f, -280f, -60f, true, Color.parseColor("#FF0055")))
+                bullets.add(Bullet(bossX, groundY - 20f, -320f, 20f, true, Color.parseColor("#FF0055")))
+            }
+        }
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#000000"))
-        // ground
-        canvas.drawRect(0f, groundY, w.toFloat(), h.toFloat(), groundPaint)
-        // player
-        if (invuln <= 0f || (invuln * 8).toInt() % 2 == 0) {
-            val ph = if (crouching) 24f else 40f
-            val pyd = if (crouching) py + 16f else py
-            canvas.drawRoundRect(RectF(px - 12f, pyd, px + 12f, pyd + ph), 3f, 3f, playerPaint)
-            // facing indicator
-            if (facing > 0) canvas.drawRect(px + 10f, pyd + 8f, px + 16f, pyd + 12f, playerPaint)
-            else canvas.drawRect(px - 16f, pyd + 8f, px - 10f, pyd + 12f, playerPaint)
+        when (gameState) {
+            0 -> {
+                NesDialogueRenderer.drawPrologueScreen(
+                    canvas, w, h,
+                    gameTitle = "CONTRA 3: THE ALIEN WARS",
+                    missionTitle = "MISIÓN I: AUTOPISTA METROPOLITANA EN RUINAS",
+                    prologueLines = listOf(
+                        "• Año 2636. Las tropas extraterrestres de Red Falcon",
+                        "  iniciaron una invasión total en la Tierra.",
+                        "• La humanidad deposita su última esperanza en los comandos",
+                        "  veteranos de élite: Bill Rizer y Lance Bean.",
+                        "• MISION: Infiltra el sector industrial destruido,",
+                        "  aniquila la vanguardia bio-mecánica y destruye el búnker jefe.",
+                        "• CONTROLES: [A] Disparar  [B] Saltar  [SELECT] Recargar"
+                    ),
+                    primaryColor = Color.parseColor("#00A800")
+                )
+            }
+            2 -> {
+                drawScene(canvas)
+                if (dialogueIndex < dialogueQueue.size) {
+                    val (speaker, text) = dialogueQueue[dialogueIndex]
+                    NesDialogueRenderer.drawDialogueBox(canvas, w, h, speaker, text, speakerColor = Color.parseColor("#00E5FF"))
+                }
+            }
+            1 -> {
+                drawScene(canvas)
+            }
+            3 -> {
+                NesDialogueRenderer.drawPrologueScreen(
+                    canvas, w, h,
+                    gameTitle = "¡MISIÓN I CUMPLIDA!",
+                    missionTitle = "SECTOR NEO CITY ASEGURADO",
+                    prologueLines = listOf(
+                        "• El núcleo defensivo alienígena explotó en llamas.",
+                        "• Se ha interceptado una señal proveniente del Sector Oceánico.",
+                        "• El transporte blindado te llevará a la base subterránea.",
+                        "• Puntuación final de misión: $score pts."
+                    ),
+                    primaryColor = Color.parseColor("#E6B800")
+                )
+            }
         }
-        // bullets
-        for (b in bullets) {
-            val p = when (b.type) { 1 -> spreadPaint; 2 -> laserPaint; else -> bulletPaint }
-            canvas.drawCircle(b.x, b.y, if (b.type == 2) 3f else 4f, p)
-        }
-        // pickups
-        for (p in pickups) {
-            pickupPaint.color = when (p.type) { 0 -> Color.parseColor("#D82800"); 1 -> Color.parseColor("#FC9838"); 2 -> Color.parseColor("#5C94FC"); 3 -> Color.parseColor("#00A800"); else -> Color.parseColor("#F8D878") }
-            canvas.drawCircle(p.x, p.y, 8f, pickupPaint)
-        }
-        // enemies
-        for (e in enemies) {
-            val p = if (e.type == 1) turretPaint else enemyPaint
-            canvas.drawRoundRect(RectF(e.x - 12f, e.y - 12f, e.x + 12f, e.y + 12f), 3f, 3f, p)
-        }
-        // boss
-        val b = boss
-        if (b != null && bossActive) {
-            canvas.drawRoundRect(RectF(b.x - 40f, b.y - 30f, b.x + 40f, b.y + 30f), 6f, 6f, bossPaint)
-            // hp bar
-            val hpPaint = Paint().apply { color = Color.parseColor("#D82800"); isAntiAlias = false }
-            canvas.drawRect(b.x - 40f, b.y - 40f, b.x - 40f + 80f * (b.hp.toFloat() / b.maxHp), b.y - 34f, hpPaint)
-        }
-        // weapon indicator
-        val wname = arrayOf("M", "S", "L", "H", "F")[weapon]
-        smallPaint.textAlign = Paint.Align.LEFT
-        canvas.drawText("Arma: $wname", 8f, h - 8f, smallPaint)
-        smallPaint.textAlign = Paint.Align.CENTER
-        // HUD
-        textPaint.textSize = 12f
-        canvas.drawText("Score: $score  Vidas: $lives  Continues: $continues  Nivel: $level", w / 2f, 14f, textPaint)
+
         if (isGameOver) {
-            val msg = if (won) "¡MISIÓN CUMPLIDA!" else "GAME OVER"
-            val col = if (won) Color.parseColor("#00A800") else Color.parseColor("#D82800")
-            textPaint.textSize = 32f; textPaint.color = col
-            canvas.drawText(msg, w / 2f, h / 2f, textPaint)
-            textPaint.textSize = 12f; textPaint.color = Color.parseColor("#F8F8F8")
-            canvas.drawText("Pulsa START", w / 2f, h / 2f + 24f, smallPaint.apply { textSize = 14f; color = Color.parseColor("#F8F8F8"); textAlign = Paint.Align.CENTER })
+            val pOver = Paint().apply { color = Color.parseColor("#CC150005"); style = Paint.Style.FILL }
+            canvas.drawRect(0f, 0f, w.toFloat(), h.toFloat(), pOver)
+            val pT = Paint().apply { color = Color.parseColor("#E63946"); textSize = 32f; textAlign = Paint.Align.CENTER; isFakeBoldText = true }
+            canvas.drawText("GAME OVER - CONTINUES: 0", w / 2f, h / 2f - 10f, pT)
+            pT.textSize = 14f; pT.color = Color.parseColor("#F5F5F5")
+            canvas.drawText("PULSA [START] O [A] PARA REINTENTAR", w / 2f, h / 2f + 25f, pT)
         }
+    }
+
+    private fun drawScene(canvas: Canvas) {
+        // Cielo nocturno en llamas (Neo City)
+        canvas.drawColor(Color.parseColor("#150B15"))
+
+        // Edificios en ruinas de fondo con efecto parallax
+        val pBldg = Paint().apply { color = Color.parseColor("#2A1E30") }
+        for (i in 0..12) {
+            val bx = (i * 120f) - scrollX * 0.35f
+            canvas.drawRect(bx, h * 0.25f + (i % 3) * 20f, bx + 90f, groundY, pBldg)
+        }
+
+        // Calzada y plataformas
+        val pRoad = Paint().apply { color = Color.parseColor("#383848") }
+        canvas.drawRect(0f, groundY, w.toFloat(), h.toFloat(), pRoad)
+        val pStripes = Paint().apply { color = Color.parseColor("#E6B800"); strokeWidth = 3f }
+        canvas.drawLine(0f, groundY + 4f, w.toFloat(), groundY + 4f, pStripes)
+
+        // Boss Final al final del nivel
+        if (bossActive) {
+            val bx = levelLength - 150f - scrollX
+            val pBoss = Paint().apply { color = Color.parseColor("#C41E24") }
+            canvas.drawRoundRect(RectF(bx, groundY - 80f, bx + 120f, groundY), 8f, 8f, pBoss)
+            // Núcleo palpitante
+            val pCore = Paint().apply { color = Color.parseColor("#00E5FF") }
+            canvas.drawCircle(bx + 60f, groundY - 40f, 18f, pCore)
+
+            NesDialogueRenderer.drawBossHud(canvas, w, "RED FALCON BIO-CORE", bossHp, bossMaxHp)
+        }
+
+        // Soldados enemigos
+        val pTrooper = Paint().apply { color = Color.parseColor("#D82800") }
+        for (t in troopers) {
+            val tx = t.x - scrollX
+            canvas.drawRect(tx - 10f, t.y - 24f, tx + 10f, t.y, pTrooper)
+            val pGun = Paint().apply { color = Color.parseColor("#808080") }
+            canvas.drawRect(tx - 16f, t.y - 16f, tx, t.y - 12f, pGun)
+        }
+
+        // Jugador Bill Rizer
+        if (invulnTimer <= 0f || (invulnTimer * 10).toInt() % 2 == 0) {
+            val dx = px - scrollX
+            val pBill = Paint().apply { color = Color.parseColor("#00A800") } // Pantalón comando
+            canvas.drawRect(dx - 8f, py - 12f, dx + 8f, py, pBill)
+            val pChest = Paint().apply { color = Color.parseColor("#F5C542") }
+            canvas.drawRect(dx - 7f, py - 24f, dx + 7f, py - 12f, pChest)
+            val pBandana = Paint().apply { color = Color.parseColor("#C41E24") }
+            canvas.drawRect(dx - 8f, py - 27f, dx + 8f, py - 23f, pBandana)
+            // Rifle
+            val pRifle = Paint().apply { color = Color.parseColor("#F8F8F8") }
+            canvas.drawRect(dx, py - 18f, dx + facing * 18f, py - 14f, pRifle)
+        }
+
+        // Balas
+        for (b in bullets) {
+            val pBullet = Paint().apply { color = b.color }
+            val sz = if (weaponType == "S" && !b.isEnemy) 4.5f else 3f
+            canvas.drawCircle(b.x - scrollX, b.y, sz, pBullet)
+        }
+
+        // HUD Superior
+        pText.color = Color.parseColor("#F8F8F8")
+        canvas.drawText("P1: BILL  VIDAS: $lives  ARMA: [$weaponType]  SCORE: $score", 12f, 18f, pText)
+        pText.color = Color.parseColor("#E6B800")
+        canvas.drawText("FASE $currentPhase | NEO CITY | AVANCE: ${(px / levelLength * 100).toInt()}%", 12f, 32f, pText)
     }
 }

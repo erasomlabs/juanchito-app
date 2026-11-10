@@ -1,28 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="110dp"
+    android:layout_height="80dp"
     android:orientation="vertical"
-    android:padding="8dp"
-    android:background="@color/atari_panel"
-    android:layout_margin="4dp">
+    android:gravity="center"
+    android:layout_marginEnd="8dp"
+    android:padding="6dp"
+    android:background="@drawable/btn_pad">
+
+    <!-- Mini badge / icon label -->
+    <TextView
+        android:id="@+id/tvCartridgeBadge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NES"
+        android:textSize="9sp"
+        android:textStyle="bold"
+        android:textColor="@color/atari_yellow"
+        android:fontFamily="monospace" />
 
     <TextView
         android:id="@+id/tvGameName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/atari_orange"
-        android:textSize="14sp"
+        android:textColor="@color/atari_white"
+        android:textSize="11sp"
         android:textStyle="bold"
         android:fontFamily="monospace"
-        android:gravity="center" />
+        android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="end" />
 
     <TextView
         android:id="@+id/tvGameGenre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/atari_grey"
-        android:textSize="10sp"
+        android:textColor="@color/atari_orange"
+        android:textSize="9sp"
         android:fontFamily="monospace"
         android:gravity="center" />
 

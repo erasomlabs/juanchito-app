@@ -11,267 +11,438 @@ class ChronoTriggerGame : Game {
     override val genre = "RPG"
     private var w = 0; private var h = 0
 
-    // World map
+    // Modos de juego: 0 = Prólogo narrativo, 1 = Exploración Mundo/Castillo, 2 = Batalla por turnos ATB, 3 = Diálogo In-Game, 4 = Victoria Capítulo
+    private var gameState = 0
+    override var isGameOver = false
+    override var score = 0
+
+    // Progreso narrativo y capítulos
+    private var currentChapter = 1
+    private var dialogueIndex = 0
+    private var dialogueQueue = mutableListOf<Pair<String, String>>()
+
+    // Mundo y mapa por tiles (Castillo Guardia & Bosque Milenario)
     private val tileSize = 32
     private var mapW = 0; private var mapH = 0
-    private val map = mutableListOf<IntArray>()
+    private val tileMap = mutableListOf<IntArray>() // 0=pasto, 1=muro/piedra, 2=árbol denso, 3=camino adoquinado, 4=portal tiempo, 5=trono
     private var px = 0f; private var py = 0f
     private var camX = 0f; private var camY = 0f
 
-    // Party
-    private data class Hero(var name: String, var hp: Int, var maxHp: Int, var mp: Int, var maxMp: Int, var atb: Float, var color: Int, var tech: String)
+    // Party de héroes (Crono, Marle, Lucca)
+    data class Hero(val name: String, var hp: Int, val maxHp: Int, var mp: Int, val maxMp: Int, var atb: Float, val color: Int, val techName: String)
     private val party = mutableListOf<Hero>()
-    private var activeHero = 0
+    private var activeHeroIndex = 0
 
-    // Battle
-    private var inBattle = false
-    private data class Enemy(var name: String, var hp: Int, var maxHp: Int, var atb: Float, var color: Int, var x: Float, var y: Float)
+    // Enemigos y Boss de fase
+    data class Enemy(val name: String, var hp: Int, val maxHp: Int, var atb: Float, val color: Int, val isBoss: Boolean = false)
     private val enemies = mutableListOf<Enemy>()
-    private var battleMsg = ""
-    private var battleTimer = 0f
-    private var encounterCooldown = 0f
+    private var battleActionMsg = ""
+    private var battleEndTimer = 0f
+    private var bossTriggered = false
 
-    // State
-    private var state = 0 // 0 explore, 1 battle, 2 victory, 3 defeat, 4 gameover
-    override var score = 0
-    private var xp = 0
-    private var level = 1
-    private var gold = 0
-    override var isGameOver = false
-    private var won = false
-    private var highScore = 0
+    // Input debounce
+    private var btnAPressed = false
+    private var btnBPressed = false
+    private var btnStartPressed = false
 
-    // Colors (NES-ish but colorful)
-    private val grassPaint = Paint().apply { color = Color.parseColor("#00A800"); isAntiAlias = false }
-    private val waterPaint = Paint().apply { color = Color.parseColor("#5C94FC"); isAntiAlias = false }
-    private val treePaint = Paint().apply { color = Color.parseColor("#228B22"); isAntiAlias = false }
-    private val pathPaint = Paint().apply { color = Color.parseColor("#F8D878"); isAntiAlias = false }
-    private val heroPaint = Paint().apply { isAntiAlias = false }
-    private val enemyPaint = Paint().apply { isAntiAlias = false }
-    private val textPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); textSize = 12f; isAntiAlias = false; textAlign = Paint.Align.CENTER }
-    private val smallPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); textSize = 10f; isAntiAlias = false; textAlign = Paint.Align.CENTER }
-    private val hpPaint = Paint().apply { isAntiAlias = false }
-    private val panelPaint = Paint().apply { color = Color.parseColor("#000000"); alpha = 180; isAntiAlias = false }
+    // Paleta NES
+    private val pGrass = Paint().apply { color = Color.parseColor("#008800") }
+    private val pWall = Paint().apply { color = Color.parseColor("#7C7C7C") }
+    private val pTree = Paint().apply { color = Color.parseColor("#005000") }
+    private val pRoad = Paint().apply { color = Color.parseColor("#E4A400") }
+    private val pPortal = Paint().apply { color = Color.parseColor("#00E5FF") }
+    private val pTrono = Paint().apply { color = Color.parseColor("#C41E24") }
+    private val pText = Paint().apply { color = Color.parseColor("#F8F8F8"); textSize = 11f; isAntiAlias = false }
 
-    override fun init(width: Int, height: Int) { w = width; h = height; reset() }
-
-    private fun genMap() {
-        map.clear()
-        mapW = (w / tileSize).coerceAtLeast(12)
-        mapH = (h / tileSize).coerceAtLeast(10)
-        for (r in 0 until mapH) {
-            val row = IntArray(mapW)
-            for (c in 0 until mapW) {
-                val v = Random.nextInt(100)
-                row[c] = when {
-                    v < 5 -> 2 // tree
-                    v < 12 -> 1 // water
-                    v < 20 -> 3 // path
-                    else -> 0 // grass
-                }
-            }
-            map.add(row)
-        }
-        // ensure center walkable
-        for (r in mapH / 2 - 1..mapH / 2 + 1) for (c in mapW / 2 - 1..mapW / 2 + 1) map[r][c] = 0
+    override fun init(width: Int, height: Int) {
+        w = width; h = height
+        reset()
     }
 
     override fun reset() {
-        genMap()
-        px = mapW / 2f * tileSize + tileSize / 2f
-        py = mapH / 2f * tileSize + tileSize / 2f
+        gameState = 0 // Inicia en Prólogo
+        score = 0
+        isGameOver = false
+        currentChapter = 1
+        bossTriggered = false
         party.clear()
-        party.add(Hero("Crono", 50, 50, 10, 10, 0f, Color.parseColor("#F8D878"), "Cyclone"))
-        party.add(Hero("Marle", 40, 40, 20, 20, 0f, Color.parseColor("#5C94FC"), "Aura"))
-        party.add(Hero("Lucca", 35, 35, 25, 25, 0f, Color.parseColor("#D82800"), "Fire"))
-        activeHero = 0
-        inBattle = false; enemies.clear(); battleMsg = ""; battleTimer = 0f; encounterCooldown = 4f
-        state = 0; xp = 0; level = 1; gold = 0; score = 0; isGameOver = false; won = false
+        party.add(Hero("Crono", 95, 95, 20, 20, 0.4f, Color.parseColor("#E6B800"), "Ciclón"))
+        party.add(Hero("Marle", 75, 75, 35, 35, 0.2f, Color.parseColor("#00D9FF"), "Aura Cura"))
+        party.add(Hero("Lucca", 80, 80, 40, 40, 0.1f, Color.parseColor("#C41E24"), "Fuego"))
+
+        setupChapterMap(currentChapter)
     }
 
-    private fun startBattle() {
-        inBattle = true; state = 1
-        enemies.clear()
-        val count = 1 + Random.nextInt(3)
-        val names = listOf("Imp", "Goblin", "Reptite", "Ogan", "Basilisk")
-        val cols = listOf(Color.parseColor("#00A800"), Color.parseColor("#FC9838"), Color.parseColor("#8814A8"), Color.parseColor("#D82800"), Color.parseColor("#F8D878"))
-        for (i in 0 until count) {
-            val n = names[Random.nextInt(names.size)]
-            val hp = 15 + Random.nextInt(20) + level * 5
-            enemies.add(Enemy(n, hp, hp, Random.nextFloat() * 0.3f, cols[Random.nextInt(cols.size)], w * (0.55f + i * 0.12f), h * 0.35f))
+    private fun setupChapterMap(chapter: Int) {
+        tileMap.clear()
+        mapW = 24
+        mapH = 16
+
+        for (r in 0 until mapH) {
+            val row = IntArray(mapW)
+            for (c in 0 until mapW) {
+                // Bordes de bosque/muro
+                if (r == 0 || r == mapH - 1 || c == 0 || c == mapW - 1) {
+                    row[c] = 2
+                } else if (r in 3..5 && c in 7..16) {
+                    row[c] = 1 // Muro de fortaleza
+                } else if (c == 11 || c == 12) {
+                    row[c] = 3 // Calzada de piedra
+                } else {
+                    row[c] = if ((r + c) % 7 == 0) 2 else 0
+                }
+            }
+            tileMap.add(row)
         }
-        battleMsg = "¡Enemigos aparecen!"
-        for (h in party) h.atb = 0f
+        tileMap[2][11] = 5 // Trono real
+        tileMap[13][11] = 4 // Portal dimensional
+
+        px = 11.5f * tileSize
+        py = 8.5f * tileSize
     }
 
     override fun update(dt: Float, input: GameInput) {
-        if (isGameOver) { if (input.start) reset(); return }
-        if (state == 0) {
-            // explore
-            var dx = 0f; var dy = 0f
-            if (input.up) dy -= 1f
-            if (input.down) dy += 1f
-            if (input.left) dx -= 1f
-            if (input.right) dx += 1f
-            val sp = 100f * dt
-            val nx = px + dx * sp; val ny = py + dy * sp
-            val tc = (nx / tileSize).toInt().coerceIn(0, mapW - 1)
-            val tr = (ny / tileSize).toInt().coerceIn(0, mapH - 1)
-            if (map[tr][tc] != 2 && map[tr][tc] != 1) { px = nx; py = ny }
-            // camera
-            camX = (px - w / 2f).coerceIn(0f, (mapW * tileSize - w).coerceAtLeast(0).toFloat())
-            camY = (py - h / 2f).coerceIn(0f, (mapH * tileSize - h).coerceAtLeast(0).toFloat())
-            // encounter
-            encounterCooldown -= dt
-            if (encounterCooldown <= 0f && (dx != 0f || dy != 0f)) {
-                if (Random.nextFloat() < 0.008f) { startBattle(); encounterCooldown = 3f }
-            }
-        } else if (state == 1) {
-            battleTimer += dt
-            // ATB
-            for (h in party) if (h.hp > 0) h.atb = (h.atb + dt * 0.4f).coerceAtMost(1f)
-            for (e in enemies) e.atb = (e.atb + dt * 0.35f).coerceAtMost(1f)
-            // player action
-            val hero = party[activeHero]
-            if (hero.hp > 0 && hero.atb >= 1f) {
-                if (input.a) {
-                    // attack
-                    val target = enemies.filter { it.hp > 0 }.minByOrNull { kotlin.math.abs(it.x - hero.color) } ?: enemies.firstOrNull { it.hp > 0 }
-                    target?.let {
-                        val dmg = 8 + Random.nextInt(8) + level * 2
-                        it.hp -= dmg; hero.atb = 0f; battleMsg = "${hero.name} ataca por $dmg"
-                        if (it.hp <= 0) { score += 20; xp += 15; gold += 10; battleMsg = "${it.name} derrotado!" }
-                    }
-                    input.a = false
+        val aDown = input.a && !btnAPressed
+        val bDown = input.b && !btnBPressed
+        val startDown = input.start && !btnStartPressed
+        btnAPressed = input.a
+        btnBPressed = input.b
+        btnStartPressed = input.start
+
+        when (gameState) {
+            0 -> { // Prólogo
+                if (aDown || startDown) {
+                    // Pasar a diálogo introductorio
+                    gameState = 3
+                    dialogueQueue.clear()
+                    dialogueQueue.add("CRONO" to "¡El portal de la feria milenaria se abrió fuera de control!")
+                    dialogueQueue.add("MARLE" to "¡Crono, el reino de Guardia de hace 400 años está en peligro!")
+                    dialogueQueue.add("LUCCA" to "Debemos infiltrarnos en el castillo antes de que la reina caiga.")
+                    dialogueIndex = 0
                 }
-                if (input.b) {
-                    // tech
-                    hero.atb = 0f
-                    when (hero.tech) {
-                        "Cyclone" -> { for (e in enemies) if (e.hp > 0) { val d = 12 + Random.nextInt(8); e.hp -= d; if (e.hp <= 0) { score += 20; xp += 15; gold += 10 } }; battleMsg = "Cyclone!" }
-                        "Aura" -> { for (h in party) h.hp = (h.hp + 15).coerceAtMost(h.maxHp); battleMsg = "Aura cura!" }
-                        "Fire" -> { val t = enemies.filter { it.hp > 0 }.firstOrNull(); t?.let { val d = 18 + Random.nextInt(10); it.hp -= d; if (it.hp <= 0) { score += 20; xp += 15; gold += 10 }; battleMsg = "Fire! $d" } }
-                    }
-                    input.b = false
-                }
-                if (input.select) { activeHero = (activeHero + 1) % party.size; while (party[activeHero].hp <= 0) activeHero = (activeHero + 1) % party.size; input.select = false }
             }
-            // enemy action
-            for (e in enemies) {
-                if (e.hp > 0 && e.atb >= 1f) {
-                    e.atb = 0f
-                    val target = party.filter { it.hp > 0 }.randomOrNull()
-                    target?.let {
-                        val dmg = 4 + Random.nextInt(6) + level
-                        it.hp -= dmg; battleMsg = "${e.name} ataca a ${it.name} por $dmg"
-                        if (it.hp <= 0) { battleMsg = "${it.name} cayó!" }
+            3 -> { // Diálogo de personajes
+                if (aDown) {
+                    dialogueIndex++
+                    if (dialogueIndex >= dialogueQueue.size) {
+                        gameState = 1 // Pasar a exploración
                     }
                 }
             }
-            // check battle end
-            if (enemies.all { it.hp <= 0 }) {
-                state = 2; battleTimer = 0f; battleMsg = "¡Victoria!"
-                // level up check
-                if (xp >= level * 30) { level++; for (h in party) { h.maxHp += 10; h.hp = h.maxHp; h.maxMp += 5; h.mp = h.maxMp }; battleMsg = "¡Subiste a nivel $level!" }
+            1 -> { // Exploración por mapa
+                val speed = 120f * dt
+                var nx = px
+                var ny = py
+
+                if (input.up) ny -= speed
+                if (input.down) ny += speed
+                if (input.left) nx -= speed
+                if (input.right) nx += speed
+
+                // Colisiones con tiles
+                val tx = (nx / tileSize).toInt().coerceIn(0, mapW - 1)
+                val ty = (ny / tileSize).toInt().coerceIn(0, mapH - 1)
+                val tile = tileMap[ty][tx]
+
+                if (tile != 1 && tile != 2) {
+                    px = nx
+                    py = ny
+                }
+
+                // Interacción con Portal Dimensional (Boss) o Trono
+                if (tile == 4 && !bossTriggered) {
+                    triggerBossBattle()
+                } else if (tile == 5 && bossTriggered) {
+                    // Victoria de capítulo
+                    gameState = 4
+                    score += 500
+                }
+
+                // Encuentros aleatorios al caminar
+                if ((input.up || input.down || input.left || input.right) && Random.nextFloat() < 0.006f && !bossTriggered) {
+                    triggerNormalBattle()
+                }
+
+                camX = px - w / 2f
+                camY = py - h / 2f
             }
-            if (party.all { it.hp <= 0 }) { state = 3; battleMsg = "Derrota..." }
-        } else if (state == 2 || state == 3) {
-            battleTimer += dt
-            if (battleTimer > 2f) {
-                if (state == 2) { inBattle = false; state = 0; encounterCooldown = 4f; enemies.clear() }
-                else { isGameOver = true; won = false }
+            2 -> { // Batalla ATB
+                updateBattle(dt, aDown, bDown, input.select)
+            }
+            4 -> { // Victoria de capítulo
+                if (aDown || startDown) {
+                    currentChapter++
+                    reset()
+                }
             }
         }
-        if (score > highScore) highScore = score
+    }
+
+    private fun triggerNormalBattle() {
+        gameState = 2
+        battleActionMsg = "¡Monstruos del bosque atacan!"
+        enemies.clear()
+        enemies.add(Enemy("Gárgola", 45, 45, 0.2f, Color.parseColor("#00E5FF")))
+        enemies.add(Enemy("Caballero", 60, 60, 0.1f, Color.parseColor("#D82800")))
+    }
+
+    private fun triggerBossBattle() {
+        bossTriggered = true
+        gameState = 3
+        dialogueQueue.clear()
+        dialogueQueue.add("HECHICERO YAKRA" to "¡Nadie salvará al linaje real de Guardia! ¡Perecerán en el tiempo!")
+        dialogueQueue.add("CRONO" to "¡Desenvaina tu acero! ¡Por el reino!")
+        dialogueIndex = 0
+
+        enemies.clear()
+        enemies.add(Enemy("Yakra Boss", 180, 180, 0.1f, Color.parseColor("#FF0055"), isBoss = true))
+    }
+
+    private fun updateBattle(dt: Float, aDown: Boolean, bDown: Boolean, selectDown: Boolean) {
+        // Carga de barra ATB de héroes
+        for (hero in party) {
+            if (hero.hp > 0 && hero.atb < 1f) {
+                hero.atb = (hero.atb + dt * 0.45f).coerceAtMost(1f)
+            }
+        }
+
+        // Carga y ataque de enemigos
+        for (enemy in enemies) {
+            if (enemy.hp > 0) {
+                enemy.atb += dt * 0.35f
+                if (enemy.atb >= 1f) {
+                    enemy.atb = 0f
+                    // Ataca a un héroe vivo al azar
+                    val targets = party.filter { it.hp > 0 }
+                    if (targets.isNotEmpty()) {
+                        val target = targets.random()
+                        val dmg = if (enemy.isBoss) Random.nextInt(18, 30) else Random.nextInt(8, 16)
+                        target.hp = (target.hp - dmg).coerceAtLeast(0)
+                        battleActionMsg = "¡${enemy.name} ataca a ${target.name} por $dmg daño!"
+                    }
+                }
+            }
+        }
+
+        // Comprobar derrota
+        if (party.all { it.hp <= 0 }) {
+            isGameOver = true
+            return
+        }
+
+        // Comprobar victoria
+        if (enemies.all { it.hp <= 0 }) {
+            battleEndTimer += dt
+            if (battleEndTimer > 1.2f) {
+                battleEndTimer = 0f
+                score += if (bossTriggered) 300 else 100
+                gameState = 1 // Vuelve al mapa
+                battleActionMsg = ""
+            }
+            return
+        }
+
+        // Cambio de héroe activo con SELECT
+        if (selectDown) {
+            activeHeroIndex = (activeHeroIndex + 1) % party.size
+        }
+
+        val curHero = party[activeHeroIndex]
+        val targetEnemy = enemies.firstOrNull { it.hp > 0 } ?: return
+
+        if (curHero.hp > 0 && curHero.atb >= 1f) {
+            if (aDown) { // Ataque físico
+                curHero.atb = 0f
+                val dmg = Random.nextInt(22, 34)
+                targetEnemy.hp = (targetEnemy.hp - dmg).coerceAtLeast(0)
+                battleActionMsg = "¡${curHero.name} golpea con espada a ${targetEnemy.name} ($dmg pts)!"
+            } else if (bDown && curHero.mp >= 8) { // Técnica especial
+                curHero.atb = 0f
+                curHero.mp -= 8
+                if (curHero.name == "Marle") {
+                    // Cura a la party
+                    for (h in party) if (h.hp > 0) h.hp = (h.hp + 35).coerceAtMost(h.maxHp)
+                    battleActionMsg = "¡Marle usa Aura Curativa en el escuadrón!"
+                } else {
+                    val dmg = Random.nextInt(38, 55)
+                    targetEnemy.hp = (targetEnemy.hp - dmg).coerceAtLeast(0)
+                    battleActionMsg = "¡${curHero.name} desata ${curHero.techName} ($dmg pts)!"
+                }
+            }
+        }
     }
 
     override fun draw(canvas: Canvas) {
-        if (state == 0) {
-            // world map
-            canvas.drawColor(Color.parseColor("#5C94FC"))
-            for (r in 0 until mapH) for (c in 0 until mapW) {
-                val x = c * tileSize - camX; val y = r * tileSize - camY
-                if (x + tileSize < 0 || y + tileSize < 0 || x > w || y > h) continue
-                when (map[r][c]) {
-                    0 -> canvas.drawRect(x, y, x + tileSize, y + tileSize, grassPaint)
-                    1 -> canvas.drawRect(x, y, x + tileSize, y + tileSize, waterPaint)
-                    2 -> canvas.drawRect(x, y, x + tileSize, y + tileSize, treePaint)
-                    3 -> canvas.drawRect(x, y, x + tileSize, y + tileSize, pathPaint)
+        when (gameState) {
+            0 -> {
+                NesDialogueRenderer.drawPrologueScreen(
+                    canvas, w, h,
+                    gameTitle = "CHRONO TRIGGER",
+                    missionTitle = "CAPÍTULO I: EL REINO DE GUARDIA Y EL PORTAL TEMPORAL",
+                    prologueLines = listOf(
+                        "• Año 1000 d.C., Reino de Guardia.",
+                        "• Durante la Feria Milenaria, el invento de Lucca",
+                        "  abrió una fisura dimensional en el continuo espacio-tiempo.",
+                        "• La princesa Marle ha desaparecido arrastrada al pasado.",
+                        "• Crono empuña su katana y cruza el portal para impedir",
+                        "  que la línea temporal sea erradicada por el parásito Lavos.",
+                        "• OBJETIVO: Atraviesa el bosque, llega al castillo y derrota al impostor."
+                    ),
+                    primaryColor = Color.parseColor("#C41E24")
+                )
+            }
+            3 -> {
+                // Dibuja el mapa de fondo y el diálogo encima
+                drawWorldMap(canvas)
+                if (dialogueIndex < dialogueQueue.size) {
+                    val (speaker, text) = dialogueQueue[dialogueIndex]
+                    NesDialogueRenderer.drawDialogueBox(canvas, w, h, speaker, text)
                 }
             }
-            // party leader
-            val cx = px - camX; val cy = py - camY
-            heroPaint.color = party[0].color
-            canvas.drawRoundRect(RectF(cx - 8f, cy - 12f, cx + 8f, cy + 4f), 3f, 3f, heroPaint)
-            canvas.drawRect(cx - 4f, cy - 20f, cx + 4f, cy - 12f, heroPaint)
-            // HUD
-            textPaint.textSize = 11f
-            canvas.drawText("Nivel: $level  XP: $xp  Oro: $gold  Score: $score", w / 2f, 14f, textPaint)
-            smallPaint.textAlign = Paint.Align.LEFT
-            canvas.drawText("Explora el mapa. Encuentros aleatorios.", 8f, h - 8f, smallPaint)
-            smallPaint.textAlign = Paint.Align.CENTER
-        } else {
-            // battle scene
-            canvas.drawColor(Color.parseColor("#2D3748"))
-            // background gradient-ish (flat bands)
-            val bandPaint = Paint().apply { color = Color.parseColor("#5C94FC"); isAntiAlias = false }
-            canvas.drawRect(0f, 0f, w.toFloat(), h * 0.5f, bandPaint)
-            val groundPaint = Paint().apply { color = Color.parseColor("#00A800"); isAntiAlias = false }
-            canvas.drawRect(0f, h * 0.5f, w.toFloat(), h.toFloat(), groundPaint)
-            // enemies
-            for (e in enemies) {
-                if (e.hp <= 0) continue
-                enemyPaint.color = e.color
-                canvas.drawRoundRect(RectF(e.x - 18f, e.y - 24f, e.x + 18f, e.y + 8f), 4f, 4f, enemyPaint)
-                // hp bar
-                hpPaint.color = Color.parseColor("#D82800")
-                canvas.drawRect(e.x - 18f, e.y - 30f, e.x - 18f + 36f * (e.hp.toFloat() / e.maxHp), e.y - 26f, hpPaint)
-                hpPaint.color = Color.parseColor("#2D3748")
-                canvas.drawRect(e.x - 18f + 36f * (e.hp.toFloat() / e.maxHp), e.y - 30f, e.x + 18f, e.y - 26f, hpPaint)
-                smallPaint.textSize = 9f
-                canvas.drawText(e.name, e.x, e.y - 32f, smallPaint)
+            1 -> {
+                drawWorldMap(canvas)
             }
-            // party
-            for (i in party.indices) {
-                val hero = party[i]
-                if (hero.hp <= 0) continue
-                val hx = w * (0.15f + i * 0.12f); val hy = h * 0.75f
-                heroPaint.color = hero.color
-                canvas.drawRoundRect(RectF(hx - 12f, hy - 20f, hx + 12f, hy + 4f), 3f, 3f, heroPaint)
-                canvas.drawRect(hx - 6f, hy - 28f, hx + 6f, hy - 20f, heroPaint)
-                // hp bar
-                hpPaint.color = Color.parseColor("#00A800")
-                canvas.drawRect(hx - 14f, hy + 8f, hx - 14f + 28f * (hero.hp.toFloat() / hero.maxHp), hy + 12f, hpPaint)
-                hpPaint.color = Color.parseColor("#2D3748")
-                canvas.drawRect(hx - 14f + 28f * (hero.hp.toFloat() / hero.maxHp), hy + 8f, hx + 14f, hy + 12f, hpPaint)
-                // atb bar
-                hpPaint.color = Color.parseColor("#5C94FC")
-                canvas.drawRect(hx - 14f, hy + 14f, hx - 14f + 28f * hero.atb, hy + 16f, hpPaint)
-                smallPaint.textSize = 9f
-                canvas.drawText(hero.name, hx, hy - 30f, smallPaint)
-                if (i == activeHero && hero.atb >= 1f) {
-                    val selPaint = Paint().apply { color = Color.parseColor("#F8D878"); strokeWidth = 2f; style = Paint.Style.STROKE; isAntiAlias = false }
-                    canvas.drawRect(hx - 16f, hy - 22f, hx + 16f, hy + 6f, selPaint)
-                }
+            2 -> {
+                drawBattleScene(canvas)
             }
-            // message panel
-            canvas.drawRect(0f, h - 40f, w.toFloat(), h.toFloat(), panelPaint)
-            textPaint.textSize = 11f
-            canvas.drawText(battleMsg, w / 2f, h - 24f, textPaint)
-            smallPaint.textSize = 10f
-            canvas.drawText("A: Atacar  B: Técnica  SELECT: Cambiar", w / 2f, h - 10f, smallPaint)
-            // score
-            textPaint.textSize = 11f
-            canvas.drawText("Score: $score  Nivel: $level  XP: $xp", w / 2f, 14f, textPaint)
+            4 -> {
+                NesDialogueRenderer.drawPrologueScreen(
+                    canvas, w, h,
+                    gameTitle = "¡CAPÍTULO I SUPERADO!",
+                    missionTitle = "EL REINO DE GUARDIA ESTÁ A SALVO POR AHORA",
+                    prologueLines = listOf(
+                        "• El impostor Yakra fue desterrado del castillo.",
+                        "• La reina original ha sido restituida en el trono real.",
+                        "• Sin embargo, una campana lejana resuena en el horizonte...",
+                        "• ¡Un nuevo portal se ha abierto hacia el futuro desolado (2300 d.C.)!",
+                        "• Puntuación acumulada: $score monedas de oro."
+                    ),
+                    primaryColor = Color.parseColor("#00E5FF")
+                )
+            }
         }
+
         if (isGameOver) {
-            canvas.drawRect(0f, 0f, w.toFloat(), h.toFloat(), panelPaint)
-            val msg = if (won) "¡VICTORIA!" else "GAME OVER"
-            val col = if (won) Color.parseColor("#00A800") else Color.parseColor("#D82800")
-            textPaint.textSize = 32f; textPaint.color = col
-            canvas.drawText(msg, w / 2f, h / 2f, textPaint)
-            textPaint.textSize = 12f; textPaint.color = Color.parseColor("#F8F8F8")
-            canvas.drawText("Pulsa START", w / 2f, h / 2f + 24f, smallPaint.apply { textSize = 14f; color = Color.parseColor("#F8F8F8"); textAlign = Paint.Align.CENTER })
+            val pOver = Paint().apply { color = Color.parseColor("#CC150005"); style = Paint.Style.FILL }
+            canvas.drawRect(0f, 0f, w.toFloat(), h.toFloat(), pOver)
+            val pT = Paint().apply { color = Color.parseColor("#E63946"); textSize = 30f; textAlign = Paint.Align.CENTER; isFakeBoldText = true }
+            canvas.drawText("EL DESTINO HA SIDO ALTERADO", w / 2f, h / 2f - 10f, pT)
+            pT.textSize = 14f
+            pT.color = Color.parseColor("#F5F5F5")
+            canvas.drawText("PULSA [START] O [A] PARA REINTENTAR", w / 2f, h / 2f + 25f, pT)
         }
+    }
+
+    private fun drawWorldMap(canvas: Canvas) {
+        canvas.drawColor(Color.parseColor("#0E1A0E"))
+
+        val startCol = (camX / tileSize).toInt().coerceAtLeast(0)
+        val endCol = ((camX + w) / tileSize).toInt().coerceAtMost(mapW - 1)
+        val startRow = (camY / tileSize).toInt().coerceAtLeast(0)
+        val endRow = ((camY + h) / tileSize).toInt().coerceAtMost(mapH - 1)
+
+        for (r in startRow..endRow) {
+            for (c in startCol..endCol) {
+                val dx = c * tileSize - camX
+                val dy = r * tileSize - camY
+                val tile = tileMap[r][c]
+                val rect = RectF(dx, dy, dx + tileSize, dy + tileSize)
+
+                val paint = when (tile) {
+                    1 -> pWall
+                    2 -> pTree
+                    3 -> pRoad
+                    4 -> pPortal
+                    5 -> pTrono
+                    else -> pGrass
+                }
+                canvas.drawRect(rect, paint)
+
+                // Textura retro simple
+                if (tile == 1) {
+                    val pBorder = Paint().apply { color = Color.parseColor("#444444"); style = Paint.Style.STROKE; strokeWidth = 2f }
+                    canvas.drawRect(rect, pBorder)
+                }
+            }
+        }
+
+        // Jugador (Crono con pelo rojo/katana)
+        val cx = px - camX
+        val cy = py - camY
+        val pCrono = Paint().apply { color = Color.parseColor("#E6B800") }
+        canvas.drawCircle(cx, cy - 8f, 7f, pCrono)
+        val pPelo = Paint().apply { color = Color.parseColor("#C41E24") }
+        canvas.drawRect(cx - 6f, cy - 16f, cx + 6f, cy - 8f, pPelo)
+        val pCuerpo = Paint().apply { color = Color.parseColor("#00E5FF") }
+        canvas.drawRect(cx - 5f, cy - 1f, cx + 5f, cy + 10f, pCuerpo)
+
+        // HUD mapa
+        pText.color = Color.parseColor("#F8F8F8")
+        canvas.drawText("CASTILLO DE GUARDIA (600 d.C.) | Nivel $currentChapter | Score: $score", 12f, 18f, pText)
+        pText.color = Color.parseColor("#FFD700")
+        canvas.drawText("Ve hacia el Norte (Trono) o Portal Celeste", 12f, 32f, pText)
+    }
+
+    private fun drawBattleScene(canvas: Canvas) {
+        // Fondo de batalla
+        canvas.drawColor(Color.parseColor("#151528"))
+
+        // Suelo de combate
+        val pFloor = Paint().apply { color = Color.parseColor("#252540") }
+        canvas.drawRect(0f, h * 0.55f, w.toFloat(), h.toFloat(), pFloor)
+
+        // Boss HUD si aplica
+        val boss = enemies.firstOrNull { it.isBoss }
+        if (boss != null) {
+            NesDialogueRenderer.drawBossHud(canvas, w, boss.name, boss.hp, boss.maxHp)
+        }
+
+        // Enemigos
+        for (i in enemies.indices) {
+            val enemy = enemies[i]
+            if (enemy.hp <= 0) continue
+            val ex = w * (0.25f + i * 0.25f)
+            val ey = h * 0.45f
+            val pE = Paint().apply { color = enemy.color }
+            val sz = if (enemy.isBoss) 28f else 18f
+            canvas.drawRoundRect(RectF(ex - sz, ey - sz, ex + sz, ey + sz), 4f, 4f, pE)
+
+            // Barra HP enemiga
+            val bWidth = sz * 2
+            val php = Paint().apply { color = Color.parseColor("#D82800") }
+            canvas.drawRect(ex - sz, ey - sz - 8f, ex - sz + bWidth * (enemy.hp.toFloat() / enemy.maxHp), ey - sz - 4f, php)
+            pText.textAlign = Paint.Align.CENTER
+            canvas.drawText(enemy.name, ex, ey - sz - 12f, pText)
+            pText.textAlign = Paint.Align.LEFT
+        }
+
+        // Party de Héroes
+        val panelTop = h * 0.65f
+        val pPanel = Paint().apply { color = Color.parseColor("#080814"); style = Paint.Style.FILL }
+        canvas.drawRect(8f, panelTop, w - 8f, h - 8f, pPanel)
+        val pBorder = Paint().apply { color = Color.parseColor("#F8F8F8"); style = Paint.Style.STROKE; strokeWidth = 2f }
+        canvas.drawRect(8f, panelTop, w - 8f, h - 8f, pBorder)
+
+        for (i in party.indices) {
+            val hero = party[i]
+            val hy = panelTop + 18f + i * 22f
+            val isActive = i == activeHeroIndex
+
+            pText.color = if (isActive) Color.parseColor("#FFD700") else Color.parseColor("#F8F8F8")
+            val cursor = if (isActive) "▶ " else "  "
+            canvas.drawText("$cursor${hero.name}", 20f, hy, pText)
+            canvas.drawText("HP: ${hero.hp}/${hero.maxHp}", 95f, hy, pText)
+            canvas.drawText("MP: ${hero.mp}", 175f, hy, pText)
+
+            // Barra ATB
+            val pAtb = Paint().apply { color = if (hero.atb >= 1f) Color.parseColor("#00E5FF") else Color.parseColor("#5A5A70") }
+            canvas.drawRect(230f, hy - 9f, 230f + 50f * hero.atb, hy - 1f, pAtb)
+        }
+
+        // Mensaje de acción / Controles
+        pText.color = Color.parseColor("#00E5FF")
+        canvas.drawText(battleActionMsg, 300f, panelTop + 20f, pText)
+        pText.color = Color.parseColor("#F5C542")
+        canvas.drawText("[A] Atacar   [B] Técnica (-8 MP)   [SELECT] Cambiar Héroe", 300f, panelTop + 45f, pText)
     }
 }

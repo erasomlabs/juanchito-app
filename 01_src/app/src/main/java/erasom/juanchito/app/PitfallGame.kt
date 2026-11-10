@@ -11,270 +11,304 @@ class PitfallGame : Game {
     override val genre = "Plataformas"
     private var w = 0; private var h = 0
 
-    // World: 255 screens, screen-by-screen (no smooth scroll)
-    private val totalScreens = 255
-    private var screen = 0
-    private var playerX = 0f
-    private var playerY = 0f
-    private val playerW = 16f; private val playerH = 24f
-    private val groundY get() = h * 0.78f
-    private val caveY get() = h * 0.92f
-    private var inCave = false
+    // Estados: 0=Prólogo expedición, 1=Gameplay selva, 2=Diálogo diario, 3=Victoria
+    private var gameState = 0
+    override var isGameOver = false
+    override var score = 0
+
+    private var currentAct = 1
+    private var dialogueIndex = 0
+    private var dialogueQueue = mutableListOf<Pair<String, String>>()
+
+    // Harry el explorador
+    private var px = 60f; private var py = 0f
     private var vy = 0f
     private var onGround = true
-    private var facing = 1
-    private var jumping = false
+    private var onVine = false
+    private var vineAngle = 0f
     private var lives = 3
-    private var invuln = 0f
-    private var timer = 1200f // 20 min
-    override var isGameOver = false
-    override var score = 2000
-    private var highScore = 0
-    private var won = false
-    private var treasuresLeft = 32
-    private var vineSwing = 0f // >0 swinging
-    private var vineTarget = 0f
+    private var treasuresFound = 0
+    private val totalTreasures = 8
+    private var timeRemaining = 120f // 2 minutos por expedición
 
-    // hazards for current screen
-    private data class Hazard(val type: Int, var x: Float, val y: Float, val w: Float, val hgt: Float, var vx: Float, var timer: Float, var active: Boolean)
-    // type: 0 pit(empty),1 pit croc,2 pit snake,3 pit scorpion,4 rolling log,5 tar pit,6 quicksand,7 fire,8 treasure,9 vine
-    private val hazards = mutableListOf<Hazard>()
-    private var ladderX = -1f
-    private var hasLadder = false
-    private var hasVine = false
-    private var vineX = 0f
+    // Nivel y pantalla de jungla
+    private var currentScreen = 0
+    private val groundY get() = h * 0.72f
 
-    // NES retro palette (crisp, no anti-alias)
-    private val skyPaint = Paint().apply { color = Color.parseColor("#5C94FC"); isAntiAlias = false }
-    private val groundPaint = Paint().apply { color = Color.parseColor("#00A800"); isAntiAlias = false }
-    private val dirtPaint = Paint().apply { color = Color.parseColor("#8B4513"); isAntiAlias = false }
-    private val cavePaint = Paint().apply { color = Color.parseColor("#000000"); isAntiAlias = false }
-    private val playerPaint = Paint().apply { color = Color.parseColor("#F8D878"); isAntiAlias = false }
-    private val hatPaint = Paint().apply { color = Color.parseColor("#D82800"); isAntiAlias = false }
-    private val logPaint = Paint().apply { color = Color.parseColor("#8B4513"); isAntiAlias = false }
-    private val crocPaint = Paint().apply { color = Color.parseColor("#00A800"); isAntiAlias = false }
-    private val snakePaint = Paint().apply { color = Color.parseColor("#F8D878"); isAntiAlias = false }
-    private val scorPaint = Paint().apply { color = Color.parseColor("#FC9838"); isAntiAlias = false }
-    private val firePaint = Paint().apply { color = Color.parseColor("#D82800"); isAntiAlias = false }
-    private val tarPaint = Paint().apply { color = Color.parseColor("#000000"); isAntiAlias = false }
-    private val quickPaint = Paint().apply { color = Color.parseColor("#F8D878"); isAntiAlias = false }
-    private val treasPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); isAntiAlias = false }
-    private val vinePaint = Paint().apply { color = Color.parseColor("#00A800"); isAntiAlias = false }
-    private val ladderPaint = Paint().apply { color = Color.parseColor("#F8D878"); isAntiAlias = false }
-    private val textPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); textSize = 16f; isAntiAlias = false }
-    private val smallPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); textSize = 12f; isAntiAlias = false }
+    // Obstáculos (Troncos rodantes, pozos de brea, cocodrilos en pantano)
+    private var logX = 0f
+    private var logVx = -140f
+    private var swampOpen = false
+    private var swampTimer = 0f
 
-    override fun init(width: Int, height: Int) { w = width; h = height; reset() }
+    // Input debounce
+    private var btnAPressed = false
+    private var btnBPressed = false
+    private var btnStartPressed = false
 
-    private fun genScreen(idx: Int) {
-        hazards.clear()
-        hasLadder = (idx % 7 == 0) || (idx % 11 == 0)
-        ladderX = if (hasLadder) w * 0.5f else -1f
-        hasVine = false
-        val r = Random(idx * 997 + 13)
-        val type = (idx * 37 + 13) % 9
-        when (type) {
-            0 -> hazards.add(Hazard(1, w * 0.3f, groundY, 40f, 16f, 0f, 0f, true)) // croc pit
-            1 -> hazards.add(Hazard(2, w * 0.35f, groundY, 30f, 12f, 0f, 0f, true)) // snake
-            2 -> hazards.add(Hazard(3, w * 0.4f, groundY, 30f, 12f, 0f, 0f, true)) // scorpion
-            3 -> hazards.add(Hazard(4, 0f, groundY - 12f, 20f, 12f, 80f + r.nextFloat() * 40f, 0f, true)) // rolling log
-            4 -> hazards.add(Hazard(5, w * 0.25f, groundY, 60f, 8f, 0f, 0f, true)) // tar pit
-            5 -> hazards.add(Hazard(6, w * 0.45f, groundY, 50f, 8f, 0f, 0f, true)) // quicksand
-            6 -> hazards.add(Hazard(7, w * 0.3f, groundY - 16f, 24f, 16f, 0f, 0f, true)) // fire
-            7 -> { hasVine = true; vineX = w * 0.4f; hazards.add(Hazard(0, w * 0.35f, groundY, 50f, 20f, 0f, 0f, true)) } // pit + vine
-            8 -> hazards.add(Hazard(4, 0f, groundY - 12f, 20f, 12f, 100f, 0f, true)) // rolling log
-        }
-        // treasure
-        if (idx % 8 == 3 || idx % 8 == 6) {
-            val tv = intArrayOf(2000, 3000, 4000, 5000)[r.nextInt(4)]
-            hazards.add(Hazard(8, w * 0.6f, groundY - 12f, 12f, 12f, tv.toFloat(), 0f, true))
-        }
-        // cave treasure
-        if (inCave && idx % 5 == 0) {
-            hazards.add(Hazard(8, w * 0.4f, caveY - 12f, 12f, 12f, 3000f, 0f, true))
-        }
+    private val pText = Paint().apply { color = Color.parseColor("#F8F8F8"); textSize = 11f; isAntiAlias = false }
+
+    override fun init(width: Int, height: Int) {
+        w = width; h = height
+        reset()
     }
 
     override fun reset() {
-        screen = 0; playerX = 40f; playerY = groundY - playerH
-        inCave = false; vy = 0f; onGround = true; facing = 1; jumping = false
-        lives = 3; invuln = 0f; timer = 1200f; isGameOver = false; won = false
-        score = 2000; treasuresLeft = 32; vineSwing = 0f
-        genScreen(screen)
+        gameState = 0
+        score = 0
+        isGameOver = false
+        lives = 3
+        currentAct = 1
+        treasuresFound = 0
+        timeRemaining = 120f
+        currentScreen = 0
+        px = 60f
+        py = groundY
+        vy = 0f
+        onVine = false
+        logX = w + 50f
     }
 
     override fun update(dt: Float, input: GameInput) {
-        if (isGameOver) { if (input.start) reset(); return }
-        timer -= dt
-        if (timer <= 0f) { isGameOver = true; return }
-        invuln = (invuln - dt).coerceAtLeast(0f)
-        vineSwing = (vineSwing - dt).coerceAtLeast(0f)
+        val aDown = input.a && !btnAPressed
+        val bDown = input.b && !btnBPressed
+        val startDown = input.start && !btnStartPressed
+        btnAPressed = input.a
+        btnBPressed = input.b
+        btnStartPressed = input.start
 
-        val levelY = if (inCave) caveY else groundY
-
-        // horizontal movement
-        if (input.left) { playerX -= 120f * dt; facing = -1 }
-        if (input.right) { playerX += 120f * dt; facing = 1 }
-
-        // climb ladder
-        if (hasLadder && kotlin.math.abs(playerX - ladderX) < 12f) {
-            if (input.up) { if (!inCave) { inCave = true; playerY = caveY - playerH } }
-            if (input.down) { if (inCave) { inCave = false; playerY = groundY - playerH } }
-        }
-
-        // jump
-        if (input.a && onGround && !inCave) {
-            vy = -320f; onGround = false; jumping = true; input.a = false
-            // vine grab
-            if (hasVine && kotlin.math.abs(playerX - vineX) < 20f) {
-                vineSwing = 0.6f; vineTarget = vineX + 60f
+        when (gameState) {
+            0 -> { // Prólogo
+                if (aDown || startDown) {
+                    gameState = 2
+                    dialogueQueue.clear()
+                    dialogueQueue.add("PITFALL HARRY" to "Me adentro en el corazón de la cuenca prohibida maya.")
+                    dialogueQueue.add("DIARIO DE EXPEDICIÓN" to "Debes cruzar las fosas de brea colgado de las lianas y saltar troncos rodantes.")
+                    dialogueQueue.add("HARRY" to "Hay 8 tesoros dorados antes del anochecer. ¡En marcha!")
+                    dialogueIndex = 0
+                }
             }
-        }
-
-        // vine swing
-        if (vineSwing > 0f) {
-            playerX += (vineTarget - playerX) * 0.1f
-            playerY = groundY - 40f + kotlin.math.sin((0.6f - vineSwing) * 5f) * 10f
-        } else {
-            // gravity
-            vy += 900f * dt
-            playerY += vy * dt
-            if (playerY >= levelY - playerH) { playerY = levelY - playerH; vy = 0f; onGround = true; jumping = false }
-            else onGround = false
-        }
-
-        // screen transition
-        if (playerX > w - 16f) {
-            if (screen < totalScreens - 1) { screen++; playerX = 8f; genScreen(screen) } else { won = true; isGameOver = true }
-        }
-        if (playerX < 0f) {
-            if (screen > 0) { screen--; playerX = w - 24f; genScreen(screen) } else playerX = 0f
-        }
-
-        // update hazards
-        for (hz in hazards) {
-            if (!hz.active) continue
-            if (hz.type == 4) { // rolling log
-                hz.x += hz.vx * dt
-                if (hz.x > w + 20f) { hz.x = -20f }
-            }
-            if (hz.type == 1) { // croc mouth toggle
-                hz.timer += dt
-                if (hz.timer > 1.2f) { hz.timer = 0f; hz.active = hz.active } // toggle handled in draw via timer
-            }
-        }
-
-        // collisions
-        if (invuln <= 0f) {
-            val pr = RectF(playerX, playerY, playerX + playerW, playerY + playerH)
-            for (hz in hazards) {
-                if (!hz.active) continue
-                val hr = RectF(hz.x, hz.y - hz.hgt, hz.x + hz.w, hz.y)
-                if (RectF.intersects(pr, hr)) {
-                    when (hz.type) {
-                        0 -> { // pit: fall = lose life
-                            lives--; invuln = 2f
-                            if (lives <= 0) isGameOver = true
-                            playerX = 40f; playerY = groundY - playerH
-                        }
-                        1 -> { // croc: die if mouth open (timer phase)
-                            val mouthOpen = (hz.timer % 1.2f) > 0.6f
-                            if (mouthOpen) { lives--; invuln = 2f; if (lives <= 0) isGameOver = true; playerX = 40f; playerY = groundY - playerH }
-                        }
-                        2, 3 -> { lives--; invuln = 2f; if (lives <= 0) isGameOver = true; playerX = 40f; playerY = groundY - playerH }
-                        4 -> { score -= 100; if (score < 0) score = 0 } // rolling log
-                        5, 6 -> { // tar pit / quicksand: sink
-                            vy += 200f * dt
-                            if (playerY > levelY) { lives--; invuln = 2f; if (lives <= 0) isGameOver = true; playerX = 40f; playerY = groundY - playerH }
-                        }
-                        7 -> { lives--; invuln = 2f; if (lives <= 0) isGameOver = true; playerX = 40f; playerY = groundY - playerH } // fire
-                        8 -> { // treasure
-                            score += hz.vx.toInt(); treasuresLeft--; hz.active = false
-                            if (treasuresLeft <= 0) { won = true; isGameOver = true }
-                        }
+            2 -> { // Diálogo
+                if (aDown) {
+                    dialogueIndex++
+                    if (dialogueIndex >= dialogueQueue.size) {
+                        gameState = 1
                     }
                 }
             }
+            1 -> { // Gameplay
+                updateGameplay(dt, input, aDown, bDown)
+            }
+            3 -> { // Victoria
+                if (aDown || startDown) {
+                    currentAct++
+                    reset()
+                }
+            }
+        }
+    }
+
+    private fun updateGameplay(dt: Float, input: GameInput, aDown: Boolean, bDown: Boolean) {
+        timeRemaining -= dt
+        if (timeRemaining <= 0f) {
+            isGameOver = true
+            return
         }
 
-        // bonus for time (score updated at end)
-        if (isGameOver && won) {
-            score += (timer * 10).toInt()
-            if (score > highScore) highScore = score
+        // Fosa de brea y cocodrilos con boca oscilante
+        swampTimer += dt
+        if (swampTimer > 2.5f) {
+            swampOpen = !swampOpen
+            swampTimer = 0f
+        }
+
+        // Tronco rodante
+        logX += logVx * dt
+        if (logX < -40f) {
+            logX = w + 40f
+        }
+
+        // Movimiento en Liana
+        val vinePivotX = w * 0.5f
+        val vinePivotY = 40f
+        val vineLength = groundY - vinePivotY - 20f
+
+        if (onVine) {
+            vineAngle += dt * 3.5f
+            px = vinePivotX + kotlin.math.sin(vineAngle) * (vineLength - 10f)
+            py = vinePivotY + kotlin.math.cos(vineAngle) * (vineLength - 10f)
+
+            if (aDown) { // Soltarse de la liana
+                onVine = false
+                vy = -120f
+            }
+            return
+        }
+
+        // Agarre de liana con botón [B]
+        if (bDown && kotlin.math.abs(px - vinePivotX) < 45f && py < groundY) {
+            onVine = true
+            vineAngle = -0.7f
+            return
+        }
+
+        // Movimiento a pie
+        val speed = 150f
+        if (input.left) px -= speed * dt
+        if (input.right) px += speed * dt
+
+        // Salto
+        if (aDown && onGround) {
+            vy = -380f
+            onGround = false
+        }
+        vy += 1000f * dt
+        py += vy * dt
+
+        if (py >= groundY) {
+            py = groundY
+            vy = 0f
+            onGround = true
+        }
+
+        // Colisión con tronco rodante
+        if (kotlin.math.abs(px - logX) < 22f && py >= groundY - 15f) {
+            lives--
+            px = 60f
+            if (lives <= 0) isGameOver = true
+        }
+
+        // Caída en fosa de brea si está abierta y no está en liana
+        val swampX1 = w * 0.4f
+        val swampX2 = w * 0.6f
+        if (px in swampX1..swampX2 && py >= groundY && swampOpen) {
+            lives--
+            px = 60f
+            if (lives <= 0) isGameOver = true
+        }
+
+        // Recoger tesoro de pantalla
+        val treasureX = w * 0.85f
+        if (kotlin.math.abs(px - treasureX) < 25f && py >= groundY - 20f) {
+            score += 250
+            treasuresFound++
+            px = 60f
+            currentScreen++
+            if (treasuresFound >= totalTreasures) {
+                gameState = 3 // Victoria expedición
+            }
+        }
+
+        // Cambio de pantalla al salir por la derecha
+        if (px > w + 20f) {
+            px = 20f
+            currentScreen++
         }
     }
 
     override fun draw(canvas: Canvas) {
-        // sky
-        canvas.drawRect(0f, 0f, w.toFloat(), groundY, skyPaint)
-        // ground
-        canvas.drawRect(0f, groundY, w.toFloat(), h.toFloat(), groundPaint)
-        // cave (if in cave, darken)
-        if (inCave) canvas.drawRect(0f, groundY, w.toFloat(), h.toFloat(), cavePaint)
-        // ladder
-        if (hasLadder) {
-            val lx = ladderX
-            val top = if (inCave) caveY - 60f else groundY - 60f
-            val bot = if (inCave) caveY else groundY
-            for (yy in top.toInt() until bot.toInt() step 6) {
-                canvas.drawRect(lx - 2f, yy.toFloat(), lx + 2f, yy + 4f, ladderPaint)
-                canvas.drawRect(lx - 8f, yy.toFloat(), lx - 6f, yy + 2f, ladderPaint)
-                canvas.drawRect(lx + 6f, yy.toFloat(), lx + 8f, yy + 2f, ladderPaint)
+        when (gameState) {
+            0 -> {
+                NesDialogueRenderer.drawPrologueScreen(
+                    canvas, w, h,
+                    gameTitle = "PITFALL: MAYAN EXPEDITION",
+                    missionTitle = "EXPEDICIÓN I: EL PANTANO SAGRADO",
+                    prologueLines = listOf(
+                        "• Año 1982. En lo profundo de la selva virgen,",
+                        "  Harry el aventurero busca las reliquias de oro puro.",
+                        "• Supera los pozos de alquitrán, usa las lianas",
+                        "  y esquiva los troncos rodantes.",
+                        "• OBJETIVO: Reúne 8 tesoros antes de que el cronómetro llegue a cero.",
+                        "• CONTROLES: [A] Saltar / Soltar liana  [B] Agarrar liana"
+                    ),
+                    primaryColor = Color.parseColor("#805A20")
+                )
             }
-        }
-        // vine
-        if (hasVine) {
-            canvas.drawRect(vineX - 2f, 0f, vineX + 2f, groundY - 20f, vinePaint)
-            canvas.drawCircle(vineX, groundY - 20f, 6f, vinePaint)
-        }
-        // hazards
-        for (hz in hazards) {
-            if (!hz.active) continue
-            val hr = RectF(hz.x, hz.y - hz.hgt, hz.x + hz.w, hz.y)
-            when (hz.type) {
-                0 -> canvas.drawRect(hz.x, hz.y - 4f, hz.x + hz.w, hz.y + 8f, tarPaint) // pit
-                1 -> { // croc
-                    val mouthOpen = (hz.timer % 1.2f) > 0.6f
-                    canvas.drawRect(hr, crocPaint)
-                    if (mouthOpen) {
-                        val mp = Paint().apply { color = Color.parseColor("#F8F8F8") }
-                        canvas.drawRect(hz.x + 4f, hz.y - hz.hgt + 2f, hz.x + hz.w - 4f, hz.y - 4f, mp)
-                    }
+            2 -> {
+                drawJungle(canvas)
+                if (dialogueIndex < dialogueQueue.size) {
+                    val (speaker, text) = dialogueQueue[dialogueIndex]
+                    NesDialogueRenderer.drawDialogueBox(canvas, w, h, speaker, text, speakerColor = Color.parseColor("#E6B800"))
                 }
-                2 -> canvas.drawOval(hr, snakePaint)
-                3 -> canvas.drawOval(hr, scorPaint)
-                4 -> canvas.drawRoundRect(hr, 2f, 2f, logPaint) // log
-                5 -> canvas.drawRect(hz.x, hz.y - 4f, hz.x + hz.w, hz.y + 4f, tarPaint)
-                6 -> canvas.drawRect(hz.x, hz.y - 4f, hz.x + hz.w, hz.y + 4f, quickPaint)
-                7 -> canvas.drawRect(hz.x, hz.y - hz.hgt, hz.x + hz.w, hz.y, firePaint)
-                8 -> canvas.drawCircle(hz.x + hz.w/2, hz.y - hz.hgt/2, hz.w/2, treasPaint)
+            }
+            1 -> {
+                drawJungle(canvas)
+            }
+            3 -> {
+                NesDialogueRenderer.drawPrologueScreen(
+                    canvas, w, h,
+                    gameTitle = "¡EXPEDICIÓN COMPLETADA!",
+                    missionTitle = "LOS 8 TESOROS HAN SIDO RESCATADOS",
+                    prologueLines = listOf(
+                        "• ¡Harry emerge de la jungla con los lingotes mayas intactos!",
+                        "• Tiempo restante bonificado: ${timeRemaining.toInt()} seg.",
+                        "• Puntuación de honor: $score pts.",
+                        "• Nuevos templos subterráneos aguardan en el Acto II."
+                    ),
+                    primaryColor = Color.parseColor("#50A000")
+                )
             }
         }
-        // player (Juanchito) - NES style pixel character
-        if (invuln <= 0f || (invuln * 8).toInt() % 2 == 0) {
-            val px = playerX; val py = playerY
-            // body
-            canvas.drawRect(px + 4f, py + 8f, px + 12f, py + playerH, playerPaint)
-            // head
-            canvas.drawRect(px + 4f, py, px + 12f, py + 8f, hatPaint)
-            // legs
-            canvas.drawRect(px + 4f, py + playerH - 4f, px + 8f, py + playerH + 4f, playerPaint)
-            canvas.drawRect(px + 8f, py + playerH - 4f, px + 12f, py + playerH + 4f, playerPaint)
-        }
-        // HUD
-        textPaint.textSize = 14f
-        canvas.drawText("Score: $score", 8f, 16f, textPaint)
-        canvas.drawText("Lives: $lives", w - 60f, 16f, textPaint)
-        smallPaint.textAlign = Paint.Align.CENTER
-        canvas.drawText("Tiempo: ${timer.toInt()}s  Pantalla: ${screen + 1}/255", w/2f, 16f, smallPaint)
-        smallPaint.textAlign = Paint.Align.LEFT
+
         if (isGameOver) {
-            val msg = if (won) "¡GANASTE!" else "GAME OVER"
-            val col = if (won) Color.parseColor("#00A800") else Color.parseColor("#D82800")
-            textPaint.textSize = 32f; textPaint.color = col
-            canvas.drawText(msg, w/2f, h/2f, textPaint)
-            textPaint.textSize = 14f; textPaint.color = Color.parseColor("#F8F8F8")
-            canvas.drawText("Pulsa START", w/2f, h/2f + 24f, smallPaint.apply { textSize = 14f; color = Color.parseColor("#F8F8F8"); textAlign = Paint.Align.CENTER })
+            val pOver = Paint().apply { color = Color.parseColor("#CC150005"); style = Paint.Style.FILL }
+            canvas.drawRect(0f, 0f, w.toFloat(), h.toFloat(), pOver)
+            val pT = Paint().apply { color = Color.parseColor("#E63946"); textSize = 32f; textAlign = Paint.Align.CENTER; isFakeBoldText = true }
+            canvas.drawText("HARRY QUEDÓ ATRAPADO EN LA SELVA", w / 2f, h / 2f - 10f, pT)
+            pT.textSize = 14f; pT.color = Color.parseColor("#F5F5F5")
+            canvas.drawText("PULSA [START] O [A] PARA REINTENTAR", w / 2f, h / 2f + 25f, pT)
         }
+    }
+
+    private fun drawJungle(canvas: Canvas) {
+        // Fondo de copas de árboles y cielo tropical
+        canvas.drawColor(Color.parseColor("#002800"))
+        val pCanopy = Paint().apply { color = Color.parseColor("#005000") }
+        canvas.drawRect(0f, 0f, w.toFloat(), 60f, pCanopy)
+
+        // Tierra y estrato subterráneo
+        val pDirt = Paint().apply { color = Color.parseColor("#805A20") }
+        canvas.drawRect(0f, groundY, w.toFloat(), h.toFloat(), pDirt)
+        val pGrass = Paint().apply { color = Color.parseColor("#00A800"); strokeWidth = 4f }
+        canvas.drawLine(0f, groundY, w.toFloat(), groundY, pGrass)
+
+        // Pantano de brea / Cocodrilos en el centro
+        val swampX1 = w * 0.4f
+        val swampX2 = w * 0.6f
+        val pSwamp = Paint().apply { color = if (swampOpen) Color.parseColor("#150A05") else Color.parseColor("#007030") }
+        canvas.drawRect(swampX1, groundY, swampX2, groundY + 25f, pSwamp)
+
+        // Liana oscilante
+        val vinePivotX = w * 0.5f
+        val vinePivotY = 40f
+        val vineEndX = if (onVine) px else vinePivotX + kotlin.math.sin(vineAngle) * (groundY - vinePivotY - 20f)
+        val vineEndY = if (onVine) py else vinePivotY + kotlin.math.cos(vineAngle) * (groundY - vinePivotY - 20f)
+        val pVine = Paint().apply { color = Color.parseColor("#50A000"); strokeWidth = 3f }
+        canvas.drawLine(vinePivotX, vinePivotY, vineEndX, vineEndY, pVine)
+
+        // Tronco rodante
+        val pLog = Paint().apply { color = Color.parseColor("#5A3010") }
+        canvas.drawRoundRect(RectF(logX - 14f, groundY - 14f, logX + 14f, groundY), 4f, 4f, pLog)
+
+        // Tesoro de oro
+        val treasureX = w * 0.85f
+        val pGold = Paint().apply { color = Color.parseColor("#E6B800") }
+        canvas.drawRect(treasureX - 10f, groundY - 16f, treasureX + 10f, groundY, pGold)
+        val pSpark = Paint().apply { color = Color.parseColor("#FFFFFF") }
+        canvas.drawCircle(treasureX, groundY - 10f, 3f, pSpark)
+
+        // Harry el explorador
+        val pHarry = Paint().apply { color = Color.parseColor("#F5C542") }
+        canvas.drawRect(px - 7f, py - 20f, px + 7f, py - 10f, pHarry) // Camisa safari
+        val pPants = Paint().apply { color = Color.parseColor("#3C44AA") }
+        canvas.drawRect(px - 6f, py - 10f, px + 6f, py, pPants)
+        val pHat = Paint().apply { color = Color.parseColor("#805A20") }
+        canvas.drawRect(px - 8f, py - 24f, px + 8f, py - 20f, pHat)
+
+        // HUD
+        pText.color = Color.parseColor("#F8F8F8")
+        canvas.drawText("HARRY  VIDAS: $lives  TESOROS: $treasuresFound/$totalTreasures  TIEMPO: ${timeRemaining.toInt()}s", 12f, 18f, pText)
+        pText.color = Color.parseColor("#E6B800")
+        canvas.drawText("PANTALLA: $currentScreen | SCORE: $score", 12f, 32f, pText)
     }
 }
