@@ -239,9 +239,32 @@ class PixelRunnerGame : Game {
         canvas.drawRect(0f, h * 0.7f + 25f, w.toFloat(), h.toFloat(), paint)
         // Juanchito corriendo
         JuanchitoSprite.draw(canvas, 117f, py + 4f, 30f, facingRight = true)
-        paint.color = Color.parseColor("#D82800")
+        // Obstáculos: arbustos de espinas con ojos perversos (terreno hostil)
         for (ox in obstacles) {
-            canvas.drawRect(ox, h * 0.7f - 10f, ox + 30f, h * 0.7f + 25f, paint)
+            val bushTop = h * 0.7f - 14f
+            val groundY2 = h * 0.7f + 25f
+            val bodyP = Paint().apply { color = Color.parseColor("#1A6A1A"); isAntiAlias = false }
+            val darkP = Paint().apply { color = Color.parseColor("#0A4A0A"); isAntiAlias = false }
+            val spikeP = Paint().apply { color = Color.parseColor("#00A800"); isAntiAlias = false }
+            val eyeP = Paint().apply { color = Color.parseColor("#F8D878"); isAntiAlias = false }
+            val pupilP = Paint().apply { color = Color.parseColor("#000000"); isAntiAlias = false }
+            // cuerpo del arbusto
+            canvas.drawRoundRect(RectF(ox - 4f, bushTop + 4f, ox + 34f, groundY2), 6f, 6f, bodyP)
+            canvas.drawRect(ox - 4f, groundY2 - 10f, ox + 34f, groundY2, darkP)
+            // espinas arriba y laterales
+            for (i in 0..3) {
+                val sx = ox + 2f + i * 9f
+                canvas.drawRect(sx, bushTop - 6f, sx + 4f, bushTop + 8f, spikeP)
+            }
+            canvas.drawRect(ox - 10f, bushTop + 12f, ox, bushTop + 17f, spikeP)
+            canvas.drawRect(ox + 34f, bushTop + 12f, ox + 44f, bushTop + 17f, spikeP)
+            // ojos perversos
+            canvas.drawCircle(ox + 9f, bushTop + 20f, 3.5f, eyeP)
+            canvas.drawCircle(ox + 23f, bushTop + 20f, 3.5f, eyeP)
+            canvas.drawCircle(ox + 9f, bushTop + 21f, 1.5f, pupilP)
+            canvas.drawCircle(ox + 23f, bushTop + 21f, 1.5f, pupilP)
+            // boca dentada
+            canvas.drawRect(ox + 8f, bushTop + 27f, ox + 24f, bushTop + 29f, pupilP)
         }
     }
 }

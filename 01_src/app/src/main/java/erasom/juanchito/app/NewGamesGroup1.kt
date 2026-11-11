@@ -76,15 +76,32 @@ class PixelSmashGame : Game {
         // Pared de ladrillos arcade con marco neón
         NesScenery.drawBrickWall(canvas, w, h, 140)
         NesScenery.drawNeonFrame(canvas, w, h, "#FC9838")
-        paint.color = Color.parseColor("#F8D878")
-        canvas.drawRoundRect(RectF(paddleX, h - 60f, paddleX + paddleWidth, h - 42f), 6f, 6f, paint)
+        // Paleta con grip y Juanchito controlando
+        val paddleRect = RectF(paddleX, h - 60f, paddleX + paddleWidth, h - 42f)
+        paint.color = Color.parseColor("#D4A017")
+        canvas.drawRoundRect(paddleRect, 6f, 6f, paint)
+        paint.color = Color.parseColor("#8C6A10")
+        var gx = paddleX + 8f
+        while (gx < paddleX + paddleWidth - 6f) {
+            canvas.drawRect(gx, h - 57f, gx + 4f, h - 49f, paint)
+            gx += 16f
+        }
+        JuanchitoSprite.draw(canvas, paddleX + paddleWidth / 2f, h - 76f, 26f, facingRight = true)
 
+        // Bola con brillo
         paint.color = Color.parseColor("#5C94FC")
         canvas.drawCircle(ballX, ballY, 10f, paint)
+        paint.color = Color.parseColor("#A8D8FC")
+        canvas.drawCircle(ballX - 3f, ballY - 3f, 3f, paint)
 
-        paint.color = Color.parseColor("#D82800")
+        // Ladrillos biselados en fila de colores por fila
+        val rowColors = listOf("#D82800", "#FC9838", "#F8D878", "#00A800", "#5C94FC")
         for (b in bricks) {
+            val row = ((b.top - 40f) / 24f).toInt().coerceIn(0, 4)
+            paint.color = Color.parseColor(rowColors[row])
             canvas.drawRoundRect(b, 4f, 4f, paint)
+            paint.color = Color.argb(255, Math.min(255, Color.red(paint.color) + 60), Math.min(255, Color.green(paint.color) + 60), Math.min(255, Color.blue(paint.color) + 60))
+            canvas.drawRect(b.left + 3f, b.top + 2f, b.right - 3f, b.top + 6f, paint)
         }
     }
 }

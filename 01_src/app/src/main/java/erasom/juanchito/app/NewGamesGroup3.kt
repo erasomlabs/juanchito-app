@@ -50,10 +50,28 @@ class PixelPuzzlesGame : Game {
 
         val size = 60f
         val startX = (w - size * 3) / 2f
+        // Juanchito albañil junto a los bloques
+        JuanchitoSprite.draw(canvas, startX + size * 1.5f, h * 0.5f + size + 28f, 26f, facingRight = true, hatColor = 0xF8D878)
         for (i in 0..2) {
-            paint.color = if (i == pos) Color.parseColor("#F8D878") else Color.parseColor("#5C94FC")
+            val base = if (i == pos) Color.parseColor("#F8D878") else Color.parseColor("#5C94FC")
             val r = RectF(startX + i * size + 6, h * 0.5f, startX + (i + 1) * size - 6, h * 0.5f + size)
+            // bloque biselado con número
+            paint.color = base
             canvas.drawRoundRect(r, 6f, 6f, paint)
+            paint.color = Color.argb(255, Math.min(255, Color.red(base) + 70), Math.min(255, Color.green(base) + 70), Math.min(255, Color.blue(base) + 70))
+            canvas.drawRect(r.left + 4f, r.top + 3f, r.right - 4f, r.top + 9f, paint)
+            paint.color = Color.argb(255, Color.red(base) / 2, Color.green(base) / 2, Color.blue(base) / 2)
+            canvas.drawRect(r.left + 4f, r.bottom - 9f, r.right - 4f, r.bottom - 3f, paint)
+            // número de bloque
+            paint.color = Color.parseColor("#000000")
+            paint.textSize = 26f
+            canvas.drawText("${i + 1}", r.centerX(), r.centerY() + 9, paint)
+            // grial/marca del objetivo
+            if (i == pattern[step % pattern.size]) {
+                val star = Paint().apply { color = Color.parseColor("#F8F8F8"); isAntiAlias = false }
+                canvas.drawCircle(r.centerX(), r.top - 10f, 4f, star)
+                canvas.drawCircle(r.centerX(), r.top - 10f, 7f, Paint().apply { color = Color.parseColor("#F5C542"); style = Paint.Style.STROKE; strokeWidth = 2f; isAntiAlias = false })
+            }
         }
     }
 }
