@@ -89,15 +89,20 @@ class UniracerGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#1A1A2E"))
+        // Atardecer NES con colinas y nubes
+        NesScenery.drawSkyBands(canvas, w, h.toFloat(), "#F8A860", "#5C94FC", 6)
+        NesScenery.drawSun(canvas, w - 80f, 60f, 30f)
+        NesScenery.drawClouds(canvas, w, h * 0.28f)
+        NesScenery.drawHills(canvas, w, groundY, "#00A800", "#008800")
         canvas.drawRect(0f, groundY, w.toFloat(), h.toFloat(), groundPaint)
         for (o in obstacles) {
             val r = RectF(o.x, o.y - o.h, o.x + o.w, o.y)
             if (o.type == 0) canvas.drawRoundRect(r, 4f, 4f, rampPaint) else canvas.drawRoundRect(r, 4f, 4f, barrierPaint)
         }
-        // player (unicycle)
+        // Juanchito sobre su monociclo
         canvas.drawCircle(px, py, 14f, playerPaint)
         canvas.drawRect(px - 4f, py - 28f, px + 4f, py - 14f, playerPaint)
+        JuanchitoSprite.draw(canvas, px, py - 42f, 26f, facingRight = true)
         // HUD
         textPaint.textSize = 22f
         canvas.drawText("Score: $score  Trucos: $tricks", w/2f, 30f, textPaint)

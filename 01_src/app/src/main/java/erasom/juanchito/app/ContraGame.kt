@@ -7,7 +7,7 @@ import android.graphics.RectF
 import kotlin.random.Random
 
 class ContraGame : Game {
-    override val name = "Contra 3"
+    override val name = "Comando Supremo"
     override val genre = "Run & Gun"
     private var w = 0; private var h = 0
 
@@ -20,7 +20,7 @@ class ContraGame : Game {
     private var dialogueIndex = 0
     private var dialogueQueue = mutableListOf<Pair<String, String>>()
 
-    // Jugador (Bill Rizer)
+    // Jugador (Juanchito)
     private var px = 80f; private var py = 0f
     private var vy = 0f
     private var onGround = true
@@ -95,7 +95,7 @@ class ContraGame : Game {
                 if (aDown || startDown) {
                     gameState = 2
                     dialogueQueue.clear()
-                    dialogueQueue.add("COMANDANTE HQ" to "¡Soldados Bill y Lance! Las fuerzas alienígenas de Red Falcon han tomado Neo City.")
+                    dialogueQueue.add("COMANDANTE HQ" to "¡Soldados Juanchito y Tito! Las fuerzas alienígenas de Furia Roja han tomado Neo City.")
                     dialogueQueue.add("BILL RIZER" to "Entendido HQ. Desplegando en la autopista principal. ¡Fuego a discreción!")
                     dialogueIndex = 0
                 }
@@ -174,7 +174,7 @@ class ContraGame : Game {
             bossActive = true
             gameState = 2
             dialogueQueue.clear()
-            dialogueQueue.add("RED FALCON CORE" to "¡Humanos insignificantes! ¡Neo City será el nido de nuestra prole!")
+            dialogueQueue.add("FURIA ROJA CORE" to "¡Humanos insignificantes! ¡Neo City será el nido de nuestra prole!")
             dialogueQueue.add("BILL RIZER" to "¡Apunta a las torretas gemelas y al núcleo central!")
             dialogueIndex = 0
             return
@@ -265,10 +265,10 @@ class ContraGame : Game {
                     gameTitle = "CONTRA 3: THE ALIEN WARS",
                     missionTitle = "MISIÓN I: AUTOPISTA METROPOLITANA EN RUINAS",
                     prologueLines = listOf(
-                        "• Año 2636. Las tropas extraterrestres de Red Falcon",
+                        "• Año 2636. Las tropas extraterrestres de Furia Roja",
                         "  iniciaron una invasión total en la Tierra.",
                         "• La humanidad deposita su última esperanza en los comandos",
-                        "  veteranos de élite: Bill Rizer y Lance Bean.",
+                        "  veteranos de élite: Juanchito y Tito Ruiz.",
                         "• MISION: Infiltra el sector industrial destruido,",
                         "  aniquila la vanguardia bio-mecánica y destruye el búnker jefe.",
                         "• CONTROLES: [A] Disparar  [B] Saltar  [SELECT] Recargar"
@@ -338,7 +338,7 @@ class ContraGame : Game {
             val pCore = Paint().apply { color = Color.parseColor("#00E5FF") }
             canvas.drawCircle(bx + 60f, groundY - 40f, 18f, pCore)
 
-            NesDialogueRenderer.drawBossHud(canvas, w, "RED FALCON BIO-CORE", bossHp, bossMaxHp)
+            NesDialogueRenderer.drawBossHud(canvas, w, "FURIA ROJA BIO-CORE", bossHp, bossMaxHp)
         }
 
         // Soldados enemigos
@@ -350,7 +350,7 @@ class ContraGame : Game {
             canvas.drawRect(tx - 16f, t.y - 16f, tx, t.y - 12f, pGun)
         }
 
-        // Jugador Bill Rizer
+        // Jugador Juanchito
         if (invulnTimer <= 0f || (invulnTimer * 10).toInt() % 2 == 0) {
             val dx = px - scrollX
             // Juanchito protagonista

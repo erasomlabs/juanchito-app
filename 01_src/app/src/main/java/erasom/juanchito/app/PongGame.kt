@@ -7,7 +7,7 @@ import android.graphics.RectF
 import kotlin.math.abs
 
 class PongGame : Game {
-    override val name = "Pong"
+    override val name = "Duelo Raqueta"
     override val genre = "Arcade"
     private var w = 0
     private var h = 0

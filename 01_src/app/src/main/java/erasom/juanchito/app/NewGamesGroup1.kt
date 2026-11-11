@@ -73,7 +73,9 @@ class PixelSmashGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#000000"))
+        // Pared de ladrillos arcade con marco neón
+        NesScenery.drawBrickWall(canvas, w, h, 140)
+        NesScenery.drawNeonFrame(canvas, w, h, "#FC9838")
         paint.color = Color.parseColor("#F8D878")
         canvas.drawRoundRect(RectF(paddleX, h - 60f, paddleX + paddleWidth, h - 42f), 6f, 6f, paint)
 
@@ -158,7 +160,10 @@ class FusionPixelGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#000000"))
+        // Cielo azul NES con nubes flotantes
+        NesScenery.drawSkyBands(canvas, w, h.toFloat(), "#5C94FC", "#B8D8F8", 6)
+        NesScenery.drawClouds(canvas, w, h * 0.3f)
+        NesScenery.drawNeonFrame(canvas, w, h, "#F8D878")
         val size = 70f
         val startX = (w - size * 4) / 2f
         val startY = (h - size * 4) / 2f
@@ -218,7 +223,11 @@ class PixelBlocksGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#000000"))
+        // Ciudad nocturna: torre donde apilar bloques
+        NesScenery.drawSkyBands(canvas, w, h.toFloat(), "#080818", "#282858", 5)
+        NesScenery.drawStars(canvas, w, h, 30)
+        NesScenery.drawMoon(canvas, w - 60f, 70f, 26f)
+        NesScenery.drawCitySkyline(canvas, w, h.toFloat())
         paint.color = Color.parseColor("#F8F8F8")
         canvas.drawRect(RectF(w / 2f - 40f, 0f, w / 2f + 40f, h.toFloat()), Paint().apply { color = Color.parseColor("#2D3748") })
         paint.color = Color.parseColor("#5C94FC")
@@ -263,7 +272,10 @@ class PixelRitmoGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#000000"))
+        // Escenario de concierto con reflectores
+        NesScenery.drawSkyBands(canvas, w, h.toFloat(), "#28104A", "#5A1A6A", 5)
+        NesScenery.drawSpotlights(canvas, w, h)
+        NesScenery.drawCheckerFloor(canvas, w, h, h - 100f, "#3A1A5A", "#2A1040")
         paint.color = Color.parseColor("#F8D878")
         canvas.drawLine(0f, h - 70f, w.toFloat(), h - 70f, paint)
         paint.color = Color.parseColor("#D82800")

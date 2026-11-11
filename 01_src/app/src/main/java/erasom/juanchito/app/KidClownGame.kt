@@ -7,7 +7,7 @@ import android.graphics.RectF
 import kotlin.random.Random
 
 class KidClownGame : Game {
-    override val name = "Kid Klown"
+    override val name = "Payasito"
     override val genre = "Plataformas"
     private var w = 0; private var h = 0
     private val groundY get() = h * 0.82f
@@ -30,6 +30,8 @@ class KidClownGame : Game {
     private var won = false
     private var distance = 0f
     private val target = 3000f
+    // Estados: 0 = Prólogo narrativo, 1 = Gameplay
+    private var gameState = 0
 
     private data class Ball(var x: Float, var y: Float, val vx: Float)
     private data class Enemy(var x: Float, var y: Float, var vx: Float, val type: Int)
@@ -53,9 +55,16 @@ class KidClownGame : Game {
         balls.clear(); enemies.clear(); items.clear()
         fuseX = -60f; fuseSpeed = 70f; spawnTimer = 0f
         lives = 3; fireCooldown = 0f; invuln = 0f; score = 0; distance = 0f; isGameOver = false; won = false; level = 1
+        gameState = 0
     }
 
     override fun update(dt: Float, input: GameInput) {
+        if (gameState == 0) {
+            // Prólogo: esperar confirmación del jugador
+            if (input.a || input.start) gameState = 1
+            input.a = false; input.start = false
+            return
+        }
         if (isGameOver) { if (input.start) reset(); return }
         invuln = (invuln - dt).coerceAtLeast(0f)
         fireCooldown = (fireCooldown - dt).coerceAtLeast(0f)
@@ -126,6 +135,32 @@ class KidClownGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
+        if (gameState == 0) {
+            // Prólogo estilo NES: la historia del circo encantado
+            NesDialogueRenderer.drawPrologueScreen(
+                canvas,
+                w,
+                h,
+                gameTitle = "PAYASITO",
+                missionTitle = "ACTO 1: LA CARRERA DEL GLOBO-BOMBA",
+                prologueLines = listOf(
+                    "El circo estelar de la Princesa Miel brillaba",
+                    "hasta que el malvado mago Zarko encendió",
+                    "la mecha del Globo-Bomba real.",
+                    "",
+                    "Si el Globo-Bomba revienta, la carpa y todos",
+                    "los saltimbanquis desaparecerán para siempre.",
+                    "",
+                    "Juanchito, el payasito más veloz del reino,",
+                    "debe correr por el País de la Golosina,",
+                    "recolectar los globos dorados y derribar",
+                    "a los secuaces de Zarko antes de que la",
+                    "mecha lo alcance. ¡El espectáculo debe continuar!"
+                ),
+                primaryColor = Color.parseColor("#C84C0C")
+            )
+            return
+        }
         // sky
         canvas.drawColor(Color.parseColor("#5C94FC"))
         canvas.drawRect(0f, h * 0.6f, w.toFloat(), h.toFloat(), groundPaint)
@@ -147,13 +182,12 @@ class KidClownGame : Game {
         }
         // balls
         for (b in balls) canvas.drawCircle(b.x, b.y, 5f, ballPaint)
-        // player (Juanchito clown)
+        // Juanchito payaso protagonista
         if (invuln <= 0f || (invuln * 8).toInt() % 2 == 0) {
-            canvas.drawRoundRect(RectF(px - 12f, py - 16f, px + 12f, py + 16f), 4f, 4f, playerPaint)
-            canvas.drawRoundRect(RectF(px - 10f, py - 28f, px + 10f, py - 16f), 4f, 4f, hatPaint)
-            // nose
+            JuanchitoSprite.draw(canvas, px, py, 32f, facingRight = facing > 0, hatColor = 0xD82800)
+            // nariz de payaso
             val nosePaint = Paint().apply { color = Color.parseColor("#D82800"); isAntiAlias = false }
-            canvas.drawCircle(px, py - 8f, 3f, nosePaint)
+            canvas.drawCircle(px + if (facing > 0) 8f else -8f, py - 8f, 3f, nosePaint)
         }
         // HUD
         textPaint.textSize = 12f
@@ -166,8 +200,11 @@ class KidClownGame : Game {
             val col = if (won) Color.parseColor("#00A800") else Color.parseColor("#D82800")
             textPaint.textSize = 28f; textPaint.color = col
             canvas.drawText(msg, w / 2f, h / 2f, textPaint)
-            textPaint.textSize = 12f; textPaint.color = Color.parseColor("#F8F8F8")
-            canvas.drawText("Pulsa START", w / 2f, h / 2f + 24f, smallPaint.apply { textSize = 14f; color = Color.parseColor("#F8F8F8"); textAlign = Paint.Align.CENTER })
+            textPaint.textSize = 11f; textPaint.color = Color.parseColor("#F8F8F8")
+            val story = if (won) "Juanchito atrapó el Globo-Bomba y salvó el circo de la Princesa Miel" else "Zarko rió malvadamente... el circo quedó a oscuras"
+            canvas.drawText(story, w / 2f, h / 2f + 20f, textPaint)
+            textPaint.textSize = 12f
+            canvas.drawText("Pulsa START", w / 2f, h / 2f + 42f, smallPaint.apply { textSize = 14f; color = Color.parseColor("#F8F8F8"); textAlign = Paint.Align.CENTER })
         }
     }
 }

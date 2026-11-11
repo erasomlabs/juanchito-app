@@ -54,7 +54,10 @@ class PixelDrawGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#000000"))
+        // Cielo estrellado para dibujar constelaciones
+        NesScenery.drawSkyBands(canvas, w, h.toFloat(), "#1A1A3A", "#3A2A6A", 6)
+        NesScenery.drawStars(canvas, w, h, 35)
+        NesScenery.drawNeonFrame(canvas, w, h, "#00E5FF")
         paint.color = Color.parseColor("#5C94FC")
         paint.style = Paint.Style.STROKE
         for (i in 0 until path.size - 1) {
@@ -112,7 +115,10 @@ class PixelMinasGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#000000"))
+        // Desierto al atardecer con campo minado
+        NesScenery.drawSkyBands(canvas, w, h.toFloat(), "#28285A", "#8A4A2A", 6)
+        NesScenery.drawStars(canvas, w, h, 25)
+        NesScenery.drawCacti(canvas, listOf(w * 0.1f, w * 0.9f), h - 16f)
         val size = 50f
         val ox = (w - size * 5) / 2f; val oy = (h - size * 5) / 2f
         for (r in 0..4) {
@@ -176,11 +182,14 @@ class PixelRunnerGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#000000"))
+        // Bosque con colinas y nubes
+        NesScenery.drawSkyBands(canvas, w, h.toFloat(), "#5C94FC", "#A8D8FC", 5)
+        NesScenery.drawClouds(canvas, w, h * 0.25f)
+        NesScenery.drawHills(canvas, w, h * 0.7f, "#00A800", "#008800")
         paint.color = Color.parseColor("#2D3748")
         canvas.drawRect(0f, h * 0.7f + 25f, w.toFloat(), h.toFloat(), paint)
-        paint.color = Color.parseColor("#5C94FC")
-        canvas.drawRoundRect(RectF(100f, py - 20f, 135f, py + 25f), 4f, 4f, paint)
+        // Juanchito corriendo
+        JuanchitoSprite.draw(canvas, 117f, py + 4f, 30f, facingRight = true)
         paint.color = Color.parseColor("#D82800")
         for (ox in obstacles) {
             canvas.drawRect(ox, h * 0.7f - 10f, ox + 30f, h * 0.7f + 25f, paint)
@@ -225,8 +234,16 @@ class ReflejosGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        val color = if (state == 1) Color.parseColor("#00A800") else Color.parseColor("#000000")
-        canvas.drawColor(color)
+        if (state == 1) {
+            // ¡GO! Verde con rayos radiantes
+            canvas.drawColor(Color.parseColor("#00A800"))
+            NesScenery.drawBurstRays(canvas, w / 2f, h / 2f, w * 0.9f, "#F8D878")
+        } else {
+            // Espera: noche estrellada con marco rojo de alerta
+            NesScenery.drawSkyBands(canvas, w, h.toFloat(), "#0A0A1E", "#1A1A3E", 5)
+            NesScenery.drawStars(canvas, w, h, 45)
+            NesScenery.drawNeonFrame(canvas, w, h, "#D82800")
+        }
         paint.color = Color.WHITE
         paint.textSize = 32f
         val msg = if (state == 1) "¡PRESIONA A!" else "ESPERA..."

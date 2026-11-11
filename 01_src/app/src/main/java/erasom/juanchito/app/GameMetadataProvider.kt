@@ -15,35 +15,35 @@ object GameMetadataProvider {
 
     fun getMetadata(gameName: String): GameMetadata {
         return when (gameName) {
-            "Chrono Trigger", "Chronicles RPG" -> GameMetadata(
-                synopsis = "Año 1000 d.C. Crono viaja a través de los portales del tiempo para derrotar a Lavos y salvar el destino del planeta.",
-                chapterName = "Capítulo 1: El Reino de Guardia y el Portal",
+            "Crónica del Tiempo", "RPG Cronica" -> GameMetadata(
+                synopsis = "Año 1000 d.C. Ciro viaja a través de los portales del tiempo para derrotar a Devorador y salvar el destino del planeta.",
+                chapterName = "Capítulo 1: El Reino de Valdoria y el Portal",
                 primaryColor = Color.parseColor("#C41E24"),
                 accentColor = Color.parseColor("#E6B800"),
                 iconType = "sword"
             )
-            "Contra 3", "Cyber Commando" -> GameMetadata(
-                synopsis = "Año 2636. La horda extraterrestre invade Neo City. Bill y Lance despliegan armamento pesado de asalto.",
+            "Comando Supremo", "Cyber Commando" -> GameMetadata(
+                synopsis = "Año 2636. La horda extraterrestre invade Neo City. Juanchito y Tito despliegan armamento pesado de asalto.",
                 chapterName = "Misión 1: Frontera Urbana y Núcleo Alienígena",
                 primaryColor = Color.parseColor("#00A800"),
                 accentColor = Color.parseColor("#D82800"),
                 iconType = "gun"
             )
-            "Pitfall", "Jungle Run" -> GameMetadata(
-                synopsis = "Harry el aventurero penetra la selva prohibida en busca de los 32 tesoros mayas antes de que anochezca.",
+            "Jungla Perdida", "Selva Perdida" -> GameMetadata(
+                synopsis = "Juanchito el explorador penetra la selva prohibida en busca de los 32 tesoros mayas antes de que anochezca.",
                 chapterName = "Expedición I: Pantano de Cocodrilos y Lianas",
                 primaryColor = Color.parseColor("#805A20"),
                 accentColor = Color.parseColor("#50A000"),
                 iconType = "jungle"
             )
-            "Bomberman 3", "Bomb Labyrinth" -> GameMetadata(
-                synopsis = "El ejército androide ha sitiado la base planetaria. White Bomber debe colocar explosivos y hallar la llave maestra.",
+            "Cazabombas", "Bomb Labyrinth" -> GameMetadata(
+                synopsis = "El ejército androide ha sitiado la base planetaria. Bombita debe colocar explosivos y hallar la llave maestra.",
                 chapterName = "Sector 1: Fortaleza de Bloques y Tanque Boss",
                 primaryColor = Color.parseColor("#3C44AA"),
                 accentColor = Color.parseColor("#E6482E"),
                 iconType = "bomb"
             )
-            "Top Gear 2", "Nitro Speed" -> GameMetadata(
+            "Turbo Total", "Nitro Speed" -> GameMetadata(
                 synopsis = "Campeonato mundial nocturno sobre asfalto mojado. Gestiona el nitro, el desgaste de gomas y adelanta al rival.",
                 chapterName = "Circuito 1: Tokio Speedway Nocturno",
                 primaryColor = Color.parseColor("#D82800"),
@@ -57,22 +57,22 @@ object GameMetadataProvider {
                 accentColor = Color.parseColor("#F5C542"),
                 iconType = "fist"
             )
-            "Capcom Soccer", "Arcade Soccer" -> GameMetadata(
+            "Fútbol Retro Arena", "Arcade Soccer" -> GameMetadata(
                 synopsis = "Copa Internacional Arcade 1990. Fútbol veloz 5v5 con tiros especiales acrobáticos y árbitro sin piedad.",
                 chapterName = "Fase de Grupos: Estadio Nacional",
                 primaryColor = Color.parseColor("#007800"),
                 accentColor = Color.parseColor("#F8F8F8"),
                 iconType = "ball"
             )
-            "Choplifter 3", "Rescue Chopper" -> GameMetadata(
+            "Helirescate", "Rescue Chopper" -> GameMetadata(
                 synopsis = "Vuelo en zona de combate hostil. El escuadrón debe rescatar 64 prisioneros de guerra esquivando antiaéreos.",
                 chapterName = "Operación Rescate: Sector Desierto",
                 primaryColor = Color.parseColor("#5C94FC"),
                 accentColor = Color.parseColor("#FC9838"),
                 iconType = "chopper"
             )
-            "Kid the Clown", "Circus Run" -> GameMetadata(
-                synopsis = "El circo mágico ha sido hechizado por Blackjack. Kid debe recuperar los globos dorados por las carpas flotantes.",
+            "Payasito", "Circus Run" -> GameMetadata(
+                synopsis = "El circo mágico ha sido hechizado por el mago Zarko. Kid debe recuperar los globos dorados por las carpas flotantes.",
                 chapterName = "Acto 1: La Carpa Estelar",
                 primaryColor = Color.parseColor("#C84C0C"),
                 accentColor = Color.parseColor("#F8B800"),
@@ -106,21 +106,21 @@ object GameMetadataProvider {
                 accentColor = Color.parseColor("#FF3366"),
                 iconType = "alien"
             )
-            "Snake", "Snake!" -> GameMetadata(
+            "Serpiente Retro", "Snake!" -> GameMetadata(
                 synopsis = "Caza cibernética en rejilla retro. Consume fuentes de energía para crecer sin colisionar.",
                 chapterName = "Rejilla 1: Alimentador Cuántico",
                 primaryColor = Color.parseColor("#00A800"),
                 accentColor = Color.parseColor("#F8D878"),
                 iconType = "snake"
             )
-            "Pong", "Reflejos" -> GameMetadata(
+            "Duelo Raqueta", "Reflejos" -> GameMetadata(
                 synopsis = "El duelo fundacional del videojuego arcade. Velocidad y reflejos puros frente a la IA.",
                 chapterName = "Duelo Arcade: Set de Campeonato",
                 primaryColor = Color.parseColor("#F8F8F8"),
                 accentColor = Color.parseColor("#3C44AA"),
                 iconType = "paddle"
             )
-            "Breakout", "Pixel Smash" -> GameMetadata(
+            "Rompeladrillos", "Pixel Smash" -> GameMetadata(
                 synopsis = "Destruye la barrera de defensa bloque a bloque con la esfera deflectora y potencia angular.",
                 chapterName = "Muro de Cuarzo: Fase 1",
                 primaryColor = Color.parseColor("#FECA57"),

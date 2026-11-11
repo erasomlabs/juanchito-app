@@ -41,7 +41,9 @@ class PixelPuzzlesGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#000000"))
+        // Taller de ladrillos con marco verde
+        NesScenery.drawBrickWall(canvas, w, h, 150)
+        NesScenery.drawNeonFrame(canvas, w, h, "#00A800")
         paint.textSize = 24f
         paint.color = Color.WHITE
         canvas.drawText("Objetivo: Bloque ${pattern[step % pattern.size] + 1}", w / 2f, h * 0.25f, paint)
@@ -105,7 +107,12 @@ class CarrerasGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#000000"))
+        // Carretera entre colinas con cielo azul
+        NesScenery.drawSkyBands(canvas, w, h.toFloat(), "#5C94FC", "#A8D8FC", 5)
+        NesScenery.drawSun(canvas, w - 60f, 60f, 26f)
+        NesScenery.drawClouds(canvas, w, h * 0.22f)
+        NesScenery.drawHills(canvas, w, h * 0.6f, "#00A800", "#008800")
+        canvas.drawRect(0f, h * 0.6f, w.toFloat(), h.toFloat(), Paint().apply { color = Color.parseColor("#00A800"); isAntiAlias = false })
         val laneWidth = 70f
         val roadX = (w - laneWidth * 3) / 2f
         paint.color = Color.parseColor("#2D3748")
@@ -174,7 +181,9 @@ class SolitarioGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#000000"))
+        // Mesa de casino: fieltro verde + marco dorado
+        NesScenery.drawCheckerFloor(canvas, w, h, 0f, "#006400", "#005000")
+        NesScenery.drawNeonFrame(canvas, w, h, "#F5C542")
         val cardW = 50f; val cardH = 75f
         val startX = (w - cardW * 6) / 2f
         paint.textSize = 24f
@@ -225,7 +234,9 @@ class PixelDadosGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#000000"))
+        // Casino nocturno con reflectores
+        NesScenery.drawCheckerFloor(canvas, w, h, 0f, "#006400", "#005000")
+        NesScenery.drawSpotlights(canvas, w, h)
         paint.color = Color.parseColor("#5C94FC")
         val size = 90f
         val r = RectF(w / 2f - size / 2f, h / 2f - size / 2f, w / 2f + size / 2f, h / 2f + size / 2f)

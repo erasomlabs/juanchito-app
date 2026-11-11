@@ -3,9 +3,9 @@
 Todos los juegos comparten la estética minimalista moderno (fondo `#1A1A2E`, paleta plana, formas geométricas, HUD monospace) y controles por juego.
 
 ## Arcade (8)
-1. **Snake** — Come, crece, evita choques. Velocidad aumenta.
-2. **Pong** — Tenis 1v1, rebotes angulados, primer a 5 puntos.
-3. **Breakout** — Paleta, bola, 5 filas de ladrillos de colores.
+1. **Serpiente Retro** — Come, crece, evita choques. Velocidad aumenta.
+2. **Duelo Raqueta** — Tenis 1v1, rebotes angulados, primer a 5 puntos.
+3. **Rompeladrillos** — Paleta, bola, 5 filas de ladrillos de colores.
 4. **Space Invaders** — Disparar a filas de invasores que bajan; escudos destructibles; UFO bonus.
 5. **Asteroids** — Nave rota, destruir asteroides que se fragmentan; ovnis.
 6. **Pac-Man** — Laberinto, comer puntos, 4 fantasmas con IA (Blinky/Pinky/Inky/Clyde), power pellets.
@@ -13,12 +13,12 @@ Todos los juegos comparten la estética minimalista moderno (fondo `#1A1A2E`, pa
 8. **Galaga** — Disparar a formaciones; enemigos que capturan la nave; doble disparo.
 
 ## Plataformas (6)
-9. **Pitfall** — Selva, saltar troncos/hoyos, lianas, tesoros, 20 min, 255 pantallas.
+9. **Jungla Perdida** — Selva, saltar troncos/hoyos, lianas, tesoros, 20 min, 255 pantallas.
 10. **Pixel Mario** — Plataformas side-scroll, saltar, bloques ? (monedas/power-ups), Goombas, jefes por mundo.
 11. **Pixel Sonic** — Velocidad, loops, anillos, springs, jefes.
 12. **Pixel Mega** — Disparo, saltar, armas intercambiables por jefe, 8 robots.
 13. **Donkey Kong** — Subir andamios, esquivar barriles, rescatar a Pauline.
-14. **Kid Klown in Crazy Chase** — Carrera perseguida por mecha, items, jefes por nivel.
+14. **Payasito en la Carrera Loca** — Carrera perseguida por mecha, items, jefes por nivel.
 
 ## Puzzle (5)
 15. **Tetris** — 7 tetrominós, 10×20, líneas, niveles, puntuación clásica.
@@ -28,20 +28,20 @@ Todos los juegos comparten la estética minimalista moderno (fondo `#1A1A2E`, pa
 19. **Dr. Mario** — Cápsulas de 2 colores, eliminar virus alineando 4.
 
 ## Acción (5)
-20. **Bomberman 3** — Laberinto, bombas en cruz, items, enemigos.
-21. **Contra 3** — Run & gun, armas (S/L/H/F/M), jefes, 3 vidas.
-22. **Choplifter 3** — Helicóptero, rescate de rehenes, tanques/jets.
+20. **Cazabombas** — Laberinto, bombas en cruz, items, enemigos.
+21. **Comando Supremo** — Run & gun, armas (S/L/H/F/M), jefes, 3 vidas.
+22. **Helirescate** — Helicóptero, rescate de rehenes, tanques/jets.
 23. **Metal Slug** — Run & gun con vehículo (Slug), rescate de POWs, armas variadas.
 24. **Commando** — Top-down vertical, disparo en 8 direcciones, granadas.
 
 ## Carreras (4)
 25. **Uniracers** — Monociclos, trucos en el aire, boost, 96 pistas.
-26. **Top Gear 2** — 32 pistas, 16 países, nitro, mejoras, combustible.
+26. **Turbo Total** — 32 pistas, 16 países, nitro, mejoras, combustible.
 27. **F-Zero** — Hovercraft, pistas con boost pads, daño, campeonato.
 28. **OutRun** — Carrera contra el tiempo, bifurcaciones, Ferrari, música.
 
 ## Deportes (2)
-29. **Capcom Soccer** — Fútbol 11v11/5v5, pase/tiro, torneo.
+29. **Fútbol Retro Arena** — Fútbol 11v11/5v5, pase/tiro, torneo.
 30. **NBA Jam** — Baloncesto 2v2 arcade, mates espectaculares, "He's on fire!".
 
 ## Lucha (2)
@@ -49,7 +49,7 @@ Todos los juegos comparten la estética minimalista moderno (fondo `#1A1A2E`, pa
 32. **Street Fighter** — 1v1, 8 luchadores, hadouken/shoryuken, 6 botones.
 
 ## RPG (1)
-33. **Chrono Trigger** — RPG por turnos (ATB), combos dobles/triples, viaje en el tiempo, 13 finales.
+33. **Crónica del Tiempo** — RPG por turnos (ATB), combos dobles/triples, viaje en el tiempo, 13 finales.
 
 ---
 
@@ -87,21 +87,21 @@ Todos los juegos comparten la estética minimalista moderno (fondo `#1A1A2E`, pa
 ## Total: 30 juegos (15 clásicos + 15 Pixel)
 
 ### Prioridad de elaboración (fieles al original)
-1. **Pitfall** ✅ (refinado)
-2. **Snake** ✅ (refinado)
-3. **Pong** ✅ (refinado)
-4. **Breakout** ✅ (refinado)
+1. **Jungla Perdida** ✅ (refinado)
+2. **Serpiente Retro** ✅ (refinado)
+3. **Duelo Raqueta** ✅ (refinado)
+4. **Rompeladrillos** ✅ (refinado)
 5. **Tetris** ✅ (refinado)
 6. **Puzzle Bobble** ✅ (refinado)
-7. Bomberman 3
-8. Contra 3
-9. Choplifter 3
+7. Cazabombas
+8. Comando Supremo
+9. Helirescate
 10. Uniracers
-11. Top Gear 2
-12. Kid Klown
+11. Turbo Total
+12. Payasito
 13. Mortal Kombat
-14. Chrono Trigger
-15. Capcom Soccer
+14. Crónica del Tiempo
+15. Fútbol Retro Arena
 16-30. Juegos Pixel (uno por uno)
 
 ## Prioridad de implementación (por lotes)
@@ -120,4 +120,4 @@ Todos los juegos comparten la estética minimalista moderno (fondo `#1A1A2E`, pa
 
 ## ¿Por cuál empezamos a elaborar?
 
-Recomiendo empezar por **Pitfall** (ya implementado pero simplificado). ¿Refinamos Pitfall para ser fiel al original (255 pantallas, cocodrilos con boca abierta/cerrada, lianas, tesoros, timer 20 min), o prefieres empezar por otro del Lote 2?
+Recomiendo empezar por **Jungla Perdida** (ya implementado pero simplificado). ¿Refinamos Jungla Perdida para ser fiel al original (255 pantallas, cocodrilos con boca abierta/cerrada, lianas, tesoros, timer 20 min), o prefieres empezar por otro del Lote 2?

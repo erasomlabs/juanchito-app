@@ -7,7 +7,7 @@ import android.graphics.RectF
 import kotlin.random.Random
 
 class BombermanGame : Game {
-    override val name = "Bomberman 3"
+    override val name = "Cazabombas"
     override val genre = "Acción"
     private var w = 0; private var h = 0
     private val cols = 13; private val rows = 11

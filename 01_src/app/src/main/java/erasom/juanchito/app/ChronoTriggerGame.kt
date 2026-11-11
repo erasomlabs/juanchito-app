@@ -7,7 +7,7 @@ import android.graphics.RectF
 import kotlin.random.Random
 
 class ChronoTriggerGame : Game {
-    override val name = "Chrono Trigger"
+    override val name = "Crónica del Tiempo"
     override val genre = "RPG"
     private var w = 0; private var h = 0
 
@@ -21,14 +21,14 @@ class ChronoTriggerGame : Game {
     private var dialogueIndex = 0
     private var dialogueQueue = mutableListOf<Pair<String, String>>()
 
-    // Mundo y mapa por tiles (Castillo Guardia & Bosque Milenario)
+    // Mundo y mapa por tiles (Castillo Valdoria & Bosque Milenario)
     private val tileSize = 32
     private var mapW = 0; private var mapH = 0
     private val tileMap = mutableListOf<IntArray>() // 0=pasto, 1=muro/piedra, 2=árbol denso, 3=camino adoquinado, 4=portal tiempo, 5=trono
     private var px = 0f; private var py = 0f
     private var camX = 0f; private var camY = 0f
 
-    // Party de héroes (Crono, Marle, Lucca)
+    // Party de héroes (Ciro, Mara, Lucia)
     data class Hero(val name: String, var hp: Int, val maxHp: Int, var mp: Int, val maxMp: Int, var atb: Float, val color: Int, val techName: String)
     private val party = mutableListOf<Hero>()
     private var activeHeroIndex = 0
@@ -66,9 +66,9 @@ class ChronoTriggerGame : Game {
         currentChapter = 1
         bossTriggered = false
         party.clear()
-        party.add(Hero("Crono", 95, 95, 20, 20, 0.4f, Color.parseColor("#E6B800"), "Ciclón"))
-        party.add(Hero("Marle", 75, 75, 35, 35, 0.2f, Color.parseColor("#00D9FF"), "Aura Cura"))
-        party.add(Hero("Lucca", 80, 80, 40, 40, 0.1f, Color.parseColor("#C41E24"), "Fuego"))
+        party.add(Hero("Ciro", 95, 95, 20, 20, 0.4f, Color.parseColor("#E6B800"), "Ciclón"))
+        party.add(Hero("Mara", 75, 75, 35, 35, 0.2f, Color.parseColor("#00D9FF"), "Aura Cura"))
+        party.add(Hero("Lucia", 80, 80, 40, 40, 0.1f, Color.parseColor("#C41E24"), "Fuego"))
 
         setupChapterMap(currentChapter)
     }
@@ -115,9 +115,9 @@ class ChronoTriggerGame : Game {
                     // Pasar a diálogo introductorio
                     gameState = 3
                     dialogueQueue.clear()
-                    dialogueQueue.add("CRONO" to "¡El portal de la feria milenaria se abrió fuera de control!")
-                    dialogueQueue.add("MARLE" to "¡Crono, el reino de Guardia de hace 400 años está en peligro!")
-                    dialogueQueue.add("LUCCA" to "Debemos infiltrarnos en el castillo antes de que la reina caiga.")
+                    dialogueQueue.add("CIRO" to "¡El portal de la feria milenaria se abrió fuera de control!")
+                    dialogueQueue.add("MARA" to "¡Ciro, el reino de Valdoria de hace 400 años está en peligro!")
+                    dialogueQueue.add("LUCIA" to "Debemos infiltrarnos en el castillo antes de que la reina caiga.")
                     dialogueIndex = 0
                 }
             }
@@ -190,12 +190,12 @@ class ChronoTriggerGame : Game {
         bossTriggered = true
         gameState = 3
         dialogueQueue.clear()
-        dialogueQueue.add("HECHICERO YAKRA" to "¡Nadie salvará al linaje real de Guardia! ¡Perecerán en el tiempo!")
-        dialogueQueue.add("CRONO" to "¡Desenvaina tu acero! ¡Por el reino!")
+        dialogueQueue.add("HECHICERO ZORAK" to "¡Nadie salvará al linaje real de Valdoria! ¡Perecerán en el tiempo!")
+        dialogueQueue.add("CIRO" to "¡Desenvaina tu acero! ¡Por el reino!")
         dialogueIndex = 0
 
         enemies.clear()
-        enemies.add(Enemy("Yakra Boss", 180, 180, 0.1f, Color.parseColor("#FF0055"), isBoss = true))
+        enemies.add(Enemy("Zorak Boss", 180, 180, 0.1f, Color.parseColor("#FF0055"), isBoss = true))
     }
 
     private fun updateBattle(dt: Float, aDown: Boolean, bDown: Boolean, selectDown: Boolean) {
@@ -259,10 +259,10 @@ class ChronoTriggerGame : Game {
             } else if (bDown && curHero.mp >= 8) { // Técnica especial
                 curHero.atb = 0f
                 curHero.mp -= 8
-                if (curHero.name == "Marle") {
+                if (curHero.name == "Mara") {
                     // Cura a la party
                     for (h in party) if (h.hp > 0) h.hp = (h.hp + 35).coerceAtMost(h.maxHp)
-                    battleActionMsg = "¡Marle usa Aura Curativa en el escuadrón!"
+                    battleActionMsg = "¡Mara usa Aura Curativa en el escuadrón!"
                 } else {
                     val dmg = Random.nextInt(38, 55)
                     targetEnemy.hp = (targetEnemy.hp - dmg).coerceAtLeast(0)
@@ -277,15 +277,15 @@ class ChronoTriggerGame : Game {
             0 -> {
                 NesDialogueRenderer.drawPrologueScreen(
                     canvas, w, h,
-                    gameTitle = "CHRONO TRIGGER",
-                    missionTitle = "CAPÍTULO I: EL REINO DE GUARDIA Y EL PORTAL TEMPORAL",
+                    gameTitle = "CRÓNICA DEL TIEMPO",
+                    missionTitle = "CAPÍTULO I: EL REINO DE VALDORIA Y EL PORTAL TEMPORAL",
                     prologueLines = listOf(
-                        "• Año 1000 d.C., Reino de Guardia.",
-                        "• Durante la Feria Milenaria, el invento de Lucca",
+                        "• Año 1000 d.C., Reino de Valdoria.",
+                        "• Durante la Feria Milenaria, el invento de Lucia",
                         "  abrió una fisura dimensional en el continuo espacio-tiempo.",
-                        "• La princesa Marle ha desaparecido arrastrada al pasado.",
-                        "• Crono empuña su katana y cruza el portal para impedir",
-                        "  que la línea temporal sea erradicada por el parásito Lavos.",
+                        "• La princesa Mara ha desaparecido arrastrada al pasado.",
+                        "• Ciro empuña su katana y cruza el portal para impedir",
+                        "  que la línea temporal sea erradicada por el parásito Devorador.",
                         "• OBJETIVO: Atraviesa el bosque, llega al castillo y derrota al impostor."
                     ),
                     primaryColor = Color.parseColor("#C41E24")
@@ -309,9 +309,9 @@ class ChronoTriggerGame : Game {
                 NesDialogueRenderer.drawPrologueScreen(
                     canvas, w, h,
                     gameTitle = "¡CAPÍTULO I SUPERADO!",
-                    missionTitle = "EL REINO DE GUARDIA ESTÁ A SALVO POR AHORA",
+                    missionTitle = "EL REINO DE VALDORIA ESTÁ A SALVO POR AHORA",
                     prologueLines = listOf(
-                        "• El impostor Yakra fue desterrado del castillo.",
+                        "• El impostor Zorak fue desterrado del castillo.",
                         "• La reina original ha sido restituida en el trono real.",
                         "• Sin embargo, una campana lejana resuena en el horizonte...",
                         "• ¡Un nuevo portal se ha abierto hacia el futuro desolado (2300 d.C.)!",
@@ -366,19 +366,17 @@ class ChronoTriggerGame : Game {
             }
         }
 
-        // Jugador (Crono con pelo rojo/katana)
+        // Juanchito protagonista en el mapa
         val cx = px - camX
         val cy = py - camY
-        val pCrono = Paint().apply { color = Color.parseColor("#E6B800") }
-        canvas.drawCircle(cx, cy - 8f, 7f, pCrono)
-        val pPelo = Paint().apply { color = Color.parseColor("#C41E24") }
-        canvas.drawRect(cx - 6f, cy - 16f, cx + 6f, cy - 8f, pPelo)
-        val pCuerpo = Paint().apply { color = Color.parseColor("#00E5FF") }
-        canvas.drawRect(cx - 5f, cy - 1f, cx + 5f, cy + 10f, pCuerpo)
+        JuanchitoSprite.draw(canvas, cx, cy, 28f, facingRight = true, hatColor = 0xC41E24)
+        // Katana al costado
+        val pKatana = Paint().apply { color = Color.parseColor("#F8F8F8"); strokeWidth = 3f }
+        canvas.drawLine(cx + 10f, cy + 2f, cx + 20f, cy - 8f, pKatana)
 
         // HUD mapa
         pText.color = Color.parseColor("#F8F8F8")
-        canvas.drawText("CASTILLO DE GUARDIA (600 d.C.) | Nivel $currentChapter | Score: $score", 12f, 18f, pText)
+        canvas.drawText("CASTILLO DE VALDORIA (600 d.C.) | Nivel $currentChapter | Score: $score", 12f, 18f, pText)
         pText.color = Color.parseColor("#FFD700")
         canvas.drawText("Ve hacia el Norte (Trono) o Portal Celeste", 12f, 32f, pText)
     }
@@ -433,6 +431,8 @@ class ChronoTriggerGame : Game {
             canvas.drawText("$cursor${hero.name}", 20f, hy, pText)
             canvas.drawText("HP: ${hero.hp}/${hero.maxHp}", 95f, hy, pText)
             canvas.drawText("MP: ${hero.mp}", 175f, hy, pText)
+            // Mini sprite del héroe
+            JuanchitoSprite.draw(canvas, 300f, hy - 5f, 16f, facingRight = true, hatColor = hero.color)
 
             // Barra ATB
             val pAtb = Paint().apply { color = if (hero.atb >= 1f) Color.parseColor("#00E5FF") else Color.parseColor("#5A5A70") }

@@ -7,7 +7,7 @@ import android.graphics.RectF
 import kotlin.random.Random
 
 class CapcomSoccerGame : Game {
-    override val name = "Capcom Soccer"
+    override val name = "Fútbol Retro Arena"
     override val genre = "Deportes"
     private var w = 0; private var h = 0
     private val players = mutableListOf<Player>()
@@ -20,6 +20,10 @@ class CapcomSoccerGame : Game {
     override var isGameOver = false
     override var score = 0
     private var highScore = 0
+    // Estados: 0 = Prólogo Copa Retro, 1 = Gameplay
+    private var gameState = 0
+    private var goalCelebration = 0f
+    private var lastGoalMsg = ""
 
     private data class Player(var x: Float, var y: Float, val team: Int, var hasBall: Boolean)
 
@@ -41,10 +45,17 @@ class CapcomSoccerGame : Game {
         ballX = w / 2f; ballY = h / 2f; ballVx = 0f; ballVy = 0f
         scoreP = 0; scoreAI = 0; timeLeft = 180f; activePlayer = 0; hasBall = -1
         isGameOver = false; score = 0
+        gameState = 0; goalCelebration = 0f; lastGoalMsg = ""
     }
 
     override fun update(dt: Float, input: GameInput) {
+        if (gameState == 0) {
+            if (input.a || input.start) gameState = 1
+            input.a = false; input.start = false
+            return
+        }
         if (isGameOver) { if (input.start) reset(); return }
+        goalCelebration = (goalCelebration - dt).coerceAtLeast(0f)
         timeLeft -= dt
         if (timeLeft <= 0f) { isGameOver = true; score = scoreP * 100; if (score > highScore) highScore = score; return }
         // move active player
@@ -134,13 +145,47 @@ class CapcomSoccerGame : Game {
             }
         }
         // goals
-        if (ballY < 22f && ballX in w * 0.4f..w * 0.6f) { scoreP++; score = scoreP * 100; resetBall() }
-        if (ballY > h - 22f && ballX in w * 0.4f..w * 0.6f) { scoreAI++; resetBall() }
+        if (ballY < 22f && ballX in w * 0.4f..w * 0.6f) {
+            scoreP++; score = scoreP * 100
+            goalCelebration = 2f; lastGoalMsg = "¡GOL de Valdoria FC! ¡La grada estalla!"
+            resetBall()
+        }
+        if (ballY > h - 22f && ballX in w * 0.4f..w * 0.6f) {
+            scoreAI++; goalCelebration = 2f; lastGoalMsg = "Gol de la Selección Furia... silencio en la tribuna"
+            resetBall()
+        }
     }
 
     private fun resetBall() { ballX = w / 2f; ballY = h / 2f; ballVx = 0f; ballVy = 0f; hasBall = -1; for (p in players) p.hasBall = false }
 
     override fun draw(canvas: Canvas) {
+        if (gameState == 0) {
+            // Prólogo: la historia de la Copa Retro
+            NesDialogueRenderer.drawPrologueScreen(
+                canvas,
+                w,
+                h,
+                gameTitle = "FÚTBOL RETRO ARENA",
+                missionTitle = "COPA RETRO 1994: LA FINAL DE VALDORIA",
+                prologueLines = listOf(
+                    "La Copa Retro reúne a las selecciones más",
+                    "acrobáticas del planeta en el Estadio Nacional.",
+                    "",
+                    "Juanchito capitanea al Valdoria FC, el equipo",
+                    "de la estrella dorada. Enfrente espera la",
+                    "Selección Furia, famosa por sus chilenas",
+                    "imposibles y su defensa de hierro.",
+                    "",
+                    "Tres minutos por tiempo, pases de toque",
+                    "rápido y remates de volea. Solo uno levantará",
+                    "el trofeo ante 60.000 hinchas.",
+                    "",
+                    "¡Que ruede el balón, capitán!"
+                ),
+                primaryColor = Color.parseColor("#007800")
+            )
+            return
+        }
         // sky + field
         canvas.drawColor(Color.parseColor("#5C94FC"))
         canvas.drawRect(0f, h * 0.08f, w.toFloat(), h.toFloat(), fieldPaint)
@@ -179,13 +224,29 @@ class CapcomSoccerGame : Game {
         canvas.drawText("Tiempo: ${timeLeft.toInt()}s", 8f, 14f, smallPaint)
         canvas.drawText("A: Pase  B: Tiro  SELECT: Cambiar", 8f, h - 8f, smallPaint)
         smallPaint.textAlign = Paint.Align.CENTER
+        // Relato en vivo del narrador
+        if (goalCelebration > 0f) {
+            val bannerPaint = Paint().apply { color = Color.parseColor("#000000"); alpha = 170; isAntiAlias = false }
+            canvas.drawRect(0f, h * 0.35f, w.toFloat(), h * 0.45f, bannerPaint)
+            textPaint.textSize = 14f; textPaint.color = Color.parseColor("#F8D878")
+            canvas.drawText(lastGoalMsg, w / 2f, h * 0.41f, textPaint)
+            textPaint.color = Color.parseColor("#F8F8F8")
+        }
+        // Resultado final con cierre de historia
         if (isGameOver) {
             val msg = if (scoreP > scoreAI) "¡GANASTE!" else if (scoreP < scoreAI) "PERDISTE" else "EMPATE"
             val col = if (scoreP > scoreAI) Color.parseColor("#00A800") else if (scoreP < scoreAI) Color.parseColor("#D82800") else Color.parseColor("#F8D878")
             textPaint.textSize = 32f; textPaint.color = col
             canvas.drawText(msg, w / 2f, h / 2f, textPaint)
-            textPaint.textSize = 12f; textPaint.color = Color.parseColor("#F8F8F8")
-            canvas.drawText("Pulsa START", w / 2f, h / 2f + 24f, smallPaint.apply { textSize = 14f; color = Color.parseColor("#F8F8F8"); textAlign = Paint.Align.CENTER })
+            textPaint.textSize = 11f; textPaint.color = Color.parseColor("#F8F8F8")
+            val story = when {
+                scoreP > scoreAI -> "Juanchito levanta la Copa Retro entre confeti dorado"
+                scoreP < scoreAI -> "La Selección Furia se lleva el trofeo... habrá revancha"
+                else -> "Empate épico: la Copa se queda en casa hasta el próximo torneo"
+            }
+            canvas.drawText(story, w / 2f, h / 2f + 20f, textPaint)
+            textPaint.textSize = 12f
+            canvas.drawText("Pulsa START", w / 2f, h / 2f + 42f, smallPaint.apply { textSize = 14f; color = Color.parseColor("#F8F8F8"); textAlign = Paint.Align.CENTER })
         }
     }
 }

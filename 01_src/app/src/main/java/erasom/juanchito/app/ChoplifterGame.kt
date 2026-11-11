@@ -7,7 +7,7 @@ import android.graphics.RectF
 import kotlin.random.Random
 
 class ChoplifterGame : Game {
-    override val name = "Choplifter 3"
+    override val name = "Helirescate"
     override val genre = "Acción"
     private var w = 0; private var h = 0
     private var hx = 100f; private var hy = 100f
@@ -151,6 +151,8 @@ class ChoplifterGame : Game {
         if (invuln <= 0f || (invuln * 8).toInt() % 2 == 0) {
             canvas.drawRoundRect(RectF(hx - 22f, hy - 10f, hx + 22f, hy + 10f), 4f, 4f, heliPaint)
             canvas.drawRect(hx + 18f, hy - 14f, hx + 28f, hy - 6f, heliPaint)
+            // Juanchito piloto en la cabina
+            JuanchitoSprite.draw(canvas, hx - 10f, hy - 8f, 14f, facingRight = false, hatColor = 0x5A7D9A)
             // rotor
             val rp = Paint().apply { color = Color.parseColor("#F8F8F8"); strokeWidth = 2f }
             canvas.drawLine(hx - 30f, hy - 12f, hx + 30f, hy - 12f, rp)

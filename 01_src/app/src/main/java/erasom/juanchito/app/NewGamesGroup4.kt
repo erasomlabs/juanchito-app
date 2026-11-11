@@ -47,7 +47,9 @@ class PixelCharadesGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#000000"))
+        // Escenario de concurso con reflectores
+        NesScenery.drawSkyBands(canvas, w, h.toFloat(), "#28104A", "#6A2A8A", 6)
+        NesScenery.drawSpotlights(canvas, w, h)
         paint.color = Color.WHITE
         paint.textSize = 28f
         canvas.drawText("Elige: ${names[targetIndex]}", w / 2f, h * 0.28f, paint)
@@ -119,7 +121,10 @@ class PixelTictactoeGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#000000"))
+        // Parque: tres en raya al aire libre
+        NesScenery.drawSkyBands(canvas, w, h.toFloat(), "#5C94FC", "#A8D8FC", 5)
+        NesScenery.drawClouds(canvas, w, h * 0.25f)
+        NesScenery.drawHills(canvas, w, h * 0.85f, "#00A800", "#008800")
         val size = 65f
         val startX = (w - size * 3) / 2f
         val startY = (h - size * 3) / 2f
@@ -209,7 +214,11 @@ class PixelInvadersGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#000000"))
+        // Espacio profundo: estrellas, planeta y ciudad en órbita
+        NesScenery.drawSkyBands(canvas, w, h.toFloat(), "#050514", "#101038", 5)
+        NesScenery.drawStars(canvas, w, h, 60)
+        NesScenery.drawPlanet(canvas, w - 70f, 90f, 40f)
+        NesScenery.drawCitySkyline(canvas, w, h.toFloat())
         // Nave
         paint.color = Color.parseColor("#5C94FC")
         canvas.drawRoundRect(RectF(shipX - 18f, h - 50f, shipX + 18f, h - 30f), 4f, 4f, paint)
