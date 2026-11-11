@@ -276,11 +276,45 @@ class PixelRitmoGame : Game {
         NesScenery.drawSkyBands(canvas, w, h.toFloat(), "#28104A", "#5A1A6A", 5)
         NesScenery.drawSpotlights(canvas, w, h)
         NesScenery.drawCheckerFloor(canvas, w, h, h - 100f, "#3A1A5A", "#2A1040")
-        paint.color = Color.parseColor("#F8D878")
+        // Línea de meta (blanco con franjas de advertencia)
+        paint.color = Color.parseColor("#F8F8F8")
         canvas.drawLine(0f, h - 70f, w.toFloat(), h - 70f, paint)
         paint.color = Color.parseColor("#D82800")
-        for (y in notes) {
-            canvas.drawCircle(w / 2f, y, 22f, paint)
+        var sx = 0f
+        while (sx < w) {
+            canvas.drawRect(sx, h - 74f, sx + 12f, h - 66f, paint)
+            sx += 24f
+        }
+        // Notas musicales con corchete y cabeza con brillo
+        for ((idx, y) in notes.withIndex()) {
+            val nx = w / 2f
+            val col = if (idx % 2 == 0) Color.parseColor("#F8D878") else Color.parseColor("#FC9838")
+            val noteP = Paint().apply { color = col; isAntiAlias = false }
+            val stemP = Paint().apply { color = col; isAntiAlias = false }
+            // cabeza de la nota (óvalo inclinado)
+            val head = RectF(nx - 16f, y - 10f, nx + 4f, y + 10f)
+            canvas.drawOval(head, noteP)
+            val shine = Paint().apply { color = Color.parseColor("#F8F8F8"); alpha = 170; isAntiAlias = false }
+            canvas.drawCircle(nx - 9f, y - 3f, 2.5f, shine)
+            // plica hacia arriba
+            canvas.drawRect(nx + 1f, y - 34f, nx + 4f, y + 2f, stemP)
+            // corchete (banderín)
+            canvas.drawRect(nx + 4f, y - 34f, nx + 16f, y - 28f, stemP)
+            canvas.drawRect(nx + 4f, y - 24f, nx + 14f, y - 19f, stemP)
+        }
+        // Zona de acierto: receptor estilo altavoz
+        val zone = RectF(w / 2f - 46f, h - 120f, w / 2f + 46f, h - 20f)
+        val zoneP = Paint().apply { color = Color.parseColor("#000000"); alpha = 120; isAntiAlias = false }
+        canvas.drawRoundRect(zone, 8f, 8f, zoneP)
+        val zoneFrame = Paint().apply { color = Color.parseColor("#F5C542"); style = Paint.Style.STROKE; strokeWidth = 3f; isAntiAlias = false }
+        canvas.drawRoundRect(zone, 8f, 8f, zoneFrame)
+        // conciertos: fila de altavoces decorativos al fondo
+        val speakerP = Paint().apply { color = Color.parseColor("#1A1A1A"); isAntiAlias = false }
+        val speakerRing = Paint().apply { color = Color.parseColor("#4A4A6A"); style = Paint.Style.STROKE; strokeWidth = 2f; isAntiAlias = false }
+        for (i in 0..2) {
+            val sx2 = 40f + i * (w - 80f) / 2f
+            canvas.drawRect(sx2 - 18f, h - 96f, sx2 + 18f, h - 66f, speakerP)
+            canvas.drawCircle(sx2, h - 81f, 10f, speakerRing)
         }
     }
 }

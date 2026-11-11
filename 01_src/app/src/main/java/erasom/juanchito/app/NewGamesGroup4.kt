@@ -219,20 +219,69 @@ class PixelInvadersGame : Game {
         NesScenery.drawStars(canvas, w, h, 60)
         NesScenery.drawPlanet(canvas, w - 70f, 90f, 40f)
         NesScenery.drawCitySkyline(canvas, w, h.toFloat())
-        // Nave
-        paint.color = Color.parseColor("#5C94FC")
-        canvas.drawRoundRect(RectF(shipX - 18f, h - 50f, shipX + 18f, h - 30f), 4f, 4f, paint)
+        // Nave de Juanchito: casco, alas, cabina y cañón
+        val hull = Paint().apply { color = Color.parseColor("#5C94FC"); isAntiAlias = false }
+        val hullDark = Paint().apply { color = Color.parseColor("#2A5AA8"); isAntiAlias = false }
+        val glass = Paint().apply { color = Color.parseColor("#A8D8FC"); isAntiAlias = false }
+        // alas
+        canvas.drawRect(shipX - 26f, h - 36f, shipX - 18f, h - 30f, hullDark)
+        canvas.drawRect(shipX + 18f, h - 36f, shipX + 26f, h - 30f, hullDark)
+        // casco
+        canvas.drawRoundRect(RectF(shipX - 18f, h - 50f, shipX + 18f, h - 30f), 4f, 4f, hull)
+        // franja inferior oscura
+        canvas.drawRect(shipX - 18f, h - 34f, shipX + 18f, h - 30f, hullDark)
+        // cañón central
+        canvas.drawRect(shipX - 3f, h - 58f, shipX + 3f, h - 50f, hull)
+        // cabina de cristal
+        canvas.drawRect(shipX - 6f, h - 47f, shipX + 6f, h - 40f, glass)
+        // piloto asomado
+        JuanchitoSprite.draw(canvas, shipX, h - 46f, 12f, facingRight = true, hatColor = 0x5C94FC)
 
-        // Balas
+        // Balas: píldoras con brillo
         paint.color = Color.parseColor("#F8D878")
         for ((bx, by) in bullets) {
             canvas.drawRect(bx - 3f, by - 8f, bx + 3f, by, paint)
+            paint.color = Color.parseColor("#F8F8F8")
+            canvas.drawRect(bx - 1f, by - 6f, bx + 1f, by - 2f, paint)
+            paint.color = Color.parseColor("#F8D878")
         }
 
-        // Alienígenas
-        paint.color = Color.parseColor("#D82800")
-        for (a in aliens) {
-            canvas.drawRoundRect(a, 4f, 4f, paint)
+        // Alienígenas: tres tipos con antenas, ojos y patas (estilo NES)
+        for ((idx, a) in aliens.withIndex()) {
+            val row = idx / 7
+            val cx = a.centerX(); val cy = a.centerY()
+            val body = when (row) {
+                0 -> Color.parseColor("#D82800")   // fila superior: calamar rojo
+                1 -> Color.parseColor("#8814A8")   // media: pulpo púrpura
+                else -> Color.parseColor("#00A800") // baja: cangrejo verde
+            }
+            val bodyP = Paint().apply { color = body; isAntiAlias = false }
+            val eyeP = Paint().apply { color = Color.parseColor("#F8F8F8"); isAntiAlias = false }
+            val pupilP = Paint().apply { color = Color.parseColor("#000000"); isAntiAlias = false }
+            val limbP = Paint().apply { color = body; isAntiAlias = false }
+            val wobble = ((idx % 2 == 0) && (score / 50) % 2 == 0)
+            // antenas
+            canvas.drawRect(cx - 8f, a.top - 6f, cx - 6f, a.top, bodyP)
+            canvas.drawRect(cx + 6f, a.top - 6f, cx + 8f, a.top, bodyP)
+            canvas.drawCircle(cx - 7f, a.top - 7f, 2f, eyeP)
+            canvas.drawCircle(cx + 7f, a.top - 7f, 2f, eyeP)
+            // cuerpo
+            canvas.drawRoundRect(a, 3f, 3f, bodyP)
+            // ojos
+            canvas.drawCircle(cx - 5f, cy - 2f, 3.5f, eyeP)
+            canvas.drawCircle(cx + 5f, cy - 2f, 3.5f, eyeP)
+            canvas.drawCircle(cx - 5f, cy - 2f, 1.5f, pupilP)
+            canvas.drawCircle(cx + 5f, cy - 2f, 1.5f, pupilP)
+            // boca
+            canvas.drawRect(cx - 4f, cy + 5f, cx + 4f, cy + 7f, pupilP)
+            // patas laterales alternadas
+            if (wobble) {
+                canvas.drawRect(a.left - 5f, cy - 2f, a.left, cy + 2f, limbP)
+                canvas.drawRect(a.right, cy - 2f, a.right + 5f, cy + 2f, limbP)
+            } else {
+                canvas.drawRect(a.left - 5f, cy + 3f, a.left, cy + 7f, limbP)
+                canvas.drawRect(a.right, cy + 3f, a.right + 5f, cy + 7f, limbP)
+            }
         }
     }
 }

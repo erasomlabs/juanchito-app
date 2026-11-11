@@ -96,7 +96,7 @@ class ContraGame : Game {
                     gameState = 2
                     dialogueQueue.clear()
                     dialogueQueue.add("COMANDANTE HQ" to "¡Soldados Juanchito y Tito! Las fuerzas alienígenas de Furia Roja han tomado Neo City.")
-                    dialogueQueue.add("BILL RIZER" to "Entendido HQ. Desplegando en la autopista principal. ¡Fuego a discreción!")
+                    dialogueQueue.add("JUANCHITO" to "Entendido HQ. Desplegando en la autopista principal. ¡Fuego a discreción!")
                     dialogueIndex = 0
                 }
             }
@@ -175,7 +175,7 @@ class ContraGame : Game {
             gameState = 2
             dialogueQueue.clear()
             dialogueQueue.add("FURIA ROJA CORE" to "¡Humanos insignificantes! ¡Neo City será el nido de nuestra prole!")
-            dialogueQueue.add("BILL RIZER" to "¡Apunta a las torretas gemelas y al núcleo central!")
+            dialogueQueue.add("JUANCHITO" to "¡Apunta a las torretas gemelas y al núcleo central!")
             dialogueIndex = 0
             return
         }
@@ -315,12 +315,31 @@ class ContraGame : Game {
     private fun drawScene(canvas: Canvas) {
         // Cielo nocturno en llamas (Neo City)
         canvas.drawColor(Color.parseColor("#150B15"))
+        // Resplandor rojo de incendios en el horizonte
+        val glow = Paint().apply { color = Color.parseColor("#D82800"); alpha = 50 }
+        canvas.drawRect(0f, h * 0.2f, w.toFloat(), groundY, glow)
+        // Estrellas tenues
+        NesScenery.drawStars(canvas, w, h, 15)
 
-        // Edificios en ruinas de fondo con efecto parallax
+        // Edificios en ruinas de fondo con efecto parallax y ventanas rotas
         val pBldg = Paint().apply { color = Color.parseColor("#2A1E30") }
+        val pWin = Paint().apply { color = Color.parseColor("#FC9838") }
+        val pWinDark = Paint().apply { color = Color.parseColor("#0A0A12") }
         for (i in 0..12) {
             val bx = (i * 120f) - scrollX * 0.35f
-            canvas.drawRect(bx, h * 0.25f + (i % 3) * 20f, bx + 90f, groundY, pBldg)
+            val bTop = h * 0.25f + (i % 3) * 20f
+            canvas.drawRect(bx, bTop, bx + 90f, groundY, pBldg)
+            // ventanas en cuadrícula (algunas encendidas)
+            var wy = bTop + 14f
+            while (wy < groundY - 12f) {
+                var wx = bx + 10f
+                while (wx < bx + 78f) {
+                    val lit = (i + (wx / 22f).toInt() + (wy / 24f).toInt()) % 4 == 0
+                    canvas.drawRect(wx, wy, wx + 10f, wy + 12f, if (lit) pWin else pWinDark)
+                    wx += 22f
+                }
+                wy += 24f
+            }
         }
 
         // Calzada y plataformas
@@ -334,20 +353,42 @@ class ContraGame : Game {
             val bx = levelLength - 150f - scrollX
             val pBoss = Paint().apply { color = Color.parseColor("#C41E24") }
             canvas.drawRoundRect(RectF(bx, groundY - 80f, bx + 120f, groundY), 8f, 8f, pBoss)
-            // Núcleo palpitante
+            // placas blindadas del caparazón
+            val pPlate = Paint().apply { color = Color.parseColor("#8C1414") }
+            canvas.drawRect(bx + 8f, groundY - 70f, bx + 112f, groundY - 62f, pPlate)
+            canvas.drawRect(bx + 8f, groundY - 30f, bx + 112f, groundY - 22f, pPlate)
+            // Núcleo palpitante con anillos
+            val pulse = ((bossHp % 2) + 1)
+            val pRing = Paint().apply { color = Color.parseColor("#FC9838"); style = Paint.Style.STROKE; strokeWidth = 3f }
             val pCore = Paint().apply { color = Color.parseColor("#00E5FF") }
-            canvas.drawCircle(bx + 60f, groundY - 40f, 18f, pCore)
+            canvas.drawCircle(bx + 60f, groundY - 40f, 18f + pulse * 2f, pRing)
+            canvas.drawCircle(bx + 60f, groundY - 40f, 12f, pCore)
+            canvas.drawCircle(bx + 56f, groundY - 44f, 4f, Paint().apply { color = Color.parseColor("#F8F8F8") })
 
             NesDialogueRenderer.drawBossHud(canvas, w, "FURIA ROJA BIO-CORE", bossHp, bossMaxHp)
         }
 
-        // Soldados enemigos
-        val pTrooper = Paint().apply { color = Color.parseColor("#D82800") }
+        // Soldados enemigos: casco, cuerpo blindado, botas y fusil
         for (t in troopers) {
             val tx = t.x - scrollX
-            canvas.drawRect(tx - 10f, t.y - 24f, tx + 10f, t.y, pTrooper)
+            // casco
+            val pHelmet = Paint().apply { color = Color.parseColor("#2A5A2A") }
+            canvas.drawRect(tx - 6f, t.y - 28f, tx + 6f, t.y - 22f, pHelmet)
+            // torso blindado
+            val pBody = Paint().apply { color = Color.parseColor("#3A3A5A") }
+            canvas.drawRect(tx - 10f, t.y - 22f, tx + 10f, t.y - 10f, pBody)
+            // piernas
+            val pLegs = Paint().apply { color = Color.parseColor("#2A2A40") }
+            canvas.drawRect(tx - 8f, t.y - 10f, tx - 3f, t.y, pLegs)
+            canvas.drawRect(tx + 3f, t.y - 10f, tx + 8f, t.y, pLegs)
+            // botas
+            val pBoots = Paint().apply { color = Color.parseColor("#1A1A1A") }
+            canvas.drawRect(tx - 9f, t.y - 3f, tx - 2f, t.y, pBoots)
+            canvas.drawRect(tx + 2f, t.y - 3f, tx + 9f, t.y, pBoots)
+            // fusil apuntando al jugador
             val pGun = Paint().apply { color = Color.parseColor("#808080") }
-            canvas.drawRect(tx - 16f, t.y - 16f, tx, t.y - 12f, pGun)
+            val aim = if (px > tx) 1f else -1f
+            canvas.drawRect(tx + aim * 6f - 2f, t.y - 18f, tx + aim * 18f, t.y - 15f, pGun)
         }
 
         // Jugador Juanchito
@@ -369,7 +410,7 @@ class ContraGame : Game {
 
         // HUD Superior
         pText.color = Color.parseColor("#F8F8F8")
-        canvas.drawText("P1: BILL  VIDAS: $lives  ARMA: [$weaponType]  SCORE: $score", 12f, 18f, pText)
+        canvas.drawText("P1: JUANCHITO  VIDAS: $lives  ARMA: [$weaponType]  SCORE: $score", 12f, 18f, pText)
         pText.color = Color.parseColor("#E6B800")
         canvas.drawText("FASE $currentPhase | NEO CITY | AVANCE: ${(px / levelLength * 100).toInt()}%", 12f, 32f, pText)
     }

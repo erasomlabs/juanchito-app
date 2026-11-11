@@ -121,15 +121,64 @@ class PixelMinasGame : Game {
         NesScenery.drawCacti(canvas, listOf(w * 0.1f, w * 0.9f), h - 16f)
         val size = 50f
         val ox = (w - size * 5) / 2f; val oy = (h - size * 5) / 2f
+        // Tierra del campo: casillas con textura de suelo
         for (r in 0..4) {
             for (c in 0..4) {
-                paint.color = if (revealed[r][c]) {
-                    if (grid[r][c]) Color.parseColor("#D82800") else Color.parseColor("#2D3748")
+                val rect = RectF(ox + c * size + 3, oy + r * size + 3, ox + (c + 1) * size - 3, oy + (r + 1) * size - 3)
+                if (revealed[r][c]) {
+                    if (grid[r][c]) {
+                        // Mina detonada: cráter con mina de púas y estallido
+                        paint.color = Color.parseColor("#2A1010")
+                        canvas.drawRect(rect, paint)
+                        // mina: cuerpo negro espinado
+                        val mineP = Paint().apply { color = Color.parseColor("#1A1A1A"); isAntiAlias = false }
+                        val spikeP = Paint().apply { color = Color.parseColor("#F8F8F8"); isAntiAlias = false }
+                        val mx = rect.centerX(); val my = rect.centerY()
+                        canvas.drawCircle(mx, my, 11f, mineP)
+                        // púas en 8 direcciones
+                        val angles = floatArrayOf(0f, 45f, 90f, 135f, 180f, 225f, 270f, 315f)
+                        for (ang in angles) {
+                            val rad = Math.toRadians(ang.toDouble())
+                            val x1 = mx + Math.cos(rad).toFloat() * 11f
+                            val y1 = my + Math.sin(rad).toFloat() * 11f
+                            val x2 = mx + Math.cos(rad).toFloat() * 17f
+                            val y2 = my + Math.sin(rad).toFloat() * 17f
+                            canvas.drawLine(x1, y1, x2, y2, spikeP)
+                        }
+                        // luz roja de la mina
+                        val lamp = Paint().apply { color = Color.parseColor("#D82800"); isAntiAlias = false }
+                        canvas.drawCircle(mx, my, 3.5f, lamp)
+                        val lampHi = Paint().apply { color = Color.parseColor("#FC9838"); isAntiAlias = false }
+                        canvas.drawCircle(mx - 1f, my - 1f, 1.5f, lampHi)
+                    } else {
+                        // Celda despejada: suelo con huella de verificación verde
+                        paint.color = Color.parseColor("#2D3748")
+                        canvas.drawRect(rect, paint)
+                        val check = Paint().apply { color = Color.parseColor("#00A800"); style = Paint.Style.STROKE; strokeWidth = 3f; isAntiAlias = false }
+                        canvas.drawLine(rect.left + 10f, rect.centerY(), rect.centerX() - 2f, rect.bottom - 12f, check)
+                        canvas.drawLine(rect.centerX() - 2f, rect.bottom - 12f, rect.right - 10f, rect.top + 12f, check)
+                    }
                 } else {
-                    if (r == selY && c == selX) Color.parseColor("#F8D878") else Color.parseColor("#F8F8F8")
+                    // Celda sin revelar: tapa metálica con remaches
+                    paint.color = if (r == selY && c == selX) Color.parseColor("#F8D878") else Color.parseColor("#C8C8C8")
+                    canvas.drawRect(rect, paint)
+                    val plate = Paint().apply { color = Color.parseColor("#8A8A8A"); isAntiAlias = false }
+                    canvas.drawRect(rect.left + 6f, rect.top + 6f, rect.right - 6f, rect.bottom - 6f, plate)
+                    val rivet = Paint().apply { color = Color.parseColor("#F0F0F0"); isAntiAlias = false }
+                    canvas.drawCircle(rect.left + 9f, rect.top + 9f, 2f, rivet)
+                    canvas.drawCircle(rect.right - 9f, rect.top + 9f, 2f, rivet)
+                    canvas.drawCircle(rect.left + 9f, rect.bottom - 9f, 2f, rivet)
+                    canvas.drawCircle(rect.right - 9f, rect.bottom - 9f, 2f, rivet)
                 }
-                canvas.drawRect(RectF(ox + c * size + 3, oy + r * size + 3, ox + (c + 1) * size - 3, oy + (r + 1) * size - 3), paint)
             }
+        }
+        // Marcador de sapper Juanchito sobre la celda seleccionada
+        if (!revealed[selY][selX]) {
+            val fx = ox + selX * size + size / 2f
+            val fy = oy + selY * size - 14f
+            // banderín de sapper
+            canvas.drawRect(fx - 1.5f, fy - 10f, fx + 1.5f, fy, Paint().apply { color = Color.parseColor("#8B4513"); isAntiAlias = false })
+            canvas.drawRect(fx + 1.5f, fy - 10f, fx + 10f, fy - 4f, Paint().apply { color = Color.parseColor("#D82800"); isAntiAlias = false })
         }
     }
 }

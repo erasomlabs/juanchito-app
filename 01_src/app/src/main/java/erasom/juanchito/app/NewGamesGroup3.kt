@@ -118,16 +118,67 @@ class CarrerasGame : Game {
         paint.color = Color.parseColor("#2D3748")
         canvas.drawRect(roadX, 0f, roadX + laneWidth * 3, h.toFloat(), paint)
 
-        // Jugador
-        paint.color = Color.parseColor("#5C94FC")
-        val px = roadX + lane * laneWidth + 15f
-        canvas.drawRoundRect(RectF(px, h - 80f, px + laneWidth - 30f, h - 30f), 6f, 6f, paint)
+        // Líneas divisorias de carril punteadas
+        paint.color = Color.parseColor("#F8F8F8")
+        for (i in 1..2) {
+            var ly = 0f
+            while (ly < h) {
+                canvas.drawRect(roadX + i * laneWidth - 2f, ly, roadX + i * laneWidth + 2f, ly + 26f, paint)
+                ly += 52f
+            }
+        }
+        // Bordes de la carretera (guardarraíl)
+        val rail = Paint().apply { color = Color.parseColor("#B8B8B8"); isAntiAlias = false }
+        canvas.drawRect(roadX - 6f, 0f, roadX - 2f, h.toFloat(), rail)
+        canvas.drawRect(roadX + laneWidth * 3 + 2f, 0f, roadX + laneWidth * 3 + 6f, h.toFloat(), rail)
 
-        // Tráfico
-        paint.color = Color.parseColor("#D82800")
-        for ((tLane, y) in traffic) {
+        // Jugador: coche de Juanchito con parabrisas, faros y ruedas (vista trasera)
+        val px = roadX + lane * laneWidth + 15f
+        drawCar(canvas, px, h - 80f, laneWidth - 30f, 50f, "#5C94FC", facingUp = true)
+        // Juanchito piloto en el asiento
+        JuanchitoSprite.draw(canvas, px + (laneWidth - 30f) / 2f, h - 58f, 16f, facingRight = true)
+
+        // Tráfico: coches rivales con detalles (vista frontal, vienen hacia abajo)
+        val rivalColors = listOf("#D82800", "#00A800", "#FC9838", "#8814A8", "#F8D878")
+        for ((idx, t) in traffic.withIndex()) {
+            val (tLane, y) = t
             val tx = roadX + tLane * laneWidth + 15f
-            canvas.drawRoundRect(RectF(tx, y, tx + laneWidth - 30f, y + 50f), 6f, 6f, paint)
+            drawCar(canvas, tx, y, laneWidth - 30f, 50f, rivalColors[idx % rivalColors.size], facingUp = false)
+        }
+    }
+
+    /** Coche top-down: carrocería, techo, parabrisas, faros y ruedas. */
+    private fun drawCar(canvas: Canvas, x: Float, y: Float, cw: Float, ch: Float, colorHex: String, facingUp: Boolean) {
+        val body = Paint().apply { color = Color.parseColor(colorHex); isAntiAlias = false }
+        val bodyDark = Paint().apply { color = Color.parseColor("#000000"); alpha = 70; isAntiAlias = false }
+        val roof = Paint().apply { color = Color.parseColor("#1A1A1A"); isAntiAlias = false }
+        val glass = Paint().apply { color = Color.parseColor("#A8D8FC"); isAntiAlias = false }
+        val tire = Paint().apply { color = Color.parseColor("#1A1A1A"); isAntiAlias = false }
+        // ruedas
+        canvas.drawRect(x - 2f, y + 6f, x + 4f, y + 16f, tire)
+        canvas.drawRect(x + cw - 4f, y + 6f, x + cw + 2f, y + 16f, tire)
+        canvas.drawRect(x - 2f, y + ch - 16f, x + 4f, y + ch - 6f, tire)
+        canvas.drawRect(x + cw - 4f, y + ch - 16f, x + cw + 2f, y + ch - 6f, tire)
+        // carrocería
+        canvas.drawRoundRect(RectF(x, y, x + cw, y + ch), 5f, 5f, body)
+        // techo / cabina
+        canvas.drawRect(x + 4f, y + ch * 0.32f, x + cw - 4f, y + ch * 0.68f, roof)
+        // parabrisas y luneta
+        canvas.drawRect(x + 5f, y + ch * 0.22f, x + cw - 5f, y + ch * 0.3f, glass)
+        canvas.drawRect(x + 5f, y + ch * 0.7f, x + cw - 5f, y + ch * 0.78f, glass)
+        if (facingUp) {
+            // faros delanteros (arriba)
+            val lamp = Paint().apply { color = Color.parseColor("#F8D878"); isAntiAlias = false }
+            canvas.drawRect(x + 3f, y + 2f, x + 9f, y + 6f, lamp)
+            canvas.drawRect(x + cw - 9f, y + 2f, x + cw - 3f, y + 6f, lamp)
+        } else {
+            // faros iluminados de los rivales (abajo) + sombra frontal
+            val lamp = Paint().apply { color = Color.parseColor("#F8D878"); isAntiAlias = false }
+            val beam = Paint().apply { color = Color.parseColor("#FCFCB8"); alpha = 120; isAntiAlias = false }
+            canvas.drawRect(x + 3f, y + ch - 6f, x + 9f, y + ch - 2f, lamp)
+            canvas.drawRect(x + cw - 9f, y + ch - 6f, x + cw - 3f, y + ch - 2f, lamp)
+            canvas.drawRect(x + 2f, y + ch, x + cw - 2f, y + ch + 16f, beam)
+            canvas.drawRect(x, y, x + 3f, y + ch, bodyDark)
         }
     }
 }
@@ -187,13 +238,41 @@ class SolitarioGame : Game {
         val cardW = 50f; val cardH = 75f
         val startX = (w - cardW * 6) / 2f
         paint.textSize = 24f
+        // Palos: 1 = corazones, 2 = diamantes, 3 = picas (con color rojo/negro)
+        val suitSymbols = mapOf(1 to "♥", 2 to "♦", 3 to "♠")
+        val suitColors = mapOf(1 to Color.parseColor("#D82800"), 2 to Color.parseColor("#D82800"), 3 to Color.parseColor("#1A1A1A"))
         for (i in 0..5) {
             val r = RectF(startX + i * cardW + 4, h / 2f - cardH / 2f, startX + (i + 1) * cardW - 4, h / 2f + cardH / 2f)
+            // reverso de carta con patrón de rombos
             paint.color = if (i == sel) Color.parseColor("#F8D878") else Color.parseColor("#F8F8F8")
             canvas.drawRoundRect(r, 6f, 6f, paint)
             if (revealed[i]) {
-                paint.color = Color.BLACK
-                canvas.drawText("${cards[i]}", r.centerX(), r.centerY() + 8, paint)
+                // interior blanco con marco y palo
+                paint.color = Color.parseColor("#F8F8F8")
+                canvas.drawRoundRect(r, 6f, 6f, paint)
+                val frame = Paint().apply { color = suitColors[cards[i]]!!; style = Paint.Style.STROKE; strokeWidth = 2f; isAntiAlias = false }
+                canvas.drawRoundRect(r, 6f, 6f, frame)
+                paint.color = suitColors[cards[i]]!!
+                paint.textSize = 34f
+                canvas.drawText(suitSymbols[cards[i]]!!, r.centerX(), r.centerY() + 12, paint)
+                // índice pequeño en la esquina
+                paint.textSize = 14f
+                canvas.drawText(suitSymbols[cards[i]]!!, r.centerX() - 16f, r.top + 18f, paint)
+                paint.textSize = 24f
+            } else if (i != sel) {
+                // patrón del reverso: rombos rojos
+                val pattern = Paint().apply { color = Color.parseColor("#C41E24"); isAntiAlias = false }
+                var py = r.top + 12f
+                var rowShift = 0f
+                while (py < r.bottom - 8f) {
+                    var pxx = r.left + 12f + rowShift
+                    while (pxx < r.right - 8f) {
+                        canvas.drawCircle(pxx, py, 2.5f, pattern)
+                        pxx += 14f
+                    }
+                    rowShift = if (rowShift == 0f) 7f else 0f
+                    py += 12f
+                }
             }
         }
     }
@@ -237,14 +316,42 @@ class PixelDadosGame : Game {
         // Casino nocturno con reflectores
         NesScenery.drawCheckerFloor(canvas, w, h, 0f, "#006400", "#005000")
         NesScenery.drawSpotlights(canvas, w, h)
-        paint.color = Color.parseColor("#5C94FC")
+        // Dado: cuerpo marfil biselado con pips reales según el valor
         val size = 90f
         val r = RectF(w / 2f - size / 2f, h / 2f - size / 2f, w / 2f + size / 2f, h / 2f + size / 2f)
+        // sombra sobre la mesa
+        paint.color = Color.parseColor("#000000"); paint.alpha = 60
+        canvas.drawRoundRect(r, 12f, 12f, paint); paint.alpha = 255
+        // cuerpo
+        paint.color = Color.parseColor("#F8F8F0")
         canvas.drawRoundRect(r, 12f, 12f, paint)
-
-        paint.color = Color.BLACK
-        paint.textSize = 42f
-        canvas.drawText("$currentDice", r.centerX(), r.centerY() + 14, paint)
+        // bisel: borde superior claro, inferior oscuro
+        val bvl = Paint().apply { isAntiAlias = false }
+        bvl.color = Color.parseColor("#000000")
+        bvl.style = Paint.Style.STROKE; bvl.strokeWidth = 3f
+        canvas.drawRoundRect(r, 12f, 12f, bvl)
+        bvl.color = Color.parseColor("#D8D8C8"); bvl.style = Paint.Style.FILL
+        canvas.drawRect(r.left + 4f, r.top + 4f, r.right - 4f, r.top + 10f, bvl)
+        // pips (coordenadas de las 6 caras)
+        val pip = Paint().apply { color = Color.parseColor("#1A1A1A"); isAntiAlias = false }
+        val pad = 22f
+        val cx0 = r.left + pad; val cy0 = r.top + pad
+        val cx1 = r.right - pad; val cy1 = r.bottom - pad
+        val mx = r.centerX(); val my = r.centerY()
+        val layouts: Map<Int, List<Pair<Float, Float>>> = mapOf(
+            1 to listOf(mx to my),
+            2 to listOf(cx0 to cy0, cx1 to cy1),
+            3 to listOf(cx0 to cy0, mx to my, cx1 to cy1),
+            4 to listOf(cx0 to cy0, cx1 to cy0, cx0 to cy1, cx1 to cy1),
+            5 to listOf(cx0 to cy0, cx1 to cy0, mx to my, cx0 to cy1, cx1 to cy1),
+            6 to listOf(cx0 to cy0, cx1 to cy0, cx0 to my, cx1 to my, cx0 to cy1, cx1 to cy1)
+        )
+        for ((px, py) in layouts[currentDice]!!) {
+            canvas.drawCircle(px, py, 6f, pip)
+            // brillo del pip
+            val hi = Paint().apply { color = Color.parseColor("#F8F8F8"); alpha = 120; isAntiAlias = false }
+            canvas.drawCircle(px - 2f, py - 2f, 2f, hi)
+        }
 
         paint.color = Color.WHITE
         paint.textSize = 22f

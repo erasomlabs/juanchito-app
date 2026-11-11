@@ -142,34 +142,107 @@ class ChoplifterGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#5C94FC"))
-        // ground
+        // Atardecer en zona de guerra
+        NesScenery.drawSkyBands(canvas, w, h.toFloat(), "#F8A860", "#F8D878", 5)
+        NesScenery.drawClouds(canvas, w, h * 0.22f)
+        NesScenery.drawSun(canvas, w - 60f, 50f, 26f)
+        // Suelo desierto con textura
         canvas.drawRect(0f, h - 40f, w.toFloat(), h.toFloat(), groundPaint)
-        // base
+        val dirt = Paint().apply { color = Color.parseColor("#7A5A2A"); isAntiAlias = false }
+        var dx = 0f
+        while (dx < w) {
+            canvas.drawRect(dx, h - 22f, dx + 14f, h - 18f, dirt)
+            dx += 46f
+        }
+        // Base militar: edificio con techo, bandera y helipuerto "H"
         canvas.drawRect(20f, h - 60f, 80f, h - 40f, basePaint)
+        val roof = Paint().apply { color = Color.parseColor("#5A7D9A"); isAntiAlias = false }
+        canvas.drawRect(16f, h - 64f, 84f, h - 58f, roof)
+        val flag = Paint().apply { color = Color.parseColor("#D82800"); isAntiAlias = false }
+        canvas.drawRect(46f, h - 76f, 48f, h - 60f, Paint().apply { color = Color.parseColor("#8B4513"); isAntiAlias = false })
+        canvas.drawRect(48f, h - 76f, 58f, h - 70f, flag)
+        val hpad = Paint().apply { color = Color.parseColor("#F8F8F8"); isAntiAlias = false }
+        canvas.drawRect(90f, h - 30f, 140f, h - 26f, hpad)
+        canvas.drawRect(106f, h - 38f, 110f, h - 18f, hpad)
+        canvas.drawRect(122f, h - 38f, 126f, h - 18f, hpad)
+        canvas.drawRect(108f, h - 30f, 124f, h - 26f, hpad)
         // heli
         if (invuln <= 0f || (invuln * 8).toInt() % 2 == 0) {
+            // patines de aterrizaje
+            val skid = Paint().apply { color = Color.parseColor("#5A7D9A"); isAntiAlias = false }
+            canvas.drawRect(hx - 14f, hy + 10f, hx + 14f, hy + 12f, skid)
+            canvas.drawRect(hx - 10f, hy + 6f, hx - 8f, hy + 10f, skid)
+            canvas.drawRect(hx + 8f, hy + 6f, hx + 10f, hy + 10f, skid)
+            // fuselaje y cola
             canvas.drawRoundRect(RectF(hx - 22f, hy - 10f, hx + 22f, hy + 10f), 4f, 4f, heliPaint)
             canvas.drawRect(hx + 18f, hy - 14f, hx + 28f, hy - 6f, heliPaint)
+            // rotor de cola girando
+            val tr = Paint().apply { color = Color.parseColor("#F8F8F8"); strokeWidth = 2f; isAntiAlias = false }
+            canvas.drawLine(hx + 23f, hy - 16f, hx + 23f, hy - 4f, tr)
+            // cabina de cristal
+            val glass = Paint().apply { color = Color.parseColor("#A8D8FC"); isAntiAlias = false }
+            canvas.drawRect(hx - 20f, hy - 8f, hx - 6f, hy + 2f, glass)
             // Juanchito piloto en la cabina
-            JuanchitoSprite.draw(canvas, hx - 10f, hy - 8f, 14f, facingRight = false, hatColor = 0x5A7D9A)
-            // rotor
-            val rp = Paint().apply { color = Color.parseColor("#F8F8F8"); strokeWidth = 2f }
+            JuanchitoSprite.draw(canvas, hx - 12f, hy - 10f, 14f, facingRight = false, hatColor = 0x5A7D9A)
+            // rotor principal con doble línea (movimiento)
+            val rp = Paint().apply { color = Color.parseColor("#F8F8F8"); strokeWidth = 2f; isAntiAlias = false }
             canvas.drawLine(hx - 30f, hy - 12f, hx + 30f, hy - 12f, rp)
+            canvas.drawLine(hx - 22f, hy - 14f, hx + 22f, hy - 10f, rp)
+            // mástil del rotor
+            canvas.drawRect(hx - 2f, hy - 14f, hx + 2f, hy - 10f, Paint().apply { color = Color.parseColor("#1A1A1A"); isAntiAlias = false })
         }
-        // bullets
-        for (b in bullets) canvas.drawCircle(b.x, b.y, 3f, bulletPaint)
-        // bombs
-        for (b in bombs) canvas.drawCircle(b.x, b.y, 5f, bombPaint)
+        // bullets: trazadoras
+        val tracer = Paint().apply { color = Color.parseColor("#F8D878"); isAntiAlias = false }
+        for (b in bullets) {
+            canvas.drawCircle(b.x, b.y, 3f, bulletPaint)
+            canvas.drawRect(b.x - 8f, b.y - 1f, b.x - 3f, b.y + 1f, tracer)
+        }
+        // bombs: bomba con aletas
+        for (b in bombs) {
+            canvas.drawCircle(b.x, b.y, 5f, bombPaint)
+            val fin = Paint().apply { color = Color.parseColor("#5A7D9A"); isAntiAlias = false }
+            canvas.drawRect(b.x - 5f, b.y + 5f, b.x - 2f, b.y + 10f, fin)
+            canvas.drawRect(b.x + 2f, b.y + 5f, b.x + 5f, b.y + 10f, fin)
+        }
         // enemies
         for (e in enemies) {
-            val p = if (e.type == 0) tankPaint else jetPaint
-            canvas.drawRoundRect(RectF(e.x - 14f, e.y - 8f, e.x + 14f, e.y + 8f), 3f, 3f, p)
+            if (e.type == 0) {
+                // Tanque: casco, orugas con ruedas, torreta y cañón
+                val treads = Paint().apply { color = Color.parseColor("#1A1A1A"); isAntiAlias = false }
+                val wheel = Paint().apply { color = Color.parseColor("#4A4A4A"); isAntiAlias = false }
+                val gun = Paint().apply { color = Color.parseColor("#2A2A2A"); isAntiAlias = false }
+                canvas.drawRect(e.x - 14f, e.y + 2f, e.x + 14f, e.y + 8f, treads)
+                var wxx = e.x - 12f
+                while (wxx < e.x + 10f) {
+                    canvas.drawCircle(wxx + 2f, e.y + 5f, 2f, wheel)
+                    wxx += 6f
+                }
+                canvas.drawRoundRect(RectF(e.x - 12f, e.y - 4f, e.x + 12f, e.y + 2f), 2f, 2f, tankPaint)
+                canvas.drawRect(e.x - 4f, e.y - 8f, e.x + 4f, e.y - 3f, tankPaint)
+                canvas.drawRect(e.x + 4f, e.y - 7f, e.x + 16f, e.y - 5f, gun)
+            } else {
+                // Jet: alas, cabina y postcombustión
+                val jet = jetPaint
+                val glass = Paint().apply { color = Color.parseColor("#A8D8FC"); isAntiAlias = false }
+                val flame = Paint().apply { color = Color.parseColor("#FC9838"); isAntiAlias = false }
+                canvas.drawRect(e.x - 14f, e.y - 3f, e.x + 14f, e.y + 3f, jet)
+                canvas.drawRect(e.x - 6f, e.y - 8f, e.x - 2f, e.y - 3f, jet)
+                canvas.drawRect(e.x + 2f, e.y - 8f, e.x + 6f, e.y - 3f, jet)
+                canvas.drawRect(e.x - 3f, e.y + 3f, e.x + 3f, e.y + 8f, jet)
+                canvas.drawRect(e.x - 8f, e.y - 1f, e.x - 2f, e.y + 1f, glass)
+                canvas.drawRect(e.x + 14f, e.y - 2f, e.x + 20f, e.y + 2f, flame)
+            }
         }
-        // hostages
+        // hostages: personas animadas saludando (o a bordo)
         for (ho in hostages) {
-            val p = if (ho.state == 1) heliPaint else hostagePaint
-            canvas.drawCircle(ho.x, ho.y, 5f, p)
+            val aboard = ho.state == 1
+            JuanchitoSprite.draw(canvas, ho.x, ho.y, if (aboard) 12f else 18f, facingRight = true, hatColor = if (aboard) 0x5C94FC else 0xFC9838)
+            if (!aboard) {
+                // brazo saludando
+                val arm = Paint().apply { color = Color.parseColor("#F8D878"); strokeWidth = 3f; isAntiAlias = false }
+                val wave = ((ho.x / 20f).toInt() % 2 == 0)
+                canvas.drawLine(ho.x + 6f, ho.y - 2f, ho.x + 10f, if (wave) ho.y - 12f else ho.y - 8f, arm)
+            }
         }
         // HUD
         textPaint.textSize = 11f

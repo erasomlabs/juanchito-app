@@ -130,23 +130,81 @@ class MortalKombatGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#1A1A2E"))
+        // Templo del torneo: cielo de tormenta, pilares, antorchas y gradas
+        NesScenery.drawSkyBands(canvas, w, h.toFloat(), "#3A0A0A", "#8C1414", 5)
+        NesScenery.drawStars(canvas, w, h, 20)
+        // pilares laterales
+        val pillar = Paint().apply { color = Color.parseColor("#5A5A6E"); isAntiAlias = false }
+        val pillarDark = Paint().apply { color = Color.parseColor("#3A3A4A"); isAntiAlias = false }
+        val pillarXs = listOf(w * 0.08f, w * 0.22f, w * 0.78f, w * 0.92f)
+        for (pxx in pillarXs) {
+            canvas.drawRect(pxx - 14f, 60f, pxx + 14f, groundY, pillar)
+            canvas.drawRect(pxx - 14f, 60f, pxx - 9f, groundY, pillarDark)
+            // capitel
+            canvas.drawRect(pxx - 18f, 54f, pxx + 18f, 62f, pillarDark)
+        }
+        // antorchas con llama parpadeante
+        val torch = Paint().apply { color = Color.parseColor("#8B4513"); isAntiAlias = false }
+        val flicker = ((score + kotlin.math.abs(w) + kotlin.math.abs(h)) % 2 == 0)
+        for (pxx in pillarXs) {
+            canvas.drawRect(pxx - 3f, 90f, pxx + 3f, 110f, torch)
+            val flamePaint = Paint().apply { color = if (flicker) Color.parseColor("#FC9838") else Color.parseColor("#F8D878"); isAntiAlias = false }
+            canvas.drawCircle(pxx, 84f, 7f, flamePaint)
+            canvas.drawCircle(pxx, 78f, 4f, Paint().apply { color = Color.parseColor("#F8F8F8"); isAntiAlias = false })
+        }
+        // gradas con siluetas de público
+        val crowd = Paint().apply { color = Color.parseColor("#1A1024"); isAntiAlias = false }
+        var cx = 0f
+        while (cx < w) {
+            canvas.drawCircle(cx, 48f, 6f, crowd)
+            canvas.drawCircle(cx + 10f, 44f, 5f, crowd)
+            cx += 24f
+        }
+        canvas.drawRect(0f, 52f, w.toFloat(), 60f, crowd)
+        // suelo del templo
         canvas.drawRect(0f, groundY, w.toFloat(), h.toFloat(), groundPaint)
+        val tile = Paint().apply { color = Color.parseColor("#2A2A38"); isAntiAlias = false }
+        var tx = 0f
+        while (tx < w) {
+            canvas.drawRect(tx, groundY + 4f, tx + 30f, groundY + 8f, tile)
+            tx += 60f
+        }
         // fighters
         val p1h = if (p1blocking) 30f else 50f
         JuanchitoSprite.draw(canvas, p1x, groundY - p1h / 2f, 40f, facingRight = true, hatColor = 0xC41E24)
         val p2h = if (p2blocking) 30f else 50f
         JuanchitoSprite.draw(canvas, p2x, groundY - p2h / 2f, 40f, facingRight = false, hatColor = 0x00A800)
-        // fireballs
-        val fp = Paint().apply { color = Color.parseColor("#FC9838"); isAntiAlias = false }
-        for (f in fireballs) canvas.drawCircle(f.x, f.y, 6f, fp)
-        // HP bars
+        // fireballs con núcleo y aura
+        for (f in fireballs) {
+            val aura = Paint().apply { color = Color.parseColor("#D82800"); alpha = 90; isAntiAlias = false }
+            val core = Paint().apply { color = Color.parseColor("#F8D878"); isAntiAlias = false }
+            canvas.drawCircle(f.x, f.y, 10f, aura)
+            canvas.drawCircle(f.x, f.y, 6f, core)
+            canvas.drawCircle(f.x - 8f, f.y, 3f, aura)
+            canvas.drawCircle(f.x + 8f, f.y, 3f, aura)
+        }
+        // Barras de vida con nombres y marco dorado
+        val framePaint = Paint().apply { color = Color.parseColor("#F5C542"); style = Paint.Style.STROKE; strokeWidth = 3f; isAntiAlias = false }
+        val namePaint = Paint().apply { color = Color.parseColor("#F5C542"); textSize = 14f; isAntiAlias = false }
         hpPaint.color = Color.parseColor("#FF6B6B")
         canvas.drawRect(20f, 20f, 20f + (w/2f - 40f) * (p1hp / 100f), 40f, hpPaint)
         canvas.drawRect(w - 20f - (w/2f - 40f) * (p2hp / 100f), 20f, w - 20f, 40f, hpPaint)
         hpPaint.color = Color.parseColor("#2D3748")
         canvas.drawRect(20f + (w/2f - 40f)*(p1hp/100f), 20f, w/2f - 20f, 40f, hpPaint)
         canvas.drawRect(w/2f + 20f, 20f, w - 20f - (w/2f - 40f)*(p2hp/100f), 40f, hpPaint)
+        canvas.drawRect(18f, 18f, w/2f - 18f, 42f, framePaint)
+        canvas.drawRect(w/2f + 18f, 18f, w - 18f, 42f, framePaint)
+        namePaint.textAlign = Paint.Align.LEFT
+        canvas.drawText("JUANCHITO", 22f, 54f, namePaint)
+        namePaint.textAlign = Paint.Align.RIGHT
+        canvas.drawText("TITAN", w - 22f, 54f, namePaint)
+        namePaint.textAlign = Paint.Align.CENTER
+        // Temporizador central
+        val timerBox = Paint().apply { color = Color.parseColor("#000000"); alpha = 180; isAntiAlias = false }
+        canvas.drawRect(w/2f - 26f, 12f, w/2f + 26f, 48f, timerBox)
+        namePaint.color = Color.parseColor("#F8F8F8"); namePaint.textSize = 26f
+        canvas.drawText("${roundTimer.toInt()}", w/2f, 40f, namePaint)
+        namePaint.textSize = 14f; namePaint.color = Color.parseColor("#F5C542")
         // HUD
         textPaint.textSize = 22f
         canvas.drawText("Ronda $round  P1: $p1Wins  P2: $p2Wins  Tiempo: ${roundTimer.toInt()}", w/2f, 70f, textPaint)
