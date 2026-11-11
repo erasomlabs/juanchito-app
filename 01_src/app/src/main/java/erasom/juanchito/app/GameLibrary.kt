@@ -2,6 +2,8 @@ package erasom.juanchito.app
 
 object GameLibrary {
     val games: List<Game> = listOf(
+        // Mundo virtual (hub estilo Roblox con los 30 portales)
+        WorldMapGame(),
         // Clásicos (Lote 1)
         SnakeGame(),
         PongGame(),

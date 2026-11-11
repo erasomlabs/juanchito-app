@@ -127,6 +127,13 @@ object GameMetadataProvider {
                 accentColor = Color.parseColor("#FF6B6B"),
                 iconType = "brick"
             )
+            "Mundo Juanchito" -> GameMetadata(
+                synopsis = "El pueblo virtual de Juanchito: 6 barrios temáticos, 30 portales de aventura y una plaza con fuente y vecinos que te dan misiones.",
+                chapterName = "Plaza Central: La Fuente de los Portales",
+                primaryColor = Color.parseColor("#D4A017"),
+                accentColor = Color.parseColor("#5C94FC"),
+                iconType = "globe"
+            )
             else -> GameMetadata(
                 synopsis = "Desafío arcade clásico retro diseñado para probar tus habilidades con controles clásicos.",
                 chapterName = "Fase 1: Prueba de Destreza",

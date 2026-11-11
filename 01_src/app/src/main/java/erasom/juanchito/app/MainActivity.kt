@@ -257,6 +257,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun launchGame(game: Game) {
         currentGame = game
+        // El mundo virtual lanza los minijuegos a través de sus portales
+        if (game is WorldMapGame) {
+            game.onPortalEnter = { target ->
+                // El portal se pulsa desde el hilo del game loop: hay saltar al hilo de UI
+                runOnUiThread {
+                    GameLibrary.games.firstOrNull { it.name == target }?.let { launchGame(it) }
+                }
+            }
+        }
         binding.menuContainer.isVisible = false
         binding.bannerContainer.isVisible = false
         binding.gameView.isVisible = true
