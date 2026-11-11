@@ -41,6 +41,7 @@ class BreakoutGame : Game {
     private val brickPaint = Paint().apply { isAntiAlias = false }
     private val textPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); textSize = 48f; isAntiAlias = false; textAlign = Paint.Align.CENTER }
     private val smallPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); textSize = 24f; isAntiAlias = false; textAlign = Paint.Align.CENTER }
+    private val trail = mutableListOf<Pair<Float, Float>>()
 
     override fun init(width: Int, height: Int) {
         w = width; h = height
@@ -81,6 +82,8 @@ class BreakoutGame : Game {
 
         ballX += ballVx * dt
         ballY += ballVy * dt
+        trail.add(ballX to ballY)
+        if (trail.size > 8) trail.removeAt(0)
 
         // Wall bounces
         if (ballX <= 0f) { ballX = 0f; ballVx = -ballVx }
@@ -132,22 +135,52 @@ class BreakoutGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#000000"))
-        // Bricks
+        // Sala arcade: cielo nocturno, estrellas y marco neón
+        NesScenery.drawSkyBands(canvas, w, h.toFloat(), "#0A0A1E", "#1A1A3E", 6)
+        NesScenery.drawStars(canvas, w, h, 35)
+        NesScenery.drawNeonFrame(canvas, w, h, "#D82800")
+        // Ladrillos biselados (borde claro arriba, oscuro abajo, brillo)
         bricks.forEachIndexed { i, b ->
             if (!brickAlive[i]) return@forEachIndexed
             val row = i / brickCols
-            brickPaint.color = Color.parseColor(brickColors[row % brickColors.size])
-            canvas.drawRoundRect(b, 4f, 4f, brickPaint)
+            val base = Color.parseColor(brickColors[row % brickColors.size])
+            brickPaint.color = base
+            canvas.drawRect(b, brickPaint)
+            // bisel superior claro
+            brickPaint.color = Color.argb(255, Math.min(255, Color.red(base) + 60), Math.min(255, Color.green(base) + 60), Math.min(255, Color.blue(base) + 60))
+            canvas.drawRect(b.left, b.top, b.right, b.top + 4f, brickPaint)
+            // bisel inferior oscuro
+            brickPaint.color = Color.argb(255, Color.red(base) * 2 / 3, Color.green(base) * 2 / 3, Color.blue(base) * 2 / 3)
+            canvas.drawRect(b.left, b.bottom - 4f, b.right, b.bottom, brickPaint)
         }
-        // Paddle
-        canvas.drawRoundRect(RectF(paddleX, h - 60f, paddleX + paddleW, h - 60f + paddleH), 6f, 6f, paddlePaint)
-        // Ball
-        canvas.drawCircle(ballX + ballSize / 2f, ballY + ballSize / 2f, ballSize / 2f, ballPaint)
+        // Estela de la bola
+        val trailPaint = Paint().apply { isAntiAlias = false }
+        trail.forEachIndexed { i, (tx, ty) ->
+            trailPaint.color = Color.parseColor("#F8F8F8")
+            trailPaint.alpha = (i * 22).coerceAtMost(140)
+            canvas.drawCircle(tx + ballSize / 2f, ty + ballSize / 2f, ballSize * (0.2f + i * 0.04f), trailPaint)
+        }
+        // Paleta Juanchito: ocre con franjas de grip y protagonista montado
+        val paddleRect = RectF(paddleX, h - 60f, paddleX + paddleW, h - 60f + paddleH)
+        paddlePaint.color = Color.parseColor("#D4A017")
+        canvas.drawRoundRect(paddleRect, 6f, 6f, paddlePaint)
+        val grip = Paint().apply { color = Color.parseColor("#8C6A10"); isAntiAlias = false }
+        var gx = paddleX + 8f
+        while (gx < paddleX + paddleW - 6f) {
+            canvas.drawRect(gx, h - 58f, gx + 4f, h - 48f, grip)
+            gx += 16f
+        }
+        JuanchitoSprite.draw(canvas, paddleX + paddleW / 2f, h - 74f, 24f, facingRight = true)
+        // Bola con brillo
+        val glow = Paint().apply { color = Color.parseColor("#F8D878"); isAntiAlias = false }
+        canvas.drawCircle(ballX + ballSize / 2f, ballY + ballSize / 2f, ballSize / 2f, glow)
+        canvas.drawCircle(ballX + ballSize * 0.4f, ballY + ballSize * 0.4f, ballSize * 0.18f, ballPaint)
         // Score
         canvas.drawText("Score: $score", w / 2f, 40f, textPaint.apply { textSize = 28f; color = Color.parseColor("#F5F5F5") })
         canvas.drawText("Best: $highScore", w / 2f, 70f, smallPaint.apply { textSize = 20f; color = Color.parseColor("#39FF14") })
         if (isGameOver) {
+            val dim = Paint().apply { color = Color.parseColor("#000000"); alpha = 160; isAntiAlias = false }
+            canvas.drawRect(0f, 0f, w.toFloat(), h.toFloat(), dim)
             val msg = if (won) "¡GANASTE!" else "GAME OVER"
             val gameOverColor = if (won) Color.parseColor("#39FF14") else Color.parseColor("#E63946")
             canvas.drawText(msg, w / 2f, h / 2f, textPaint.apply { textSize = 56f; color = gameOverColor })

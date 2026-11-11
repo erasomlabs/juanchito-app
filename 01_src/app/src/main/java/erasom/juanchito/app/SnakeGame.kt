@@ -110,21 +110,83 @@ class SnakeGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#000000"))
-        // Food
-        val fr = RectF(food.first * gridSize + 2f, food.second * gridSize + 2f,
-            (food.first + 1) * gridSize - 2f, (food.second + 1) * gridSize - 2f)
-        canvas.drawRoundRect(fr, 4f, 4f, foodPaint)
-        // Snake
+        // Cancha ajedrezada estilo jardín NES
+        val grass1 = Paint().apply { color = Color.parseColor("#0A6A0A"); isAntiAlias = false }
+        val grass2 = Paint().apply { color = Color.parseColor("#0E7A0E"); isAntiAlias = false }
+        for (r in 0 until rows) {
+            for (c in 0 until cols) {
+                val paint = if ((r + c) % 2 == 0) grass1 else grass2
+                canvas.drawRect(c * gridSize.toFloat(), r * gridSize.toFloat(),
+                    (c + 1) * gridSize.toFloat(), (r + 1) * gridSize.toFloat(), paint)
+            }
+        }
+        // Muro perimetral de piedra
+        val wall = Paint().apply { color = Color.parseColor("#7C7C7C"); isAntiAlias = false }
+        val wallDark = Paint().apply { color = Color.parseColor("#4A4A4A"); isAntiAlias = false }
+        canvas.drawRect(0f, 0f, w.toFloat(), 4f, wall)
+        canvas.drawRect(0f, h - 4f, w.toFloat(), h.toFloat(), wall)
+        canvas.drawRect(0f, 0f, 4f, h.toFloat(), wall)
+        canvas.drawRect(w - 4f, 0f, w.toFloat(), h.toFloat(), wall)
+        var wx = 0f
+        while (wx < w) {
+            canvas.drawRect(wx, 0f, wx + 2f, 4f, wallDark)
+            canvas.drawRect(wx, h - 4f, wx + 2f, h.toFloat(), wallDark)
+            wx += 16f
+        }
+        // Manzana: fruto rojo, brillo, hoja y tallo
+        val fx = food.first * gridSize.toFloat(); val fy = food.second * gridSize.toFloat()
+        canvas.drawCircle(fx + gridSize / 2f, fy + gridSize / 2f + 1f, gridSize * 0.4f, foodPaint)
+        val shine = Paint().apply { color = Color.parseColor("#FC9838"); isAntiAlias = false }
+        canvas.drawCircle(fx + gridSize * 0.35f, fy + gridSize * 0.38f, gridSize * 0.12f, shine)
+        val stem = Paint().apply { color = Color.parseColor("#8B4513"); isAntiAlias = false }
+        canvas.drawRect(fx + gridSize / 2f - 1.5f, fy + 2f, fx + gridSize / 2f + 1.5f, fy + gridSize * 0.4f, stem)
+        val leaf = Paint().apply { color = Color.parseColor("#00E000"); isAntiAlias = false }
+        canvas.drawRect(fx + gridSize / 2f + 2f, fy + 2f, fx + gridSize * 0.8f, fy + gridSize * 0.25f, leaf)
+        // Serpiente: cuerpo con escamas alternadas
         snake.forEachIndexed { i, seg ->
-            val r = RectF(seg.first * gridSize + 1f, seg.second * gridSize + 1f,
-                (seg.first + 1) * gridSize - 1f, (seg.second + 1) * gridSize - 1f)
-            if (i == 0) canvas.drawRoundRect(r, 6f, 6f, headPaint) else canvas.drawRoundRect(r, 4f, 4f, snakePaint)
+            val x = seg.first * gridSize.toFloat(); val y = seg.second * gridSize.toFloat()
+            if (i == 0) {
+                // Cabeza con gorra Juanchito
+                canvas.drawRoundRect(RectF(x + 1f, y + 3f, x + gridSize - 1f, y + gridSize - 1f), 7f, 7f, headPaint)
+                // gorra roja
+                val cap = Paint().apply { color = Color.parseColor("#D82800"); isAntiAlias = false }
+                canvas.drawRect(x + 1f, y + 3f, x + gridSize - 1f, y + gridSize * 0.35f, cap)
+                canvas.drawRect(x + 1f, y + gridSize * 0.35f, x + gridSize - 1f, y + gridSize * 0.42f, cap)
+                // ojos según dirección
+                val eye = Paint().apply { color = Color.parseColor("#000000"); isAntiAlias = false }
+                val cxp = x + gridSize / 2f; val cyp = y + gridSize * 0.6f
+                when (dir) {
+                    Direction.RIGHT, Direction.LEFT -> {
+                        canvas.drawCircle(cxp + gridSize * 0.22f, cyp, 2.5f, eye)
+                        canvas.drawCircle(cxp - gridSize * 0.22f, cyp, 2.5f, eye)
+                    }
+                    else -> {
+                        canvas.drawCircle(cxp + gridSize * 0.18f, cyp, 2.5f, eye)
+                        canvas.drawCircle(cxp - gridSize * 0.18f, cyp, 2.5f, eye)
+                    }
+                }
+                // lengua bífida
+                val tongue = Paint().apply { color = Color.parseColor("#D82800"); strokeWidth = 2f; isAntiAlias = false }
+                when (dir) {
+                    Direction.RIGHT -> canvas.drawLine(x + gridSize - 1f, cyp, x + gridSize + 5f, cyp, tongue)
+                    Direction.LEFT -> canvas.drawLine(x + 1f, cyp, x - 5f, cyp, tongue)
+                    Direction.UP -> canvas.drawLine(cxp, y + 3f, cxp, y - 5f, tongue)
+                    Direction.DOWN -> canvas.drawLine(cxp, y + gridSize - 1f, cxp, y + gridSize + 5f, tongue)
+                }
+            } else {
+                val shade = if (i % 2 == 0) snakePaint else Paint().apply { color = Color.parseColor("#007000"); isAntiAlias = false }
+                canvas.drawRoundRect(RectF(x + 2f, y + 2f, x + gridSize - 2f, y + gridSize - 2f), 5f, 5f, shade)
+                // escama central
+                val scale = Paint().apply { color = Color.parseColor("#30D030"); isAntiAlias = false }
+                canvas.drawCircle(x + gridSize / 2f, y + gridSize / 2f, 2.5f, scale)
+            }
         }
         // Score
         canvas.drawText("Score: $score", w / 2f, 40f, textPaint.apply { textSize = 28f })
         canvas.drawText("Best: $highScore", w / 2f, 70f, smallPaint)
         if (isGameOver) {
+            val dim = Paint().apply { color = Color.parseColor("#000000"); alpha = 160; isAntiAlias = false }
+            canvas.drawRect(0f, 0f, w.toFloat(), h.toFloat(), dim)
             canvas.drawText("GAME OVER", w / 2f, h / 2f, textPaint.apply { textSize = 56f; color = Color.parseColor("#E63946") })
             canvas.drawText("Pulsa START", w / 2f, h / 2f + 50f, smallPaint.apply { textSize = 24f; color = Color.parseColor("#F5F5F5") })
         }

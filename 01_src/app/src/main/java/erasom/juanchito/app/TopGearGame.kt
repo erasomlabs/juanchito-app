@@ -90,25 +90,83 @@ class TopGearGame : Game {
 
     override fun draw(canvas: Canvas) {
         canvas.drawColor(if (weather == 2) Color.parseColor("#000020") else if (weather == 1) Color.parseColor("#2D3748") else Color.parseColor("#5C94FC"))
-        // grass
+        // grass con matojos
         canvas.drawRect(0f, 0f, 40f, h.toFloat(), grassPaint)
         canvas.drawRect(w - 40f, 0f, w.toFloat(), h.toFloat(), grassPaint)
-        // track
+        val bush = Paint().apply { color = Color.parseColor("#005000"); isAntiAlias = false }
+        val tree = Paint().apply { color = Color.parseColor("#00A800"); isAntiAlias = false }
+        val trunk = Paint().apply { color = Color.parseColor("#8B4513"); isAntiAlias = false }
+        var by = 30f
+        while (by < h) {
+            canvas.drawCircle(14f, by, 8f, bush)
+            canvas.drawCircle(w - 14f, by + 15f, 8f, bush)
+            canvas.drawCircle(26f, by + 50f, 10f, tree)
+            canvas.drawRect(24f, by + 55f, 28f, by + 68f, trunk)
+            canvas.drawCircle(w - 26f, by + 70f, 10f, tree)
+            canvas.drawRect(w - 28f, by + 75f, w - 24f, by + 88f, trunk)
+            by += 110f
+        }
+        // track con bordes rojo/blanco (rumble strips)
         canvas.drawRect(40f, 0f, w - 40f, h.toFloat(), trackPaint)
+        val rumbleRed = Paint().apply { color = Color.parseColor("#D82800"); isAntiAlias = false }
+        val rumbleWhite = Paint().apply { color = Color.parseColor("#F8F8F8"); isAntiAlias = false }
+        var ry = 0f; var seg = 0
+        while (ry < h) {
+            val paint = if (seg % 2 == 0) rumbleRed else rumbleWhite
+            canvas.drawRect(38f, ry, 46f, ry + 20f, paint)
+            canvas.drawRect(w - 46f, ry, w - 38f, ry + 20f, paint)
+            ry += 20f; seg++
+        }
         // center line
         val lp = Paint().apply { color = Color.parseColor("#F8F8F8"); strokeWidth = 2f }
         var yy = 0f
         while (yy < h) { canvas.drawLine(w / 2f, yy, w / 2f, yy + 15f, lp); yy += 30f }
-        // rivals
+        // lluvia o nieve según clima
+        if (weather == 1) {
+            val rain = Paint().apply { color = Color.parseColor("#A8D8FC"); strokeWidth = 2f; isAntiAlias = false }
+            var rx = 60f
+            while (rx < w - 40f) {
+                val off = ((score * 3) % 40).toFloat() % h
+                canvas.drawLine(rx, off, rx + 2f, (off + 18f) % h, rain)
+                rx += 34f
+            }
+        } else if (weather == 2) {
+            NesScenery.drawStars(canvas, w, h, 20)
+        }
+        // rivals: coches con techo y parabrisas
         for (r in rivals) {
             val p = Paint().apply { color = Color.parseColor(rivalColors[r.color]); isAntiAlias = false }
+            val roof = Paint().apply { color = Color.parseColor("#1A1A1A"); isAntiAlias = false }
+            val glass = Paint().apply { color = Color.parseColor("#A8D8FC"); isAntiAlias = false }
             canvas.drawRoundRect(RectF(r.x - 12f, r.y - 20f, r.x + 12f, r.y + 20f), 4f, 4f, p)
+            canvas.drawRect(r.x - 8f, r.y - 10f, r.x + 8f, r.y + 6f, roof)
+            canvas.drawRect(r.x - 7f, r.y - 8f, r.x + 7f, r.y - 2f, glass)
         }
-        // car
+        // car: coche de Juanchito con cabina, parabrisas, piloto y estela de nitro
         canvas.save()
         canvas.translate(px, py)
         canvas.rotate(Math.toDegrees(angle.toDouble()).toFloat())
+        // estela de nitro cuando acelera
+        val nitroActive = speed > 500f
+        if (nitroActive) {
+            val flame = Paint().apply { color = Color.parseColor("#FC9838"); isAntiAlias = false }
+            val flame2 = Paint().apply { color = Color.parseColor("#F8D878"); isAntiAlias = false }
+            canvas.drawRect(-14f, -6f, -24f - (nitro / 25f), 6f, flame)
+            canvas.drawRect(-14f, -3f, -20f - (nitro / 30f), 3f, flame2)
+        }
+        val tire = Paint().apply { color = Color.parseColor("#1A1A1A"); isAntiAlias = false }
+        // llantas
+        canvas.drawRect(-14f, -18f, -8f, -12f, tire)
+        canvas.drawRect(8f, -18f, 14f, -12f, tire)
+        canvas.drawRect(-14f, 12f, -8f, 18f, tire)
+        canvas.drawRect(8f, 12f, 14f, 18f, tire)
         canvas.drawRoundRect(RectF(-12f, -20f, 12f, 20f), 4f, 4f, carPaint)
+        val roof = Paint().apply { color = Color.parseColor("#1A1A1A"); isAntiAlias = false }
+        canvas.drawRect(-7f, -9f, 7f, 7f, roof)
+        val glass = Paint().apply { color = Color.parseColor("#A8D8FC"); isAntiAlias = false }
+        canvas.drawRect(-6f, -7f, 6f, -1f, glass)
+        // piloto Juanchito asomado
+        JuanchitoSprite.draw(canvas, 0f, 1f, 12f, facingRight = true)
         canvas.restore()
         // HUD
         textPaint.textSize = 12f
@@ -118,6 +176,8 @@ class TopGearGame : Game {
         canvas.drawText("Clima: $wstr", 8f, h - 8f, smallPaint)
         smallPaint.textAlign = Paint.Align.CENTER
         if (isGameOver) {
+            val dim = Paint().apply { color = Color.parseColor("#000000"); alpha = 160; isAntiAlias = false }
+            canvas.drawRect(0f, 0f, w.toFloat(), h.toFloat(), dim)
             val msg = if (won) "¡GANASTE!" else "GAME OVER"
             val col = if (won) Color.parseColor("#00A800") else Color.parseColor("#D82800")
             textPaint.textSize = 32f; textPaint.color = col

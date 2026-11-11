@@ -196,54 +196,113 @@ class BombermanGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#000000"))
+        // Suelo ajedrezado del tablero (hormigón con doble tono)
         val ox = (w - cols * cell) / 2f
         val oy = (h - rows * cell) / 2f
+        val floor1 = Paint().apply { color = Color.parseColor("#2A2A40"); isAntiAlias = false }
+        val floor2 = Paint().apply { color = Color.parseColor("#32324A"); isAntiAlias = false }
+        val bevelLight = Paint().apply { color = Color.parseColor("#9A9AAE"); isAntiAlias = false }
+        val bevelDark = Paint().apply { color = Color.parseColor("#3E3E52"); isAntiAlias = false }
+        val crack = Paint().apply { color = Color.parseColor("#C86818"); isAntiAlias = false }
+        val crackDark = Paint().apply { color = Color.parseColor("#7A3A08"); isAntiAlias = false }
+        canvas.drawColor(Color.parseColor("#14141E"))
         for (r in 0 until rows) for (c in 0 until cols) {
             val x = ox + c * cell; val y = oy + r * cell
             when (grid[r][c]) {
-                1 -> canvas.drawRect(x, y, x + cell - 1, y + cell - 1, wallPaint)
-                2 -> canvas.drawRect(x + 2, y + 2, x + cell - 3, y + cell - 3, softPaint)
+                1 -> {
+                    // Muro de piedra biselado
+                    canvas.drawRect(x, y, x + cell - 1, y + cell - 1, wallPaint)
+                    canvas.drawRect(x, y, x + cell - 1, y + 4, bevelLight)
+                    canvas.drawRect(x, y + cell - 5, x + cell - 1, y + cell - 1, bevelDark)
+                    canvas.drawRect(x + cell - 5, y, x + cell - 1, y + cell - 1, bevelDark)
+                }
+                2 -> {
+                    // Bloque blando agrietado
+                    canvas.drawRect(x + 2, y + 2, x + cell - 3, y + cell - 3, softPaint)
+                    canvas.drawRect(x + 2, y + 2, x + cell - 3, y + 6, bevelLight)
+                    canvas.drawRect(x + 2, y + cell - 7, x + cell - 3, y + cell - 3, bevelDark)
+                    // grietas
+                    canvas.drawRect(x + cell * 0.45f, y + cell * 0.2f, x + cell * 0.5f, y + cell * 0.55f, crack)
+                    canvas.drawRect(x + cell * 0.3f, y + cell * 0.55f, x + cell * 0.5f, y + cell * 0.6f, crack)
+                    canvas.drawRect(x + cell * 0.55f, y + cell * 0.5f, x + cell * 0.7f, y + cell * 0.55f, crack)
+                    canvas.drawRect(x + cell * 0.6f, y + cell * 0.55f, x + cell * 0.65f, y + cell * 0.8f, crackDark)
+                }
                 3 -> canvas.drawRect(x + 2, y + 2, x + cell - 3, y + cell - 3, exitPaint)
             }
             // grid lines
             val gp = Paint().apply { color = Color.parseColor("#1A1A2E") }
             canvas.drawRect(x, y, x + 1, y + cell, gp)
         }
-        // exit
+        // exit con marco de puerta
         if (exitRevealed) {
             val x = ox + exitX * cell; val y = oy + exitY * cell
             canvas.drawRect(x + 2, y + 2, x + cell - 3, y + cell - 3, exitPaint)
+            val frame = Paint().apply { color = Color.parseColor("#F8F8F8"); style = Paint.Style.STROKE; strokeWidth = 2f; isAntiAlias = false }
+            canvas.drawRect(x + 2, y + 2, x + cell - 3, y + cell - 3, frame)
+            val knob = Paint().apply { color = Color.parseColor("#F8D878"); isAntiAlias = false }
+            canvas.drawCircle(x + cell * 0.7f, y + cell * 0.55f, 2.5f, knob)
         }
-        // items
+        // items con iconos
         for (it in items) {
             val x = ox + it.gx * cell; val y = oy + it.gy * cell
+            val cxp = x + cell / 2; val cyp = y + cell / 2
             itemPaint.color = when (it.type) { 0 -> Color.parseColor("#D82800"); 1 -> Color.parseColor("#FC9838"); 2 -> Color.parseColor("#5C94FC"); else -> Color.parseColor("#00A800") }
-            canvas.drawCircle(x + cell / 2, y + cell / 2, cell / 4, itemPaint)
+            canvas.drawCircle(cxp, cyp, cell / 4, itemPaint)
+            // detalle blanco según tipo: bomba+ / llama / patín / patada
+            val icon = Paint().apply { color = Color.parseColor("#F8F8F8"); isAntiAlias = false }
+            when (it.type) {
+                0 -> canvas.drawCircle(cxp - cell * 0.08f, cyp - cell * 0.08f, cell * 0.06f, icon)
+                1 -> canvas.drawRect(cxp - 1, cyp - cell * 0.15f, cxp + 1, cyp + cell * 0.15f, icon)
+                2 -> canvas.drawRect(cxp - cell * 0.14f, cyp - 1, cxp + cell * 0.14f, cyp + 1, icon)
+                else -> canvas.drawRect(cxp - 1, cyp - cell * 0.14f, cxp + 1, cyp + cell * 0.14f, icon)
+            }
         }
-        // bombs
+        // bombs: esfera negra con brillo, mecha y chispa
+        val fuse = Paint().apply { color = Color.parseColor("#FC9838"); isAntiAlias = false }
+        val spark = Paint().apply { color = Color.parseColor("#F8D878"); isAntiAlias = false }
         for (b in bombs) {
             val x = ox + b.gx * cell; val y = oy + b.gy * cell
-            bombPaint.color = if ((b.timer * 4).toInt() % 2 == 0) Color.parseColor("#D82800") else Color.parseColor("#F8D878")
-            canvas.drawCircle(x + cell / 2, y + cell / 2, cell / 3, bombPaint)
+            val cxp = x + cell / 2; val cyp = y + cell / 2
+            // cuerpo negro con highlight
+            val body = Paint().apply { color = if ((b.timer * 4).toInt() % 2 == 0) Color.parseColor("#1A1A1A") else Color.parseColor("#303030"); isAntiAlias = false }
+            canvas.drawCircle(cxp, cyp + 2, cell / 3, body)
+            val shine = Paint().apply { color = Color.parseColor("#F8F8F8"); alpha = 180; isAntiAlias = false }
+            canvas.drawCircle(cxp - cell * 0.1f, cyp - cell * 0.05f, cell * 0.06f, shine)
+            // mecha
+            canvas.drawRect(cxp - 1.5f, cyp - cell / 3 - 4f, cxp + 1.5f, cyp - cell / 3 + 2f, fuse)
+            // chispa parpadeante
+            if ((b.timer * 10).toInt() % 2 == 0) canvas.drawCircle(cxp, cyp - cell / 3 - 5f, 3f, spark)
         }
-        // explosions
+        // explosions: cruz de fuego
         for (e in explosions) {
             val x = ox + e.gx * cell; val y = oy + e.gy * cell
             exploPaint.alpha = (e.timer / 0.4f * 255).toInt().coerceIn(0, 255)
+            exploPaint.color = Color.parseColor("#FC9838")
             canvas.drawRect(x + 2, y + 2, x + cell - 3, y + cell - 3, exploPaint)
+            exploPaint.color = Color.parseColor("#F8D878")
+            canvas.drawRect(x + cell * 0.3f, y + cell * 0.3f, x + cell * 0.7f, y + cell * 0.7f, exploPaint)
         }
+        exploPaint.color = Color.parseColor("#D82800")
         exploPaint.alpha = 255
-        // enemies
+        // enemies: blobs con ojos y boca
+        val eyePaint = Paint().apply { color = Color.parseColor("#F8F8F8"); isAntiAlias = false }
+        val pupilPaint = Paint().apply { color = Color.parseColor("#000000"); isAntiAlias = false }
         for (e in enemies) {
             val x = ox + e.gx * cell; val y = oy + e.gy * cell
             enemyPaint.color = when (e.type) { 0 -> Color.parseColor("#00A800"); 1 -> Color.parseColor("#D82800"); else -> Color.parseColor("#FC9838") }
             canvas.drawOval(RectF(x + 3, y + 3, x + cell - 3, y + cell - 3), enemyPaint)
+            // ojos
+            canvas.drawCircle(x + cell * 0.35f, y + cell * 0.4f, cell * 0.12f, eyePaint)
+            canvas.drawCircle(x + cell * 0.65f, y + cell * 0.4f, cell * 0.12f, eyePaint)
+            canvas.drawCircle(x + cell * 0.35f, y + cell * 0.42f, cell * 0.05f, pupilPaint)
+            canvas.drawCircle(x + cell * 0.65f, y + cell * 0.42f, cell * 0.05f, pupilPaint)
+            // boca
+            canvas.drawRect(x + cell * 0.35f, y + cell * 0.65f, x + cell * 0.65f, y + cell * 0.7f, pupilPaint)
         }
-        // player
+        // player: Juanchito bomber con casco
         if (invuln <= 0f || (invuln * 8).toInt() % 2 == 0) {
             val x = ox + px * cell; val y = oy + py * cell
-            canvas.drawRoundRect(RectF(x + 3, y + 3, x + cell - 3, y + cell - 3), 3f, 3f, playerPaint)
+            JuanchitoSprite.draw(canvas, x + cell / 2, y + cell / 2 + 2, cell * 1.15f, facingRight = true, hatColor = 0xF8F8F8)
         }
         // HUD
         textPaint.textSize = 12f

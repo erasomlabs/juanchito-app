@@ -97,35 +97,67 @@ class PuzzleBobbleGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#000000"))
-        val ox = (w - cols*cell)/2f; val oy = 40f
+        // Mundo de burbujas: cielo brillante estilo Puzzle Bobble
+        NesScenery.drawSkyBands(canvas, w, h.toFloat(), "#5C94FC", "#B8D8F8", 6)
+        NesScenery.drawClouds(canvas, w, h * 0.18f)
+        NesScenery.drawNeonFrame(canvas, w, h, "#F8D878")
+        val ox = (w - cols * cell) / 2f; val oy = 40f
+        // Techo de burbujas contenedor (franja superior)
+        val ceil = Paint().apply { color = Color.parseColor("#8814A8"); isAntiAlias = false }
+        val ceilDark = Paint().apply { color = Color.parseColor("#5A0A70"); isAntiAlias = false }
+        canvas.drawRect(0f, 24f, w.toFloat(), 40f, ceil)
+        var tx = 0f
+        while (tx < w) {
+            canvas.drawRect(tx, 24f, tx + 2f, 40f, ceilDark)
+            tx += 18f
+        }
+        // Bola auxiliar con brillo
+        fun bubble(cx: Float, cy: Float, radius: Float, colorHex: String) {
+            val bp = Paint().apply { color = Color.parseColor(colorHex); isAntiAlias = false }
+            canvas.drawCircle(cx, cy, radius, bp)
+            val shine = Paint().apply { color = Color.parseColor("#F8F8F8"); alpha = 200; isAntiAlias = false }
+            canvas.drawCircle(cx - radius * 0.35f, cy - radius * 0.35f, radius * 0.3f, shine)
+            val rim = Paint().apply { color = Color.parseColor("#000000"); alpha = 60; style = Paint.Style.STROKE; strokeWidth = 2f; isAntiAlias = false }
+            canvas.drawCircle(cx, cy, radius, rim)
+        }
         // grid
         for (r in 0 until rows) for (c in 0 until cols) {
             val v = grid[r][c]
-            if (v != 0) {
-                paint.color = Color.parseColor(colors[v])
-                canvas.drawCircle(ox + c*cell + cell/2, oy + r*cell + cell/2, cell/2 - 2, paint)
-            }
+            if (v != 0) bubble(ox + c * cell + cell / 2, oy + r * cell + cell / 2, cell / 2 - 2, colors[v])
         }
-        // shooter
-        paint.color = Color.parseColor(colors[curColor])
-        canvas.drawCircle(shooterX, shooterY, cell/2 - 2, paint)
-        // aim line
-        val lp = Paint().apply { color = Color.parseColor("#F5F5F5"); strokeWidth = 2f; alpha = 80 }
-        canvas.drawLine(shooterX, shooterY, shooterX + cos(angle)*80, shooterY + sin(angle)*80, lp)
+        // Cañón: Juanchito operador + cañón apuntando
+        val barrel = Paint().apply { color = Color.parseColor("#D82800"); isAntiAlias = false }
+        val barrelTipX = shooterX + cos(angle) * cell * 0.9f
+        val barrelTipY = shooterY + sin(angle) * cell * 0.9f
+        canvas.save()
+        canvas.rotate(Math.toDegrees(angle.toDouble()).toFloat() + 90f, shooterX, shooterY)
+        canvas.drawRect(shooterX - cell * 0.18f, shooterY - cell * 1.1f, shooterX + cell * 0.18f, shooterY, barrel)
+        canvas.restore()
+        JuanchitoSprite.draw(canvas, shooterX, shooterY + cell * 0.6f, cell * 1.1f, facingRight = true, hatColor = 0x00A800)
+        // Burbuja cargada en la boca del cañón
+        bubble(shooterX, shooterY, cell / 2 - 2, colors[curColor])
+        // Línea de puntería punteada
+        val lp = Paint().apply { color = Color.parseColor("#F5F5F5"); strokeWidth = 3f; alpha = 90; isAntiAlias = false }
+        for (i in 1..4) {
+            val d = cell * 1.4f * i
+            canvas.drawCircle(shooterX + cos(angle) * d, shooterY + sin(angle) * d, 3f, lp)
+        }
         // flying bubble
-        if (flying) {
-            paint.color = Color.parseColor(colors[curColor])
-            canvas.drawCircle(bubbleX, bubbleY, cell/2 - 2, paint)
-        }
-        // next color indicator
-        paint.color = Color.parseColor(colors[nextColor])
-        canvas.drawCircle(w - 30f, h - 30f, cell/3, paint)
+        if (flying) bubble(bubbleX, bubbleY, cell / 2 - 2, colors[curColor])
+        // next color indicator con marco
+        val nx = w - 34f; val ny = h - 40f
+        paint.color = Color.parseColor("#000000"); paint.alpha = 120
+        canvas.drawCircle(nx, ny, cell / 2 + 6, paint)
+        paint.alpha = 255
+        bubble(nx, ny, cell / 2 - 2, colors[nextColor])
+        canvas.drawText("SIG", nx, ny - cell / 2 - 8, smallPaint.apply { textSize = 13f; color = Color.parseColor("#F8D878") })
         // HUD
-        canvas.drawText("Score: $score", w/2f, h - 10f, textPaint.apply { textSize = 24f })
+        canvas.drawText("Score: $score", w / 2f, h - 10f, textPaint.apply { textSize = 24f })
         if (isGameOver) {
-            canvas.drawText("GAME OVER", w/2f, h/2f, textPaint.apply { textSize = 56f; color = Color.parseColor("#FF6B6B") })
-            canvas.drawText("Pulsa START", w/2f, h/2f + 60f, smallPaint.apply { textSize = 24f; color = Color.parseColor("#F5F5F5") })
+            val dim = Paint().apply { color = Color.parseColor("#000000"); alpha = 160; isAntiAlias = false }
+            canvas.drawRect(0f, 0f, w.toFloat(), h.toFloat(), dim)
+            canvas.drawText("GAME OVER", w / 2f, h / 2f, textPaint.apply { textSize = 56f; color = Color.parseColor("#FF6B6B") })
+            canvas.drawText("Pulsa START", w / 2f, h / 2f + 60f, smallPaint.apply { textSize = 24f; color = Color.parseColor("#F5F5F5") })
         }
     }
 }

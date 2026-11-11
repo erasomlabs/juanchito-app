@@ -14,6 +14,7 @@ class TetrisGame : Game {
     private var cell = 0f
     private val board = Array(rows) { IntArray(cols) } // 0 empty, 1-7 piece color
     private var piece = 0; private var px = 0; private var py = 0
+    private var nextPiece = 0
     private var rot = 0
     private var dropTimer = 0f; private var dropInterval = 0.8f
     private var softDrop = false
@@ -53,11 +54,13 @@ class TetrisGame : Game {
         for (r in 0 until rows) for (c in 0 until cols) board[r][c] = 0
         score = 0; lines = 0; level = 1; dropInterval = 0.8f
         isGameOver = false; highScore = maxOf(highScore, score)
+        nextPiece = Random.nextInt(7)
         spawnPiece()
     }
 
     private fun spawnPiece() {
-        piece = Random.nextInt(7)
+        piece = nextPiece
+        nextPiece = Random.nextInt(7)
         px = cols / 2 - 2; py = 0; rot = 0
         if (!canPlace(piece, px, py, rot)) isGameOver = true
     }
@@ -121,35 +124,82 @@ class TetrisGame : Game {
         if (input.start) { /* pause not implemented */ }
     }
 
+    /** Celda biselada estilo NES: cara clara arriba-izquierda, oscura abajo-derecha. */
+    private fun drawCell(canvas: Canvas, x: Float, y: Float, size: Float, colorIdx: Int) {
+        val base = Color.parseColor(colors[colorIdx])
+        paint.color = base
+        canvas.drawRect(x, y, x + size, y + size, paint)
+        // bisel claro
+        paint.color = Color.argb(255, Math.min(255, Color.red(base) + 60), Math.min(255, Color.green(base) + 60), Math.min(255, Color.blue(base) + 60))
+        canvas.drawRect(x, y, x + size - 2f, y + 5f, paint)
+        canvas.drawRect(x, y, x + 5f, y + size - 2f, paint)
+        // bisel oscuro
+        paint.color = Color.argb(255, Color.red(base) / 2, Color.green(base) / 2, Color.blue(base) / 2)
+        canvas.drawRect(x, y + size - 4f, x + size, y + size, paint)
+        canvas.drawRect(x + size - 4f, y, x + size, y + size, paint)
+        // punto de brillo
+        paint.color = Color.parseColor("#F8F8F8")
+        paint.alpha = 90
+        canvas.drawRect(x + size * 0.25f, y + size * 0.25f, x + size * 0.45f, y + size * 0.45f, paint)
+        paint.alpha = 255
+    }
+
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#000000"))
+        // Sala de máquinas: fondo morado + marco neón
+        NesScenery.drawSkyBands(canvas, w, h.toFloat(), "#181028", "#302048", 6)
+        NesScenery.drawStars(canvas, w, h, 25)
+        NesScenery.drawNeonFrame(canvas, w, h, "#00D9FF")
         val ox = (w - cols * cell) / 2f
         val oy = (h - rows * cell) / 2f
+        // Marco del pozo
+        paint.color = Color.parseColor("#7C7C7C")
+        canvas.drawRect(ox - 6f, oy - 6f, ox + cols * cell + 6f, oy + rows * cell + 6f, paint)
+        paint.color = Color.parseColor("#000000")
+        canvas.drawRect(ox - 3f, oy - 3f, ox + cols * cell + 3f, oy + rows * cell + 3f, paint)
         // board
+        val grid = Paint().apply { color = Color.parseColor("#1E2229"); isAntiAlias = false }
         for (r in 0 until rows) for (c in 0 until cols) {
             val v = board[r][c]
+            val x = ox + c * cell; val y = oy + r * cell
             if (v != 0) {
-                paint.color = Color.parseColor(colors[v])
-                canvas.drawRect(ox + c*cell, oy + r*cell, ox + (c+1)*cell-1, oy + (r+1)*cell-1, paint)
+                drawCell(canvas, x, y, cell - 1f, v)
             } else {
-                paint.color = Color.parseColor("#2D3748")
-                canvas.drawRect(ox + c*cell, oy + r*cell, ox + (c+1)*cell-1, oy + (r+1)*cell-1, paint)
+                paint.color = Color.parseColor("#101018")
+                canvas.drawRect(x, y, x + cell - 1f, y + cell - 1f, paint)
+                // rejilla sutil
+                paint.color = Color.parseColor("#20202E")
+                canvas.drawRect(x, y, x + cell - 1f, y + 1f, paint)
+                canvas.drawRect(x, y, x + 1f, y + cell - 1f, paint)
             }
         }
         // current piece
         for (c in cells(piece, rot)) {
             val cx = px + c.first; val cy = py + c.second
             if (cy in 0 until rows && cx in 0 until cols) {
-                paint.color = Color.parseColor(colors[piece+1])
-                canvas.drawRect(ox + cx*cell, oy + cy*cell, ox + (cx+1)*cell-1, oy + (cy+1)*cell-1, paint)
+                drawCell(canvas, ox + cx * cell, oy + cy * cell, cell - 1f, piece + 1)
             }
         }
+        // Vista previa de pieza siguiente
+        val pvx = ox + cols * cell + 14f
+        val pvy = oy + 10f
+        paint.color = Color.parseColor("#F8F8F8")
+        paint.strokeWidth = 2f; paint.style = Paint.Style.STROKE
+        canvas.drawRect(pvx, pvy, pvx + cell * 4f + 8f, pvy + cell * 2.4f + 8f, paint)
+        paint.style = Paint.Style.FILL
+        canvas.drawText("SIGUE", pvx + cell * 2f, pvy + 14f, smallPaint.apply { textSize = 14f; color = Color.parseColor("#F8D878") })
+        for (c in cells(nextPiece, 0)) {
+            drawCell(canvas, pvx + 4f + c.first * cell, pvy + 22f + c.second * cell * 0.8f, cell * 0.7f, nextPiece + 1)
+        }
+        // Juanchito mirando el pozo (decorativo, esquina inferior)
+        JuanchitoSprite.draw(canvas, ox - 24f, oy + rows * cell - 20f, 28f, facingRight = true, hatColor = 0x5C94FC)
         // HUD
-        canvas.drawText("Score: $score", w/2f, 30f, textPaint)
-        canvas.drawText("Level: $level  Lines: $lines", w/2f, 60f, smallPaint)
+        canvas.drawText("Score: $score", w / 2f, 30f, textPaint)
+        canvas.drawText("Level: $level  Lines: $lines", w / 2f, 60f, smallPaint)
         if (isGameOver) {
-            canvas.drawText("GAME OVER", w/2f, h/2f, textPaint.apply { textSize = 56f; color = Color.parseColor("#FF6B6B") })
-            canvas.drawText("Pulsa START", w/2f, h/2f + 60f, smallPaint.apply { textSize = 24f; color = Color.parseColor("#F5F5F5") })
+            val dim = Paint().apply { color = Color.parseColor("#000000"); alpha = 160; isAntiAlias = false }
+            canvas.drawRect(0f, 0f, w.toFloat(), h.toFloat(), dim)
+            canvas.drawText("GAME OVER", w / 2f, h / 2f, textPaint.apply { textSize = 56f; color = Color.parseColor("#FF6B6B") })
+            canvas.drawText("Pulsa START", w / 2f, h / 2f + 60f, smallPaint.apply { textSize = 24f; color = Color.parseColor("#F5F5F5") })
         }
     }
 }

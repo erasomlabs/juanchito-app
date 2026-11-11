@@ -20,7 +20,7 @@ class MonetizationManager(private val activity: Activity) {
 
     companion object {
         private const val TAG = "MonetizationManager"
-        const val BANNER_ID = "ca-app-pub-2946370347896607/676278580"
+        const val BANNER_ID = "ca-app-pub-2946370347896607/6762788580"
         const val REWARDED_ID = "ca-app-pub-2946370347896607/6302922880"
         const val REWARDED_INTERSTITIAL_ID = "ca-app-pub-2946370347896607/2565436973"
         const val INTERSTITIAL_ID = "ca-app-pub-2946370347896607/6962184854"

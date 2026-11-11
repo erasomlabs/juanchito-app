@@ -33,6 +33,7 @@ class PongGame : Game {
     private val textPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); textSize = 48f; isAntiAlias = false; textAlign = Paint.Align.CENTER }
     private val smallPaint = Paint().apply { color = Color.parseColor("#F8F8F8"); textSize = 24f; isAntiAlias = false; textAlign = Paint.Align.CENTER }
     private val linePaint = Paint().apply { color = Color.parseColor("#F8F8F8"); strokeWidth = 2f }
+    private val trail = mutableListOf<Pair<Float, Float>>()
 
     override fun init(width: Int, height: Int) {
         w = width; h = height
@@ -71,6 +72,8 @@ class PongGame : Game {
         // Ball movement
         ballX += ballVx * dt
         ballY += ballVy * dt
+        trail.add(ballX to ballY)
+        if (trail.size > 8) trail.removeAt(0)
 
         // Top/bottom bounce
         if (ballY <= 0f) { ballY = 0f; ballVy = -ballVy }
@@ -115,22 +118,50 @@ class PongGame : Game {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.parseColor("#000000"))
-        // Center line
+        // Cancha: fondo azul profundo + marco neón + línea central punteada
+        canvas.drawColor(Color.parseColor("#101030"))
+        NesScenery.drawNeonFrame(canvas, w, h, "#5C94FC")
         var y = 0f
         while (y < h) {
             canvas.drawLine(w / 2f, y, w / 2f, y + 10f, linePaint)
             y += 20f
         }
-        // Paddles
+        // Estela de la bola (efecto velocidad)
+        val trailPaint = Paint().apply { isAntiAlias = false }
+        trail.forEachIndexed { i, (tx, ty) ->
+            trailPaint.color = Color.parseColor("#F8F8F8")
+            trailPaint.alpha = (i * 22).coerceAtMost(140)
+            canvas.drawCircle(tx + ballSize / 2f, ty + ballSize / 2f, ballSize * (0.2f + i * 0.04f), trailPaint)
+        }
+        // Raqueta del jugador (Juanchito, ocre) con grip
+        val gripPaint = Paint().apply { color = Color.parseColor("#D4A017"); isAntiAlias = false }
         canvas.drawRoundRect(RectF(0f, playerY, paddleW, playerY + paddleH), 4f, 4f, paddlePaint)
+        var gy = playerY + 12f
+        while (gy < playerY + paddleH - 8f) {
+            canvas.drawRect(2f, gy, paddleW - 2f, gy + 4f, gripPaint)
+            gy += 18f
+        }
+        // Raqueta IA (roja) con grip
+        val grip2 = Paint().apply { color = Color.parseColor("#8C1414"); isAntiAlias = false }
         canvas.drawRoundRect(RectF(w - paddleW, aiY, w.toFloat(), aiY + paddleH), 4f, 4f, paddlePaint)
-        // Ball
-        canvas.drawCircle(ballX + ballSize / 2f, ballY + ballSize / 2f, ballSize / 2f, ballPaint)
-        // Scores
+        gy = aiY + 12f
+        while (gy < aiY + paddleH - 8f) {
+            canvas.drawRect(w - paddleW + 2f, gy, w - 2f, gy + 4f, grip2)
+            gy += 18f
+        }
+        // Bola con brillo
+        val glow = Paint().apply { color = Color.parseColor("#F8D878"); isAntiAlias = false }
+        canvas.drawCircle(ballX + ballSize / 2f, ballY + ballSize / 2f, ballSize / 2f, glow)
+        canvas.drawCircle(ballX + ballSize * 0.4f, ballY + ballSize * 0.4f, ballSize * 0.18f, ballPaint)
+        // Marcador tipo tablero
+        val boardPaint = Paint().apply { color = Color.parseColor("#000000"); alpha = 140; isAntiAlias = false }
+        canvas.drawRect(w * 0.15f, 12f, w * 0.35f, 66f, boardPaint)
+        canvas.drawRect(w * 0.65f, 12f, w * 0.85f, 66f, boardPaint)
         canvas.drawText("$score", w / 4f, 60f, textPaint)
         canvas.drawText("$aiScore", 3 * w / 4f, 60f, textPaint)
         if (isGameOver) {
+            val dim = Paint().apply { color = Color.parseColor("#000000"); alpha = 160; isAntiAlias = false }
+            canvas.drawRect(0f, 0f, w.toFloat(), h.toFloat(), dim)
             val winner = if (score >= 5) "¡GANASTE!" else "PERDISTE"
             canvas.drawText(winner, w / 2f, h / 2f, textPaint.apply { textSize = 56f; color = if (score >= 5) Color.parseColor("#39FF14") else Color.parseColor("#E63946") })
             canvas.drawText("Pulsa START", w / 2f, h / 2f + 60f, smallPaint.apply { textSize = 24f; color = Color.parseColor("#F5F5F5") })
