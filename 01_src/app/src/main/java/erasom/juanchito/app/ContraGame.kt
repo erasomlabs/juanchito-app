@@ -353,12 +353,8 @@ class ContraGame : Game {
         // Jugador Bill Rizer
         if (invulnTimer <= 0f || (invulnTimer * 10).toInt() % 2 == 0) {
             val dx = px - scrollX
-            val pBill = Paint().apply { color = Color.parseColor("#00A800") } // Pantalón comando
-            canvas.drawRect(dx - 8f, py - 12f, dx + 8f, py, pBill)
-            val pChest = Paint().apply { color = Color.parseColor("#F5C542") }
-            canvas.drawRect(dx - 7f, py - 24f, dx + 7f, py - 12f, pChest)
-            val pBandana = Paint().apply { color = Color.parseColor("#C41E24") }
-            canvas.drawRect(dx - 8f, py - 27f, dx + 8f, py - 23f, pBandana)
+            // Juanchito protagonista
+            JuanchitoSprite.draw(canvas, dx, py - 14f, 26f, facingRight = facing > 0)
             // Rifle
             val pRifle = Paint().apply { color = Color.parseColor("#F8F8F8") }
             canvas.drawRect(dx, py - 18f, dx + facing * 18f, py - 14f, pRifle)

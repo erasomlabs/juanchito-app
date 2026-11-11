@@ -134,9 +134,9 @@ class MortalKombatGame : Game {
         canvas.drawRect(0f, groundY, w.toFloat(), h.toFloat(), groundPaint)
         // fighters
         val p1h = if (p1blocking) 30f else 50f
-        canvas.drawRoundRect(RectF(p1x - 12f, (if (p1blocking) groundY - 30f else p1y), p1x + 12f, groundY), 4f, 4f, p1Paint)
+        JuanchitoSprite.draw(canvas, p1x, groundY - p1h / 2f, 40f, facingRight = true, hatColor = 0xC41E24)
         val p2h = if (p2blocking) 30f else 50f
-        canvas.drawRoundRect(RectF(p2x - 12f, (if (p2blocking) groundY - 30f else p2y), p2x + 12f, groundY), 4f, 4f, p2Paint)
+        JuanchitoSprite.draw(canvas, p2x, groundY - p2h / 2f, 40f, facingRight = false, hatColor = 0x00A800)
         // fireballs
         val fp = Paint().apply { color = Color.parseColor("#FC9838"); isAntiAlias = false }
         for (f in fireballs) canvas.drawCircle(f.x, f.y, 6f, fp)
