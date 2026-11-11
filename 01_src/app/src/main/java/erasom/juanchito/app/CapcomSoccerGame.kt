@@ -164,8 +164,7 @@ class CapcomSoccerGame : Game {
         canvas.drawRect(w * 0.6f, h - 8f, w * 0.6f + 4f, h + 4f, goalPaint)
         // players
         for (p in players) {
-            val paint = if (p.team == 0) playerPaint else aiPaint
-            canvas.drawCircle(p.x, p.y, 12f, paint)
+            JuanchitoSprite.draw(canvas, p.x, p.y, 24f, facingRight = p.team == 0, hatColor = if (p.team == 0) 0xD4A017 else 0xD82800)
             if (p.hasBall) {
                 val bp = Paint().apply { color = Color.parseColor("#F8F8F8"); isAntiAlias = false }
                 canvas.drawCircle(p.x, p.y - 14f, 5f, bp)
