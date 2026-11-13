@@ -22,6 +22,9 @@ class WorldMapGame : Game {
     /** Notifica el nombre del juego elegido para que MainActivity lo lance. */
     var onPortalEnter: ((String) -> Unit)? = null
 
+    /** START/SELECT abren el menú clásico de cartuchos sobre el mundo. */
+    var onOpenMenu: (() -> Unit)? = null
+
     private var w = 0; private var h = 0
     private val worldW = 2400f
     private val worldH = 1400f
@@ -36,6 +39,8 @@ class WorldMapGame : Game {
 
     private var prevA = false
     private var prevB = false
+    private var prevStart = false
+    private var prevSelect = false
 
     /** Estado: -1 = explorando, >= 0 = diálogo de misión del portal abierto. */
     private var dialogPortal = -1
@@ -196,6 +201,7 @@ class WorldMapGame : Game {
         // Se conserva la posición del jugador para volver de una partida al mundo donde estaba.
         dialogPortal = -1
         prevA = false; prevB = false
+        prevStart = false; prevSelect = false
     }
 
     private fun updateCamera() {
@@ -210,6 +216,16 @@ class WorldMapGame : Game {
         val bPressed = input.b && !prevB
         prevA = input.a
         prevB = input.b
+        val startPressed = input.start && !prevStart
+        val selectPressed = input.select && !prevSelect
+        prevStart = input.start
+        prevSelect = input.select
+
+        // START o SELECT alternan el menú clásico de cartuchos
+        if (startPressed || selectPressed) {
+            onOpenMenu?.invoke()
+            return
+        }
 
         if (dialogPortal >= 0) {
             if (aPressed) {
@@ -388,15 +404,16 @@ class WorldMapGame : Game {
         if (dialogPortal < 0) {
             smallPaint.color = Color.WHITE
             smallPaint.alpha = 190
-            canvas.drawText("◀ ▶ girar   ·   ▲ ▼ caminar   ·   A: interactuar", w / 2f, h - 10f, smallPaint)
+            canvas.drawText("◀ ▶ girar   ·   ▲ ▼ caminar   ·   A: interactuar   ·   START: MENÚ", w / 2f, h - 10f, smallPaint)
             smallPaint.alpha = 255
         }
         if (dialogPortal >= 0) {
             val p = portals[dialogPortal]
+            val ch = WeeklyChallenges.current(p.gameName)
             NesDialogueRenderer.drawDialogueBox(
                 canvas, w, h,
                 speaker = "PORTAL: ${p.gameName}",
-                text = p.story,
+                text = p.story + "\n🏆 RETO SEMANAL: supera ${ch.target} pts y ganas ${ch.reward} 🪙",
                 speakerColor = Color.parseColor(p.colorHex),
                 progressText = "PULSA [A] PARA ENTRAR  ·  [B] PARA CERRAR"
             )

@@ -32,6 +32,16 @@
             android:fontFamily="monospace" />
 
         <Button
+            android:id="@+id/btnWorld"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:text="🌍 MUNDO"
+            android:textSize="9sp"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/btn_pad_small"
+            android:textColor="@color/atari_yellow" />
+
+        <Button
             android:id="@+id/btnThemeSettings"
             android:layout_width="wrap_content"
             android:layout_height="28dp"

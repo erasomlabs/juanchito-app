@@ -126,6 +126,28 @@ class MainActivity : AppCompatActivity() {
                 handleGameOver()
             }
         }
+
+        // Botón volver al Mundo Juanchito (el mundo virtual es el menú principal)
+        binding.btnWorld.setOnClickListener { launchWorld() }
+
+        // La intro cinematográfica entra directamente al mundo virtual
+        if (intent.getBooleanExtra("enter_world", false)) {
+            launchWorld()
+        }
+    }
+
+    /** Abre el mundo virtual 3D (menú principal jugable). */
+    private fun launchWorld() {
+        GameLibrary.games.firstOrNull { it is WorldMapGame }?.let { launchGame(it) }
+    }
+
+    /** Alterna el menú clásico de cartuchos sobre el mundo (START/SELECT en el mundo). */
+    private fun toggleClassicMenu() {
+        val show = !binding.menuContainer.isVisible
+        binding.menuContainer.isVisible = show
+        binding.bannerContainer.isVisible = show
+        binding.tvConsoleTitle.text = if (show) "★ MENÚ ARCADE ★"
+        else "🌍 MUNDO JUANCHITO — START: MENÚ"
     }
 
     private fun updateGameShowcase(game: Game) {
@@ -220,9 +242,23 @@ class MainActivity : AppCompatActivity() {
         gamificationManager.addCoins(finalScore / 10)
         updateCoinsDisplay()
 
+        // Reto semanal: si se alcanza el objetivo y no estaba reclamado, premia
+        val challenge = WeeklyChallenges.current(game.name)
+        val weeklyDone = finalScore >= challenge.target &&
+            !WeeklyChallenges.isClaimed(this, game.name)
+        if (weeklyDone) {
+            WeeklyChallenges.markClaimed(this, game.name)
+            gamificationManager.addCoins(challenge.reward)
+            updateCoinsDisplay()
+        }
+
         AlertDialog.Builder(this)
             .setTitle(if (isNewRecord) "¡Nuevo Récord Arcade!" else "Game Over")
-            .setMessage("Puntuación: $finalScore\n¿Deseas ver un video para revivir y seguir jugando?")
+            .setMessage(
+                "Puntuación: $finalScore\n" +
+                    (if (weeklyDone) "🏆 ¡RETO SEMANAL COMPLETADO! +${challenge.reward} monedas 🪙\n" else "") +
+                    "\n¿Deseas ver un video para revivir y seguir jugando?"
+            )
             .setPositiveButton("Revivir (Video)") { _, _ ->
                 monetizationManager.showRewardedRevive(
                     onRewarded = {
@@ -265,12 +301,17 @@ class MainActivity : AppCompatActivity() {
                     GameLibrary.games.firstOrNull { it.name == target }?.let { launchGame(it) }
                 }
             }
+            game.onOpenMenu = {
+                runOnUiThread { toggleClassicMenu() }
+            }
+            WeeklyChallenges.pruneOldWeeks(this)
         }
         binding.menuContainer.isVisible = false
         binding.bannerContainer.isVisible = false
         binding.gameView.isVisible = true
         binding.gameView.setGame(game)
-        binding.tvConsoleTitle.text = game.name.uppercase()
+        binding.tvConsoleTitle.text = if (game is WorldMapGame) "🌍 MUNDO JUANCHITO — START: MENÚ"
+        else game.name.uppercase()
     }
 
     private fun returnToMenu() {

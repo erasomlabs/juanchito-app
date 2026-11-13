@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#05050A">
+
+    <!-- Superficie de la cinemática 3D -->
+    <SurfaceView
+        android:id="@+id/introSurface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Botón para omitir la intro -->
+    <Button
+        android:id="@+id/btnSkipIntro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_margin="12dp"
+        android:background="#66000000"
+        android:paddingStart="18dp"
+        android:paddingEnd="18dp"
+        android:text="OMITIR ▶▶"
+        android:textColor="#F5C542"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <!-- Pista de interacción -->
+    <TextView
+        android:id="@+id/tvIntroHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="24dp"
+        android:alpha="0.85"
+        android:fontFamily="monospace"
+        android:text="toca la pantalla para acelerar la caminata"
+        android:textColor="#8FD0F8"
+        android:textSize="13sp" />
+</FrameLayout>
