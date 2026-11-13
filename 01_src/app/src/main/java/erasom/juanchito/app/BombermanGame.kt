@@ -299,10 +299,10 @@ class BombermanGame : Game {
             // boca
             canvas.drawRect(x + cell * 0.35f, y + cell * 0.65f, x + cell * 0.65f, y + cell * 0.7f, pupilPaint)
         }
-        // player: Juanchito bomber con casco
+        // player: Pixel bomber con casco
         if (invuln <= 0f || (invuln * 8).toInt() % 2 == 0) {
             val x = ox + px * cell; val y = oy + py * cell
-            JuanchitoSprite.draw(canvas, x + cell / 2, y + cell / 2 + 2, cell * 1.15f, facingRight = true, hatColor = 0xF8F8F8)
+            PixelSprite.draw(canvas, x + cell / 2, y + cell / 2 + 2, cell * 1.15f, facingRight = true, hatColor = 0xF8F8F8)
         }
         // HUD
         textPaint.textSize = 12f

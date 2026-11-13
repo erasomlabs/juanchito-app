@@ -20,7 +20,7 @@ class PitfallGame : Game {
     private var dialogueIndex = 0
     private var dialogueQueue = mutableListOf<Pair<String, String>>()
 
-    // Juanchito el explorador
+    // Pixel el explorador
     private var px = 60f; private var py = 0f
     private var vy = 0f
     private var onGround = true
@@ -215,7 +215,7 @@ class PitfallGame : Game {
                     missionTitle = "EXPEDICIÓN I: EL PANTANO SAGRADO",
                     prologueLines = listOf(
                         "• Año 1982. En lo profundo de la selva virgen,",
-                        "  Juanchito el explorador busca las reliquias de oro puro.",
+                        "  Pixel el explorador busca las reliquias de oro puro.",
                         "• Supera los pozos de alquitrán, usa las lianas",
                         "  y esquiva los troncos rodantes.",
                         "• OBJETIVO: Reúne 8 tesoros antes de que el cronómetro llegue a cero.",
@@ -240,7 +240,7 @@ class PitfallGame : Game {
                     gameTitle = "¡EXPEDICIÓN COMPLETADA!",
                     missionTitle = "LOS 8 TESOROS HAN SIDO RESCATADOS",
                     prologueLines = listOf(
-                        "• ¡Juanchito emerge de la jungla con los lingotes mayas intactos!",
+                        "• ¡Pixel emerge de la jungla con los lingotes mayas intactos!",
                         "• Tiempo restante bonificado: ${timeRemaining.toInt()} seg.",
                         "• Puntuación de honor: $score pts.",
                         "• Nuevos templos subterráneos aguardan en el Acto II."
@@ -297,9 +297,9 @@ class PitfallGame : Game {
         val pSpark = Paint().apply { color = Color.parseColor("#FFFFFF") }
         canvas.drawCircle(treasureX, groundY - 10f, 3f, pSpark)
 
-        // Juanchito el explorador
-        val pJuanchito = Paint().apply { color = Color.parseColor("#F5C542") }
-        canvas.drawRect(px - 7f, py - 20f, px + 7f, py - 10f, pJuanchito) // Camisa safari
+        // Pixel el explorador
+        val pPixel = Paint().apply { color = Color.parseColor("#F5C542") }
+        canvas.drawRect(px - 7f, py - 20f, px + 7f, py - 10f, pPixel) // Camisa safari
         val pPants = Paint().apply { color = Color.parseColor("#3C44AA") }
         canvas.drawRect(px - 6f, py - 10f, px + 6f, py, pPants)
         val pHat = Paint().apply { color = Color.parseColor("#805A20") }

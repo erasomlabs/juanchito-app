@@ -171,7 +171,7 @@ class CapcomSoccerGame : Game {
                     "La Copa Retro reúne a las selecciones más",
                     "acrobáticas del planeta en el Estadio Nacional.",
                     "",
-                    "Juanchito capitanea al Valdoria FC, el equipo",
+                    "Pixel capitanea al Valdoria FC, el equipo",
                     "de la estrella dorada. Enfrente espera la",
                     "Selección Furia, famosa por sus chilenas",
                     "imposibles y su defensa de hierro.",
@@ -209,7 +209,7 @@ class CapcomSoccerGame : Game {
         canvas.drawRect(w * 0.6f, h - 8f, w * 0.6f + 4f, h + 4f, goalPaint)
         // players
         for (p in players) {
-            JuanchitoSprite.draw(canvas, p.x, p.y, 24f, facingRight = p.team == 0, hatColor = if (p.team == 0) 0xD4A017 else 0xD82800)
+            PixelSprite.draw(canvas, p.x, p.y, 24f, facingRight = p.team == 0, hatColor = if (p.team == 0) 0xD4A017 else 0xD82800)
             if (p.hasBall) {
                 val bp = Paint().apply { color = Color.parseColor("#F8F8F8"); isAntiAlias = false }
                 canvas.drawCircle(p.x, p.y - 14f, 5f, bp)
@@ -240,7 +240,7 @@ class CapcomSoccerGame : Game {
             canvas.drawText(msg, w / 2f, h / 2f, textPaint)
             textPaint.textSize = 11f; textPaint.color = Color.parseColor("#F8F8F8")
             val story = when {
-                scoreP > scoreAI -> "Juanchito levanta la Copa Retro entre confeti dorado"
+                scoreP > scoreAI -> "Pixel levanta la Copa Retro entre confeti dorado"
                 scoreP < scoreAI -> "La Selección Furia se lleva el trofeo... habrá revancha"
                 else -> "Empate épico: la Copa se queda en casa hasta el próximo torneo"
             }

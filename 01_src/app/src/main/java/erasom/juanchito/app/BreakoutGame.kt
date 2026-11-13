@@ -160,7 +160,7 @@ class BreakoutGame : Game {
             trailPaint.alpha = (i * 22).coerceAtMost(140)
             canvas.drawCircle(tx + ballSize / 2f, ty + ballSize / 2f, ballSize * (0.2f + i * 0.04f), trailPaint)
         }
-        // Paleta Juanchito: ocre con franjas de grip y protagonista montado
+        // Paleta Pixel: ocre con franjas de grip y protagonista montado
         val paddleRect = RectF(paddleX, h - 60f, paddleX + paddleW, h - 60f + paddleH)
         paddlePaint.color = Color.parseColor("#D4A017")
         canvas.drawRoundRect(paddleRect, 6f, 6f, paddlePaint)
@@ -170,7 +170,7 @@ class BreakoutGame : Game {
             canvas.drawRect(gx, h - 58f, gx + 4f, h - 48f, grip)
             gx += 16f
         }
-        JuanchitoSprite.draw(canvas, paddleX + paddleW / 2f, h - 74f, 24f, facingRight = true)
+        PixelSprite.draw(canvas, paddleX + paddleW / 2f, h - 74f, 24f, facingRight = true)
         // Bola con brillo
         val glow = Paint().apply { color = Color.parseColor("#F8D878"); isAntiAlias = false }
         canvas.drawCircle(ballX + ballSize / 2f, ballY + ballSize / 2f, ballSize / 2f, glow)

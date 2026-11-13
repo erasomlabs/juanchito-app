@@ -172,7 +172,7 @@ class PixelMinasGame : Game {
                 }
             }
         }
-        // Marcador de sapper Juanchito sobre la celda seleccionada
+        // Marcador de sapper Pixel sobre la celda seleccionada
         if (!revealed[selY][selX]) {
             val fx = ox + selX * size + size / 2f
             val fy = oy + selY * size - 14f
@@ -237,8 +237,8 @@ class PixelRunnerGame : Game {
         NesScenery.drawHills(canvas, w, h * 0.7f, "#00A800", "#008800")
         paint.color = Color.parseColor("#2D3748")
         canvas.drawRect(0f, h * 0.7f + 25f, w.toFloat(), h.toFloat(), paint)
-        // Juanchito corriendo
-        JuanchitoSprite.draw(canvas, 117f, py + 4f, 30f, facingRight = true)
+        // Pixel corriendo
+        PixelSprite.draw(canvas, 117f, py + 4f, 30f, facingRight = true)
         // Obstáculos: arbustos de espinas con ojos perversos (terreno hostil)
         for (ox in obstacles) {
             val bushTop = h * 0.7f - 14f

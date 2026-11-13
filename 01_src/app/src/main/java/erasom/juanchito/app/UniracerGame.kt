@@ -99,10 +99,10 @@ class UniracerGame : Game {
             val r = RectF(o.x, o.y - o.h, o.x + o.w, o.y)
             if (o.type == 0) canvas.drawRoundRect(r, 4f, 4f, rampPaint) else canvas.drawRoundRect(r, 4f, 4f, barrierPaint)
         }
-        // Juanchito sobre su monociclo
+        // Pixel sobre su monociclo
         canvas.drawCircle(px, py, 14f, playerPaint)
         canvas.drawRect(px - 4f, py - 28f, px + 4f, py - 14f, playerPaint)
-        JuanchitoSprite.draw(canvas, px, py - 42f, 26f, facingRight = true)
+        PixelSprite.draw(canvas, px, py - 42f, 26f, facingRight = true)
         // HUD
         textPaint.textSize = 22f
         canvas.drawText("Score: $score  Trucos: $tricks", w/2f, 30f, textPaint)

@@ -4,8 +4,8 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 
-object JuanchitoSprite {
-    // Draws a small Juanchito character centered at (cx,cy) with given size.
+object PixelSprite {
+    // Draws a small Pixel character centered at (cx,cy) with given size.
     fun draw(canvas: Canvas, cx: Float, cy: Float, size: Float, facingRight: Boolean = true, hatColor: Int = 0xD82800, bodyColor: Int = 0xF8D878) {
         val half = size / 2f
         val bodyPaint = Paint().apply { color = bodyColor; isAntiAlias = false }

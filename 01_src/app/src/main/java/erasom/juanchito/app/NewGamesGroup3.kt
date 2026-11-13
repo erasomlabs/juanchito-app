@@ -50,8 +50,8 @@ class PixelPuzzlesGame : Game {
 
         val size = 60f
         val startX = (w - size * 3) / 2f
-        // Juanchito albañil junto a los bloques
-        JuanchitoSprite.draw(canvas, startX + size * 1.5f, h * 0.5f + size + 28f, 26f, facingRight = true, hatColor = 0xF8D878)
+        // Pixel albañil junto a los bloques
+        PixelSprite.draw(canvas, startX + size * 1.5f, h * 0.5f + size + 28f, 26f, facingRight = true, hatColor = 0xF8D878)
         for (i in 0..2) {
             val base = if (i == pos) Color.parseColor("#F8D878") else Color.parseColor("#5C94FC")
             val r = RectF(startX + i * size + 6, h * 0.5f, startX + (i + 1) * size - 6, h * 0.5f + size)
@@ -150,11 +150,11 @@ class CarrerasGame : Game {
         canvas.drawRect(roadX - 6f, 0f, roadX - 2f, h.toFloat(), rail)
         canvas.drawRect(roadX + laneWidth * 3 + 2f, 0f, roadX + laneWidth * 3 + 6f, h.toFloat(), rail)
 
-        // Jugador: coche de Juanchito con parabrisas, faros y ruedas (vista trasera)
+        // Jugador: coche de Pixel con parabrisas, faros y ruedas (vista trasera)
         val px = roadX + lane * laneWidth + 15f
         drawCar(canvas, px, h - 80f, laneWidth - 30f, 50f, "#5C94FC", facingUp = true)
-        // Juanchito piloto en el asiento
-        JuanchitoSprite.draw(canvas, px + (laneWidth - 30f) / 2f, h - 58f, 16f, facingRight = true)
+        // Pixel piloto en el asiento
+        PixelSprite.draw(canvas, px + (laneWidth - 30f) / 2f, h - 58f, 16f, facingRight = true)
 
         // Tráfico: coches rivales con detalles (vista frontal, vienen hacia abajo)
         val rivalColors = listOf("#D82800", "#00A800", "#FC9838", "#8814A8", "#F8D878")

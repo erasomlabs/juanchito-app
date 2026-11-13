@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Botón volver al Mundo Juanchito (el mundo virtual es el menú principal)
+        // Botón volver al Mundo Pixel (el mundo virtual es el menú principal)
         binding.btnWorld.setOnClickListener { launchWorld() }
 
         // La intro cinematográfica entra directamente al mundo virtual
@@ -147,7 +147,7 @@ class MainActivity : AppCompatActivity() {
         binding.menuContainer.isVisible = show
         binding.bannerContainer.isVisible = show
         binding.tvConsoleTitle.text = if (show) "★ MENÚ ARCADE ★"
-        else "🌍 MUNDO JUANCHITO — START: MENÚ"
+        else "🌍 MUNDO PIXEL — START: MENÚ"
     }
 
     private fun updateGameShowcase(game: Game) {
@@ -310,7 +310,7 @@ class MainActivity : AppCompatActivity() {
         binding.bannerContainer.isVisible = false
         binding.gameView.isVisible = true
         binding.gameView.setGame(game)
-        binding.tvConsoleTitle.text = if (game is WorldMapGame) "🌍 MUNDO JUANCHITO — START: MENÚ"
+        binding.tvConsoleTitle.text = if (game is WorldMapGame) "🌍 MUNDO PIXEL — START: MENÚ"
         else game.name.uppercase()
     }
 

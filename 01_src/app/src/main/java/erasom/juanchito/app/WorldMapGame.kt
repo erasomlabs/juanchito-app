@@ -11,12 +11,12 @@ import kotlin.math.sqrt
 import kotlin.math.sin
 
 /**
- * Mundo Juanchito 3D: pueblo estilo Roblox con 6 barrios temáticos,
+ * Mundo Pixel 3D: pueblo estilo Roblox con 6 barrios temáticos,
  * 30 portales de misión, NPCs y avatar de bloques. Cámara en tercera
  * persona: D-PAD izq/der giran la vista, arriba/abajo caminan.
  */
 class WorldMapGame : Game {
-    override val name = "Mundo Juanchito"
+    override val name = "Mundo Pixel"
     override val genre = "Mundo"
 
     /** Notifica el nombre del juego elegido para que MainActivity lo lance. */
@@ -75,23 +75,23 @@ class WorldMapGame : Game {
             "Rompeladrillos" to "Los ladrillos encantados bloquean la puerta del arcade. ¡Derríbalos con la bola mágica montada en tu paleta!",
             "Block Drop" to "Los bloques caen del cielo sobre la plaza. ¡Apílalos perfectos y limpia líneas para salvar el pueblo!",
             "Bubble Pop" to "Las burbujas del mago Zarko invaden el techo del carnaval. ¡Revienta el enjambre lanzando burbujas gemelas!",
-            "Pixel Invaders" to "Una flota alienígena sobrevuela Juanchito Town. ¡Sube a tu nave y defiende el pueblo oleada tras oleada!",
+            "Pixel Invaders" to "Una flota alienígena sobrevuela Pixel Town. ¡Sube a tu nave y defiende el pueblo oleada tras oleada!",
             "Pixel Ritmo" to "El concierto de las notas doradas empieza esta noche. ¡Atrápalas al ritmo en la línea de meta!",
             "Reflejos" to "El semáforo espacial del barrio parpadea sin aviso. ¡Presiona A justo cuando diga GO y demuestra tus reflejos!",
             "Fusion Pixel" to "Los orbes numéricos duermen en la zona 4x4. ¡Fusiona los iguales y despierta el orbe legendario!",
             "Pixel Blocks" to "La torre de Neo Town necesita un piso nuevo. ¡Detén el bloque giratorio justo en el centro de la base!",
-            "Jungla Perdida" to "Juanchito perdió el ídolo dorado en la selva profunda. ¡Sáltalo entre lianas, pozos y cocodrilos!",
+            "Jungla Perdida" to "Pixel perdió el ídolo dorado en la selva profunda. ¡Sáltalo entre lianas, pozos y cocodrilos!",
             "Comando Supremo" to "Furia Roja invadió Neo City esta madrugada. ¡Recorre la autopista en llamas y destruye el núcleo alienígena!",
             "Helirescate" to "Los vecinos quedaron atrapados en el desierto de guerra. ¡Pilota el helicóptero, esquiva tanques y jets, y rescatados a todos!",
             "Pixel Runner" to "Los arbustos espinosos con ojos tomaron el bosque. ¡Corre y salta sin detenerte un solo segundo!",
-            "Pixel Minas" to "El campo minado del desierto sella la entrada a la mina de oro. ¡Pisa solo celdas seguras, sapper Juanchito!",
+            "Pixel Minas" to "El campo minado del desierto sella la entrada a la mina de oro. ¡Pisa solo celdas seguras, sapper Pixel!",
             "Pixel Kombat" to "El torneo milenario del Templo Rojo abre sus puertas. ¡Vence a TITAN en 3 rondas de combate marcial!",
             "Pixel Draw" to "El gran muro del arte está en blanco. ¡Pinta tu obra maestra pixel para la galería del pueblo!",
             "Pixel Puzzles" to "El albañil olvidó el orden de los bloques del taller. ¡Elige el bloque correcto de la secuencia sin fallar!",
             "Pixel Charades" to "La adivinanza de colores confunde a todo el vecindario. ¡Elige el color que piden y gana el premio gordo!",
             "Pixel Tictactoe" to "La IA del parque desafía a tres en raya al aire libre. ¡Vence en el tablero gigante del distrito!",
             "Fútbol Retro Arena" to "¡La Copa Retro 1994 arranca hoy en el estadio del pueblo! ¡Mete más goles que el rival antes del pitazo final!",
-            "Turbo Total" to "El Gran Premio de Juanchito Town corre esta tarde. ¡Adelanta rivales con nitro y gana las 3 vueltas!",
+            "Turbo Total" to "El Gran Premio de Pixel Town corre esta tarde. ¡Adelanta rivales con nitro y gana las 3 vueltas!",
             "Cycle Dash" to "El monociclo turbo espera en la rampa del barrio. ¡Cruza el circuito completo esquivando todos los obstáculos!",
             "Carreras" to "La autopista del pueblo está llena de tráfico borracho. ¡Esquiva coches y suma kilómetros sin chocar!",
             "Pixel Smash" to "La sala de demoledores abre sus puertas. ¡Rompe todos los ladrillos de colores con la bola furia!",
@@ -125,7 +125,7 @@ class WorldMapGame : Game {
     }
 
     private val npcs = listOf(
-        Npc(1120f, 640f, "ABUELA CHELA", 0x8814A8, 0x5A7D9A, "¡Juanchito! Cada portal brillante es una aventura. Acércate y pulsa A para escuchar la misión."),
+        Npc(1120f, 640f, "ABUELA CHELA", 0x8814A8, 0x5A7D9A, "¡Pixel! Cada portal brillante es una aventura. Acércate y pulsa A para escuchar la misión."),
         Npc(1290f, 760f, "DON COCO", 0x00A800, 0xFC9838, "Los 30 portales reparten monedas. ¡Juega y sube en el ránking arcade del pueblo!"),
         Npc(1060f, 860f, "NIN-ROBOT", 0x5C94FC, 0x4A4A6A, "BIP BOP. Detectados 30 portales. Diversión máxima garantizada. BIP.")
     )
@@ -313,7 +313,7 @@ class WorldMapGame : Game {
 
         // Escena 3D: estáticos + avatares dinámicos (painter's algorithm)
         val frame = ArrayList<Mini3D.Face>(staticFaces)
-        // Estatua de Juanchito sobre el pedestal
+        // Estatua de Pixel sobre el pedestal
         Mini3D.avatar(frame, 1200f, 700f, 0f,
             0xD82800, 0x5C94FC, 0xF8D878, 0x2A2A5A, walking = false, phase = 0f, scale = 0.9f)
         // NPCs mirando al jugador
@@ -400,7 +400,7 @@ class WorldMapGame : Game {
         canvas.drawRect(0f, 0f, w.toFloat(), 34f, bar)
         textPaint.color = Color.parseColor("#F5C542")
         textPaint.textSize = 20f
-        canvas.drawText("🌍 MUNDO JUANCHITO  ·  $distNameAtPlayer", w / 2f, 24f, textPaint)
+        canvas.drawText("🌍 MUNDO PIXEL  ·  $distNameAtPlayer", w / 2f, 24f, textPaint)
         if (dialogPortal < 0) {
             smallPaint.color = Color.WHITE
             smallPaint.alpha = 190

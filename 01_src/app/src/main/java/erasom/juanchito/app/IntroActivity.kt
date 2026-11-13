@@ -205,7 +205,7 @@ class IntroActivity : AppCompatActivity() {
                 alpha = if ((t * 2).toInt() % 2 == 0) 1f else 0.35f
             }
             cameraArrived() -> { label = "ENCENDIENDO..."; alpha = 0.8f }
-            else -> { label = "★ PLAYZONE: MUNDO JUANCHITO ★"; alpha = 1f }
+            else -> { label = "★ PLAYZONE: MUNDO PIXEL ★"; alpha = 1f }
         }
         if (label.isNotEmpty()) {
             textPaint.textSize = (h * 0.06f).coerceIn(18f, 40f)

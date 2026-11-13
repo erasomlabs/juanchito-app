@@ -190,8 +190,8 @@ class TetrisGame : Game {
         for (c in cells(nextPiece, 0)) {
             drawCell(canvas, pvx + 4f + c.first * cell, pvy + 22f + c.second * cell * 0.8f, cell * 0.7f, nextPiece + 1)
         }
-        // Juanchito mirando el pozo (decorativo, esquina inferior)
-        JuanchitoSprite.draw(canvas, ox - 24f, oy + rows * cell - 20f, 28f, facingRight = true, hatColor = 0x5C94FC)
+        // Pixel mirando el pozo (decorativo, esquina inferior)
+        PixelSprite.draw(canvas, ox - 24f, oy + rows * cell - 20f, 28f, facingRight = true, hatColor = 0x5C94FC)
         // HUD
         canvas.drawText("Score: $score", w / 2f, 30f, textPaint)
         canvas.drawText("Level: $level  Lines: $lines", w / 2f, 60f, smallPaint)

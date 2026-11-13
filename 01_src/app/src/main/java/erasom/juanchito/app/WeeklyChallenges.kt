@@ -61,7 +61,7 @@ object WeeklyChallenges {
         "El pueblo exige tu mejor puntuación semanal",
         "El ránking arcade semanal te desafía",
         "Demuestra tu dominio esta semana",
-        "La estatua de Juanchito premia a los mejores"
+        "La estatua de Pixel premia a los mejores"
     )
 
     // ---------- Reclamación ----------

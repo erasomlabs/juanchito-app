@@ -151,7 +151,7 @@ class KidClownGame : Game {
                     "Si el Globo-Bomba revienta, la carpa y todos",
                     "los saltimbanquis desaparecerán para siempre.",
                     "",
-                    "Juanchito, el payasito más veloz del reino,",
+                    "Pixel, el payasito más veloz del reino,",
                     "debe correr por el País de la Golosina,",
                     "recolectar los globos dorados y derribar",
                     "a los secuaces de Zarko antes de que la",
@@ -182,9 +182,9 @@ class KidClownGame : Game {
         }
         // balls
         for (b in balls) canvas.drawCircle(b.x, b.y, 5f, ballPaint)
-        // Juanchito payaso protagonista
+        // Pixel payaso protagonista
         if (invuln <= 0f || (invuln * 8).toInt() % 2 == 0) {
-            JuanchitoSprite.draw(canvas, px, py, 32f, facingRight = facing > 0, hatColor = 0xD82800)
+            PixelSprite.draw(canvas, px, py, 32f, facingRight = facing > 0, hatColor = 0xD82800)
             // nariz de payaso
             val nosePaint = Paint().apply { color = Color.parseColor("#D82800"); isAntiAlias = false }
             canvas.drawCircle(px + if (facing > 0) 8f else -8f, py - 8f, 3f, nosePaint)
@@ -201,7 +201,7 @@ class KidClownGame : Game {
             textPaint.textSize = 28f; textPaint.color = col
             canvas.drawText(msg, w / 2f, h / 2f, textPaint)
             textPaint.textSize = 11f; textPaint.color = Color.parseColor("#F8F8F8")
-            val story = if (won) "Juanchito atrapó el Globo-Bomba y salvó el circo de la Princesa Miel" else "Zarko rió malvadamente... el circo quedó a oscuras"
+            val story = if (won) "Pixel atrapó el Globo-Bomba y salvó el circo de la Princesa Miel" else "Zarko rió malvadamente... el circo quedó a oscuras"
             canvas.drawText(story, w / 2f, h / 2f + 20f, textPaint)
             textPaint.textSize = 12f
             canvas.drawText("Pulsa START", w / 2f, h / 2f + 42f, smallPaint.apply { textSize = 14f; color = Color.parseColor("#F8F8F8"); textAlign = Paint.Align.CENTER })

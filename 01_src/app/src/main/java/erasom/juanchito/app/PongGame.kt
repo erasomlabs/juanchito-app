@@ -133,7 +133,7 @@ class PongGame : Game {
             trailPaint.alpha = (i * 22).coerceAtMost(140)
             canvas.drawCircle(tx + ballSize / 2f, ty + ballSize / 2f, ballSize * (0.2f + i * 0.04f), trailPaint)
         }
-        // Raqueta del jugador (Juanchito, ocre) con grip
+        // Raqueta del jugador (Pixel, ocre) con grip
         val gripPaint = Paint().apply { color = Color.parseColor("#D4A017"); isAntiAlias = false }
         canvas.drawRoundRect(RectF(0f, playerY, paddleW, playerY + paddleH), 4f, 4f, paddlePaint)
         var gy = playerY + 12f

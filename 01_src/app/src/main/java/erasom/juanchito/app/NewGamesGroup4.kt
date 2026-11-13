@@ -219,7 +219,7 @@ class PixelInvadersGame : Game {
         NesScenery.drawStars(canvas, w, h, 60)
         NesScenery.drawPlanet(canvas, w - 70f, 90f, 40f)
         NesScenery.drawCitySkyline(canvas, w, h.toFloat())
-        // Nave de Juanchito: casco, alas, cabina y cañón
+        // Nave de Pixel: casco, alas, cabina y cañón
         val hull = Paint().apply { color = Color.parseColor("#5C94FC"); isAntiAlias = false }
         val hullDark = Paint().apply { color = Color.parseColor("#2A5AA8"); isAntiAlias = false }
         val glass = Paint().apply { color = Color.parseColor("#A8D8FC"); isAntiAlias = false }
@@ -235,7 +235,7 @@ class PixelInvadersGame : Game {
         // cabina de cristal
         canvas.drawRect(shipX - 6f, h - 47f, shipX + 6f, h - 40f, glass)
         // piloto asomado
-        JuanchitoSprite.draw(canvas, shipX, h - 46f, 12f, facingRight = true, hatColor = 0x5C94FC)
+        PixelSprite.draw(canvas, shipX, h - 46f, 12f, facingRight = true, hatColor = 0x5C94FC)
 
         // Balas: píldoras con brillo
         paint.color = Color.parseColor("#F8D878")

@@ -171,9 +171,9 @@ class MortalKombatGame : Game {
         }
         // fighters
         val p1h = if (p1blocking) 30f else 50f
-        JuanchitoSprite.draw(canvas, p1x, groundY - p1h / 2f, 40f, facingRight = true, hatColor = 0xC41E24)
+        PixelSprite.draw(canvas, p1x, groundY - p1h / 2f, 40f, facingRight = true, hatColor = 0xC41E24)
         val p2h = if (p2blocking) 30f else 50f
-        JuanchitoSprite.draw(canvas, p2x, groundY - p2h / 2f, 40f, facingRight = false, hatColor = 0x00A800)
+        PixelSprite.draw(canvas, p2x, groundY - p2h / 2f, 40f, facingRight = false, hatColor = 0x00A800)
         // fireballs con núcleo y aura
         for (f in fireballs) {
             val aura = Paint().apply { color = Color.parseColor("#D82800"); alpha = 90; isAntiAlias = false }
@@ -195,7 +195,7 @@ class MortalKombatGame : Game {
         canvas.drawRect(18f, 18f, w/2f - 18f, 42f, framePaint)
         canvas.drawRect(w/2f + 18f, 18f, w - 18f, 42f, framePaint)
         namePaint.textAlign = Paint.Align.LEFT
-        canvas.drawText("JUANCHITO", 22f, 54f, namePaint)
+        canvas.drawText("PIXEL", 22f, 54f, namePaint)
         namePaint.textAlign = Paint.Align.RIGHT
         canvas.drawText("TITAN", w - 22f, 54f, namePaint)
         namePaint.textAlign = Paint.Align.CENTER

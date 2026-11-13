@@ -182,8 +182,8 @@ class ChoplifterGame : Game {
             // cabina de cristal
             val glass = Paint().apply { color = Color.parseColor("#A8D8FC"); isAntiAlias = false }
             canvas.drawRect(hx - 20f, hy - 8f, hx - 6f, hy + 2f, glass)
-            // Juanchito piloto en la cabina
-            JuanchitoSprite.draw(canvas, hx - 12f, hy - 10f, 14f, facingRight = false, hatColor = 0x5A7D9A)
+            // Pixel piloto en la cabina
+            PixelSprite.draw(canvas, hx - 12f, hy - 10f, 14f, facingRight = false, hatColor = 0x5A7D9A)
             // rotor principal con doble línea (movimiento)
             val rp = Paint().apply { color = Color.parseColor("#F8F8F8"); strokeWidth = 2f; isAntiAlias = false }
             canvas.drawLine(hx - 30f, hy - 12f, hx + 30f, hy - 12f, rp)
@@ -236,7 +236,7 @@ class ChoplifterGame : Game {
         // hostages: personas animadas saludando (o a bordo)
         for (ho in hostages) {
             val aboard = ho.state == 1
-            JuanchitoSprite.draw(canvas, ho.x, ho.y, if (aboard) 12f else 18f, facingRight = true, hatColor = if (aboard) 0x5C94FC else 0xFC9838)
+            PixelSprite.draw(canvas, ho.x, ho.y, if (aboard) 12f else 18f, facingRight = true, hatColor = if (aboard) 0x5C94FC else 0xFC9838)
             if (!aboard) {
                 // brazo saludando
                 val arm = Paint().apply { color = Color.parseColor("#F8D878"); strokeWidth = 3f; isAntiAlias = false }

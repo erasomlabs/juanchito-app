@@ -20,7 +20,7 @@ class ContraGame : Game {
     private var dialogueIndex = 0
     private var dialogueQueue = mutableListOf<Pair<String, String>>()
 
-    // Jugador (Juanchito)
+    // Jugador (Pixel)
     private var px = 80f; private var py = 0f
     private var vy = 0f
     private var onGround = true
@@ -95,8 +95,8 @@ class ContraGame : Game {
                 if (aDown || startDown) {
                     gameState = 2
                     dialogueQueue.clear()
-                    dialogueQueue.add("COMANDANTE HQ" to "¡Soldados Juanchito y Tito! Las fuerzas alienígenas de Furia Roja han tomado Neo City.")
-                    dialogueQueue.add("JUANCHITO" to "Entendido HQ. Desplegando en la autopista principal. ¡Fuego a discreción!")
+                    dialogueQueue.add("COMANDANTE HQ" to "¡Soldados Pixel y Tito! Las fuerzas alienígenas de Furia Roja han tomado Neo City.")
+                    dialogueQueue.add("PIXEL" to "Entendido HQ. Desplegando en la autopista principal. ¡Fuego a discreción!")
                     dialogueIndex = 0
                 }
             }
@@ -175,7 +175,7 @@ class ContraGame : Game {
             gameState = 2
             dialogueQueue.clear()
             dialogueQueue.add("FURIA ROJA CORE" to "¡Humanos insignificantes! ¡Neo City será el nido de nuestra prole!")
-            dialogueQueue.add("JUANCHITO" to "¡Apunta a las torretas gemelas y al núcleo central!")
+            dialogueQueue.add("PIXEL" to "¡Apunta a las torretas gemelas y al núcleo central!")
             dialogueIndex = 0
             return
         }
@@ -268,7 +268,7 @@ class ContraGame : Game {
                         "• Año 2636. Las tropas extraterrestres de Furia Roja",
                         "  iniciaron una invasión total en la Tierra.",
                         "• La humanidad deposita su última esperanza en los comandos",
-                        "  veteranos de élite: Juanchito y Tito Ruiz.",
+                        "  veteranos de élite: Pixel y Tito Ruiz.",
                         "• MISION: Infiltra el sector industrial destruido,",
                         "  aniquila la vanguardia bio-mecánica y destruye el búnker jefe.",
                         "• CONTROLES: [A] Disparar  [B] Saltar  [SELECT] Recargar"
@@ -391,11 +391,11 @@ class ContraGame : Game {
             canvas.drawRect(tx + aim * 6f - 2f, t.y - 18f, tx + aim * 18f, t.y - 15f, pGun)
         }
 
-        // Jugador Juanchito
+        // Jugador Pixel
         if (invulnTimer <= 0f || (invulnTimer * 10).toInt() % 2 == 0) {
             val dx = px - scrollX
-            // Juanchito protagonista
-            JuanchitoSprite.draw(canvas, dx, py - 14f, 26f, facingRight = facing > 0)
+            // Pixel protagonista
+            PixelSprite.draw(canvas, dx, py - 14f, 26f, facingRight = facing > 0)
             // Rifle
             val pRifle = Paint().apply { color = Color.parseColor("#F8F8F8") }
             canvas.drawRect(dx, py - 18f, dx + facing * 18f, py - 14f, pRifle)
@@ -410,7 +410,7 @@ class ContraGame : Game {
 
         // HUD Superior
         pText.color = Color.parseColor("#F8F8F8")
-        canvas.drawText("P1: JUANCHITO  VIDAS: $lives  ARMA: [$weaponType]  SCORE: $score", 12f, 18f, pText)
+        canvas.drawText("P1: PIXEL  VIDAS: $lives  ARMA: [$weaponType]  SCORE: $score", 12f, 18f, pText)
         pText.color = Color.parseColor("#E6B800")
         canvas.drawText("FASE $currentPhase | NEO CITY | AVANCE: ${(px / levelLength * 100).toInt()}%", 12f, 32f, pText)
     }

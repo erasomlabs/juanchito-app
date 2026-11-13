@@ -125,7 +125,7 @@ class PuzzleBobbleGame : Game {
             val v = grid[r][c]
             if (v != 0) bubble(ox + c * cell + cell / 2, oy + r * cell + cell / 2, cell / 2 - 2, colors[v])
         }
-        // Cañón: Juanchito operador + cañón apuntando
+        // Cañón: Pixel operador + cañón apuntando
         val barrel = Paint().apply { color = Color.parseColor("#D82800"); isAntiAlias = false }
         val barrelTipX = shooterX + cos(angle) * cell * 0.9f
         val barrelTipY = shooterY + sin(angle) * cell * 0.9f
@@ -133,7 +133,7 @@ class PuzzleBobbleGame : Game {
         canvas.rotate(Math.toDegrees(angle.toDouble()).toFloat() + 90f, shooterX, shooterY)
         canvas.drawRect(shooterX - cell * 0.18f, shooterY - cell * 1.1f, shooterX + cell * 0.18f, shooterY, barrel)
         canvas.restore()
-        JuanchitoSprite.draw(canvas, shooterX, shooterY + cell * 0.6f, cell * 1.1f, facingRight = true, hatColor = 0x00A800)
+        PixelSprite.draw(canvas, shooterX, shooterY + cell * 0.6f, cell * 1.1f, facingRight = true, hatColor = 0x00A800)
         // Burbuja cargada en la boca del cañón
         bubble(shooterX, shooterY, cell / 2 - 2, colors[curColor])
         // Línea de puntería punteada

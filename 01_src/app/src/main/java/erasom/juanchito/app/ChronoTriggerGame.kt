@@ -366,10 +366,10 @@ class ChronoTriggerGame : Game {
             }
         }
 
-        // Juanchito protagonista en el mapa
+        // Pixel protagonista en el mapa
         val cx = px - camX
         val cy = py - camY
-        JuanchitoSprite.draw(canvas, cx, cy, 28f, facingRight = true, hatColor = 0xC41E24)
+        PixelSprite.draw(canvas, cx, cy, 28f, facingRight = true, hatColor = 0xC41E24)
         // Katana al costado
         val pKatana = Paint().apply { color = Color.parseColor("#F8F8F8"); strokeWidth = 3f }
         canvas.drawLine(cx + 10f, cy + 2f, cx + 20f, cy - 8f, pKatana)
@@ -432,7 +432,7 @@ class ChronoTriggerGame : Game {
             canvas.drawText("HP: ${hero.hp}/${hero.maxHp}", 95f, hy, pText)
             canvas.drawText("MP: ${hero.mp}", 175f, hy, pText)
             // Mini sprite del héroe
-            JuanchitoSprite.draw(canvas, 300f, hy - 5f, 16f, facingRight = true, hatColor = hero.color)
+            PixelSprite.draw(canvas, 300f, hy - 5f, 16f, facingRight = true, hatColor = hero.color)
 
             // Barra ATB
             val pAtb = Paint().apply { color = if (hero.atb >= 1f) Color.parseColor("#00E5FF") else Color.parseColor("#5A5A70") }

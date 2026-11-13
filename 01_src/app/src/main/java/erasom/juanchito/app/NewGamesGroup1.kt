@@ -76,7 +76,7 @@ class PixelSmashGame : Game {
         // Pared de ladrillos arcade con marco neón
         NesScenery.drawBrickWall(canvas, w, h, 140)
         NesScenery.drawNeonFrame(canvas, w, h, "#FC9838")
-        // Paleta con grip y Juanchito controlando
+        // Paleta con grip y Pixel controlando
         val paddleRect = RectF(paddleX, h - 60f, paddleX + paddleWidth, h - 42f)
         paint.color = Color.parseColor("#D4A017")
         canvas.drawRoundRect(paddleRect, 6f, 6f, paint)
@@ -86,7 +86,7 @@ class PixelSmashGame : Game {
             canvas.drawRect(gx, h - 57f, gx + 4f, h - 49f, paint)
             gx += 16f
         }
-        JuanchitoSprite.draw(canvas, paddleX + paddleWidth / 2f, h - 76f, 26f, facingRight = true)
+        PixelSprite.draw(canvas, paddleX + paddleWidth / 2f, h - 76f, 26f, facingRight = true)
 
         // Bola con brillo
         paint.color = Color.parseColor("#5C94FC")

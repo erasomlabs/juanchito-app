@@ -142,7 +142,7 @@ class TopGearGame : Game {
             canvas.drawRect(r.x - 8f, r.y - 10f, r.x + 8f, r.y + 6f, roof)
             canvas.drawRect(r.x - 7f, r.y - 8f, r.x + 7f, r.y - 2f, glass)
         }
-        // car: coche de Juanchito con cabina, parabrisas, piloto y estela de nitro
+        // car: coche de Pixel con cabina, parabrisas, piloto y estela de nitro
         canvas.save()
         canvas.translate(px, py)
         canvas.rotate(Math.toDegrees(angle.toDouble()).toFloat())
@@ -165,8 +165,8 @@ class TopGearGame : Game {
         canvas.drawRect(-7f, -9f, 7f, 7f, roof)
         val glass = Paint().apply { color = Color.parseColor("#A8D8FC"); isAntiAlias = false }
         canvas.drawRect(-6f, -7f, 6f, -1f, glass)
-        // piloto Juanchito asomado
-        JuanchitoSprite.draw(canvas, 0f, 1f, 12f, facingRight = true)
+        // piloto Pixel asomado
+        PixelSprite.draw(canvas, 0f, 1f, 12f, facingRight = true)
         canvas.restore()
         // HUD
         textPaint.textSize = 12f

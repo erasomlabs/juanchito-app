@@ -23,14 +23,14 @@ object GameMetadataProvider {
                 iconType = "sword"
             )
             "Comando Supremo", "Cyber Commando" -> GameMetadata(
-                synopsis = "Año 2636. La horda extraterrestre invade Neo City. Juanchito y Tito despliegan armamento pesado de asalto.",
+                synopsis = "Año 2636. La horda extraterrestre invade Neo City. Pixel y Tito despliegan armamento pesado de asalto.",
                 chapterName = "Misión 1: Frontera Urbana y Núcleo Alienígena",
                 primaryColor = Color.parseColor("#00A800"),
                 accentColor = Color.parseColor("#D82800"),
                 iconType = "gun"
             )
             "Jungla Perdida", "Selva Perdida" -> GameMetadata(
-                synopsis = "Juanchito el explorador penetra la selva prohibida en busca de los 32 tesoros mayas antes de que anochezca.",
+                synopsis = "Pixel el explorador penetra la selva prohibida en busca de los 32 tesoros mayas antes de que anochezca.",
                 chapterName = "Expedición I: Pantano de Cocodrilos y Lianas",
                 primaryColor = Color.parseColor("#805A20"),
                 accentColor = Color.parseColor("#50A000"),
@@ -127,8 +127,8 @@ object GameMetadataProvider {
                 accentColor = Color.parseColor("#FF6B6B"),
                 iconType = "brick"
             )
-            "Mundo Juanchito" -> GameMetadata(
-                synopsis = "El pueblo virtual de Juanchito: 6 barrios temáticos, 30 portales de aventura y una plaza con fuente y vecinos que te dan misiones.",
+            "Mundo Pixel" -> GameMetadata(
+                synopsis = "El pueblo virtual de Pixel: 6 barrios temáticos, 30 portales de aventura y una plaza con fuente y vecinos que te dan misiones.",
                 chapterName = "Plaza Central: La Fuente de los Portales",
                 primaryColor = Color.parseColor("#D4A017"),
                 accentColor = Color.parseColor("#5C94FC"),
