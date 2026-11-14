@@ -6,68 +6,6 @@ import android.graphics.Paint
 import android.graphics.RectF
 import kotlin.random.Random
 
-// 13. Pixel Charades: Adivinanza de patrones de color
-class PixelCharadesGame : Game {
-    override val name = "Pixel Charades"
-    override val genre = "Trivia"
-    private var w = 0; private var h = 0
-    private var targetIndex = 0
-    private var selectedIndex = 0
-    private val colors = listOf(Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW)
-    private val names = listOf("ROJO", "VERDE", "AZUL", "AMARILLO")
-    override var isGameOver = false
-    override var score = 0
-    private val paint = Paint().apply { isAntiAlias = true; textAlign = Paint.Align.CENTER }
-    private var moved = false
-
-    override fun init(width: Int, height: Int) { w = width; h = height }
-    override fun reset() {
-        targetIndex = Random.nextInt(4)
-        selectedIndex = 0
-        isGameOver = false; score = 0
-    }
-
-    override fun update(dt: Float, input: GameInput) {
-        if (isGameOver) return
-        if (!input.left && !input.right && !input.a) { moved = false; return }
-        if (moved) return
-
-        if (input.left && selectedIndex > 0) { selectedIndex--; moved = true }
-        if (input.right && selectedIndex < 3) { selectedIndex++; moved = true }
-
-        if (input.a) {
-            moved = true
-            if (selectedIndex == targetIndex) {
-                score += 100
-                targetIndex = Random.nextInt(4)
-            } else {
-                isGameOver = true
-            }
-        }
-    }
-
-    override fun draw(canvas: Canvas) {
-        // Escenario de concurso con reflectores
-        NesScenery.drawSkyBands(canvas, w, h.toFloat(), "#28104A", "#6A2A8A", 6)
-        NesScenery.drawSpotlights(canvas, w, h)
-        paint.color = Color.WHITE
-        paint.textSize = 28f
-        canvas.drawText("Elige: ${names[targetIndex]}", w / 2f, h * 0.28f, paint)
-
-        val size = 60f
-        val startX = (w - size * 4) / 2f
-        for (i in 0..3) {
-            paint.color = colors[i]
-            val r = RectF(startX + i * size + 6, h / 2f - size / 2f, startX + (i + 1) * size - 6, h / 2f + size / 2f)
-            canvas.drawRoundRect(r, 8f, 8f, paint)
-            if (i == selectedIndex) {
-                val p2 = Paint().apply { color = Color.WHITE; style = Paint.Style.STROKE; strokeWidth = 4f }
-                canvas.drawRoundRect(r, 8f, 8f, p2)
-            }
-        }
-    }
-}
-
 // 14. Pixel Tictactoe: Tres en raya contra IA básica
 class PixelTictactoeGame : Game {
     override val name = "Pixel Tictactoe"
