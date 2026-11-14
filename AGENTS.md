@@ -25,4 +25,3 @@
 
 ## 6. Skills
 - No aplica senior-frontend (app nativa Android, no sitio web)
-" path="D:\Antigravity\erasomlabs\juanchito.app\AGENTS.md
