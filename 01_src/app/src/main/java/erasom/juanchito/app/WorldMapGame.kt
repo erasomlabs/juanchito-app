@@ -12,7 +12,7 @@ import kotlin.math.sin
 
 /**
  * Mundo Pixel 3D: pueblo estilo Roblox con 6 barrios temáticos,
- * 30 portales de misión, NPCs y avatar de bloques. Cámara en tercera
+ * 26 portales de misión, NPCs y avatar de bloques. Cámara en tercera
  * persona: D-PAD izq/der giran la vista, arriba/abajo caminan.
  */
 class WorldMapGame : Game {
@@ -32,7 +32,7 @@ class WorldMapGame : Game {
     // Jugador y cámara
     private var px = 1200f
     private var py = 880f
-    private var camYaw = 0f          // 0 = mirando al norte
+    private var camYaw = 0f
     private var walking = false
     private var phase = 0f
     private val cam = MiniCam(1200f, 740f, 52f, 0f)
@@ -71,49 +71,45 @@ class WorldMapGame : Game {
     val portals: List<Portal> = buildList {
         val stories = mapOf(
             "Serpiente Retro" to "La serpiente dorada se escapó al jardín del arcade. ¡Guíala hasta las manzanas sin que choque con los muros!",
-            "Duelo Raqueta" to "El campeonato de paleta está en pie en la cancha azul. ¡Gana 5 puntos contra la máquina Titán!",
-            "Rompeladrillos" to "Los ladrillos encantados bloquean la puerta del arcade. ¡Derríbalos con la bola mágica montada en tu paleta!",
-            "Block Drop" to "Los bloques caen del cielo sobre la plaza. ¡Apílalos perfectos y limpia líneas para salvar el pueblo!",
-            "Bubble Pop" to "Las burbujas del mago Zarko invaden el techo del carnaval. ¡Revienta el enjambre lanzando burbujas gemelas!",
-            "Pixel Invaders" to "Una flota alienígena sobrevuela Pixel Town. ¡Sube a tu nave y defiende el pueblo oleada tras oleada!",
-            "Pixel Ritmo" to "El concierto de las notas doradas empieza esta noche. ¡Atrápalas al ritmo en la línea de meta!",
-            "Reflejos" to "El semáforo espacial del barrio parpadea sin aviso. ¡Presiona A justo cuando diga GO y demuestra tus reflejos!",
-            "Fusion Pixel" to "Los orbes numéricos duermen en la zona 4x4. ¡Fusiona los iguales y despierta el orbe legendario!",
-            "Pixel Blocks" to "La torre de Neo Town necesita un piso nuevo. ¡Detén el bloque giratorio justo en el centro de la base!",
-            "Jungla Perdida" to "Pixel perdió el ídolo dorado en la selva profunda. ¡Sáltalo entre lianas, pozos y cocodrilos!",
-            "Comando Supremo" to "Furia Roja invadió Neo City esta madrugada. ¡Recorre la autopista en llamas y destruye el núcleo alienígena!",
-            "Helirescate" to "Los vecinos quedaron atrapados en el desierto de guerra. ¡Pilota el helicóptero, esquiva tanques y jets, y rescatados a todos!",
+            "Serpiente 3D" to "La serpiente evolucionó y ahora vive en un mundo 3D. ¡Recorre la arena isométrica, come manzanas y evita obstáculos!",
+            "Fusion Pixel" to "Los orbes numéricos duermen en la zona 4x4. ¡Fusiona los iguales y despierta el orbe legendario del 2048!",
+            "Pixel Blocks" to "La torre de Neo Town necesita un piso nuevo. ¡Deja caer el bloque en el momento justo y construye la torre más alta!",
+            "Pixel Draw" to "El gran muro del arte está en blanco. ¡Revela la imagen oculta marcando las celdas correctas del Picross!",
+            "Bouncy Bird" to "El pájaro Bouncy debe volar entre tuberías. ¡Toca para subir y esquiva los obstáculos!",
+            "Canal Control" to "El agua no fluye. ¡Rota las tuberías para crear un camino y que el agua llegue al desagüe!",
+            "Ghost Blade" to "Los fantasmas invaden la ciudad. ¡Dispara, esquiva y destruye a todos los enemigos!",
             "Pixel Runner" to "Los arbustos espinosos con ojos tomaron el bosque. ¡Corre y salta sin detenerte un solo segundo!",
-            "Pixel Minas" to "El campo minado del desierto sella la entrada a la mina de oro. ¡Pisa solo celdas seguras, sapper Pixel!",
-            "Pixel Kombat" to "El torneo milenario del Templo Rojo abre sus puertas. ¡Vence a TITAN en 3 rondas de combate marcial!",
-            "Pixel Draw" to "El gran muro del arte está en blanco. ¡Pinta tu obra maestra pixel para la galería del pueblo!",
-            "Pixel Puzzles" to "El albañil olvidó el orden de los bloques del taller. ¡Elige el bloque correcto de la secuencia sin fallar!",
-            "Pixel Charades" to "La adivinanza de colores confunde a todo el vecindario. ¡Elige el color que piden y gana el premio gordo!",
-            "Pixel Tictactoe" to "La IA del parque desafía a tres en raya al aire libre. ¡Vence en el tablero gigante del distrito!",
-            "Fútbol Retro Arena" to "¡La Copa Retro 1994 arranca hoy en el estadio del pueblo! ¡Mete más goles que el rival antes del pitazo final!",
-            "Turbo Total" to "El Gran Premio de Pixel Town corre esta tarde. ¡Adelanta rivales con nitro y gana las 3 vueltas!",
-            "Cycle Dash" to "El monociclo turbo espera en la rampa del barrio. ¡Cruza el circuito completo esquivando todos los obstáculos!",
-            "Carreras" to "La autopista del pueblo está llena de tráfico borracho. ¡Esquiva coches y suma kilómetros sin chocar!",
-            "Pixel Smash" to "La sala de demoledores abre sus puertas. ¡Rompe todos los ladrillos de colores con la bola furia!",
-            "Cazabombas" to "El sótano del castillo está infestado de blobs patrones. ¡Detona bombas estratégicas y encuentra la puerta secreta!",
-            "Crónica del Tiempo" to "El Devorador despierta bajo el Reino de Valdoria. ¡Acompaña a Ciro y Mara por el tiempo y detén el fin del mundo!",
-            "Payasito" to "El mago Zarko secuestró a la princesa Miel en su globo-bomba. ¡Pilota Payasito y rescátala del cielo del circo!",
-            "Pixel Dados" to "El casino de la feria reta a los pueblerinos con dados cargados. ¡Apuesta a mayor o menor y racha la fortuna!",
-            "Solitario" to "Las cartas de la mesa de casino se volvieron locas. ¡Empareja los palos gemelos y limpia la mesa!"
+            "Reflejos" to "El laboratorio de Dexter está invadido de moléculas. ¡Alinea y zapea en el momento justo!",
+            "Bounce" to "La pelota Bounce debe rebotar por los niveles. ¡Recoge anillos y evita los obstáculos!",
+            "Golf" to "El campo de golf espera. ¡Calcula el swing, considera el viento y emboca en el menor número de golpes!",
+            "Motocross" to "La pista de tierra te espera. ¡Acelera, salta rampas y gana la carrera de motocross!",
+            "Carreras Off-Road" to "El Gran Premio off-road arranca hoy. ¡Adelanta rivales en terreno irregular y gana las 3 vueltas!",
+            "Pixel Kombat" to "El torneo milenario abre sus puertas. ¡Vence a tu rival en 3 rondas de combate marcial!",
+            "Pixel Puzzles" to "El tablero de runas necesita orden. ¡Empareja 3 o más del mismo color y lanza hechizos!",
+            "Pixel Charades" to "El juego de adivinanzas del pueblo. ¡Pon el celular en la frente y adivina la palabra!",
+            "Pixel Ritmo" to "El concierto de las notas doradas empieza esta noche. ¡Atrápalas al ritmo en la línea de meta!",
+            "Futbol Retro Arena" to "¡La Copa Retro arranca hoy en el estadio! ¡Mete más goles que el rival antes del pitazo final!",
+            "Bike Stunts" to "La rampa del barrio espera. ¡Haz acrobacias en tu bici y gana puntos por cada trick!",
+            "Rompeladrillos" to "Los ladrillos encantados bloquean la puerta del arcade. ¡Derríbalos con la bola mágica!",
+            "Bubble Pop" to "Las burbujas del mago invaden el techo del carnaval. ¡Revienta el enjambre lanzando burbujas gemelas!",
+            "Cazabombas" to "El sótano del castillo está infestado de blobs. ¡Detona bombas estratégicas y encuentra la puerta secreta!",
+            "Payasito" to "El mago Zarko secuestró a la princesa Miel. ¡Pilota Payasito y rescátala del cielo del circo!",
+            "Casino" to "El casino de la feria reta a los pueblerinos. ¡Apuesta a blackjack, slots, ruleta y baccarat!",
+            "Cronica del Tiempo" to "El Devorador despierta bajo el Reino de Valdoria. ¡Acompaña a Ciro y Mara por el tiempo y detén el fin del mundo!"
         )
         val rows = listOf(
             "PLAZA ARCADE" to Row(listOf(750f, 900f, 1050f, 1200f, 1350f), 300f, "#5C94FC",
-                listOf("Serpiente Retro", "Duelo Raqueta", "Rompeladrillos", "Block Drop", "Bubble Pop")),
+                listOf("Serpiente Retro", "Serpiente 3D", "Fusion Pixel", "Pixel Blocks", "Pixel Draw")),
             "COLINA ESPACIO" to Row(listOf(1750f, 1860f, 1970f, 2080f, 2190f), 300f, "#8814A8",
-                listOf("Pixel Invaders", "Pixel Ritmo", "Reflejos", "Fusion Pixel", "Pixel Blocks")),
-            "BARRIO JUNGLA" to Row(listOf(200f, 200f, 200f, 200f, 200f), 0f, "#00A800",
-                listOf("Jungla Perdida", "Comando Supremo", "Helirescate", "Pixel Runner", "Pixel Minas")),
-            "NEO CITY" to Row(listOf(2200f, 2200f, 2200f, 2200f, 2200f), 0f, "#D82800",
-                listOf("Pixel Kombat", "Pixel Draw", "Pixel Puzzles", "Pixel Charades", "Pixel Tictactoe")),
-            "VILLA DEPORTES" to Row(listOf(750f, 900f, 1050f, 1200f, 1350f), 1100f, "#FC9838",
-                listOf("Fútbol Retro Arena", "Turbo Total", "Cycle Dash", "Carreras", "Pixel Smash")),
-            "FERIA FANTASÍA" to Row(listOf(1750f, 1860f, 1970f, 2080f, 2190f), 1100f, "#F5C542",
-                listOf("Cazabombas", "Crónica del Tiempo", "Payasito", "Pixel Dados", "Solitario"))
+                listOf("Bouncy Bird", "Canal Control", "Ghost Blade", "Pixel Runner", "Reflejos")),
+            "BARRIO JUNGLA" to Row(listOf(200f, 200f, 200f, 200f), 0f, "#00A800",
+                listOf("Bounce", "Golf", "Motocross", "Carreras Off-Road")),
+            "NEO CITY" to Row(listOf(2200f, 2200f, 2200f, 2200f), 0f, "#D82800",
+                listOf("Pixel Kombat", "Pixel Puzzles", "Pixel Charades", "Pixel Ritmo")),
+            "VILLA DEPORTES" to Row(listOf(750f, 900f, 1050f, 1200f), 1100f, "#FC9838",
+                listOf("Futbol Retro Arena", "Bike Stunts", "Rompeladrillos", "Bubble Pop")),
+            "FERIA FANTASÍA" to Row(listOf(1750f, 1860f, 1970f, 2080f), 1100f, "#F5C542",
+                listOf("Cazabombas", "Payasito", "Casino", "Cronica del Tiempo"))
         )
         for ((distName, row) in rows) {
             val ys = if (row.y > 0f) listOf(row.y, row.y, row.y, row.y, row.y)
@@ -126,8 +122,8 @@ class WorldMapGame : Game {
 
     private val npcs = listOf(
         Npc(1120f, 640f, "ABUELA CHELA", 0x8814A8, 0x5A7D9A, "¡Pixel! Cada portal brillante es una aventura. Acércate y pulsa A para escuchar la misión."),
-        Npc(1290f, 760f, "DON COCO", 0x00A800, 0xFC9838, "Los 30 portales reparten monedas. ¡Juega y sube en el ránking arcade del pueblo!"),
-        Npc(1060f, 860f, "NIN-ROBOT", 0x5C94FC, 0x4A4A6A, "BIP BOP. Detectados 30 portales. Diversión máxima garantizada. BIP.")
+        Npc(1290f, 760f, "DON COCO", 0x00A800, 0xFC9838, "Los 26 portales reparten monedas. ¡Juega y sube en el ránking arcade del pueblo!"),
+        Npc(1060f, 860f, "NIN-ROBOT", 0x5C94FC, 0x4A4A6A, "BIP BOP. Detectados 26 portales. Diversión máxima garantizada. BIP.")
     )
 
     // Árboles deterministas lejos de portales/caminos/plaza
@@ -198,7 +194,6 @@ class WorldMapGame : Game {
     }
 
     override fun reset() {
-        // Se conserva la posición del jugador para volver de una partida al mundo donde estaba.
         dialogPortal = -1
         prevA = false; prevB = false
         prevStart = false; prevSelect = false
@@ -283,14 +278,15 @@ class WorldMapGame : Game {
         }
     }
 
+    // ---------- Geometría de dibujo ----------
+
     override fun draw(canvas: Canvas) {
-        // Cielo y suelo (horizonte fijo en h/2, sin pitch)
+        // Cielo y suelo
         Mini3D.drawGroundAndSky(canvas, w, h,
             skyColor = Color.parseColor("#79C8F8"),
             groundColor = Color.parseColor("#5CA040"))
 
-        // Caminos, plaza y estanque a ras de suelo (capas separadas para evitar
-        // parpadeo por coplanaridad: primero carreteras, luego plaza, luego 3D)
+        // Caminos, plaza
         val roadFaces = ArrayList<Mini3D.Face>(2)
         val pathC = Color.parseColor("#C8A060")
         Mini3D.addQuad(roadFaces, pathC, 0f, 0f, 1f,
@@ -302,7 +298,7 @@ class WorldMapGame : Game {
         Mini3D.addQuad(plazaFaces, Color.parseColor("#E0D8C0"), 0f, 0f, 1f,
             950f, 490f, 0.6f, 1450f, 490f, 0.6f, 1450f, 910f, 0.6f, 950f, 910f, 0.6f)
         Mini3D.render(canvas, cam, w, h, plazaFaces)
-        // Estanque: polígono convexo proyectado
+        // Estanque
         val pondPts = ArrayList<Triple<Float, Float, Float>>(8)
         for (i in 0 until 8) {
             val ang = Math.PI * 2 * i / 8
@@ -311,31 +307,27 @@ class WorldMapGame : Game {
         }
         Mini3D.drawConvex(canvas, cam, w, h, pondPts, Color.parseColor("#4890E8"))
 
-        // Escena 3D: estáticos + avatares dinámicos (painter's algorithm)
+        // Escena 3D: estáticos + avatares
         val frame = ArrayList<Mini3D.Face>(staticFaces)
-        // Estatua de Pixel sobre el pedestal
         Mini3D.avatar(frame, 1200f, 700f, 0f,
             0xD82800, 0x5C94FC, 0xF8D878, 0x2A2A5A, walking = false, phase = 0f, scale = 0.9f)
-        // NPCs mirando al jugador
         for (n in npcs) {
             val a = atan2((px - n.x).toDouble(), (py - n.y).toDouble()).toFloat()
             Mini3D.avatar(frame, n.x, n.y, a,
                 n.hatColor.toInt(), n.shirt, 0xF8D878, 0x2A2A5A, walking = false, phase = 0f)
         }
-        // Jugador
         Mini3D.avatar(frame, px, py, camYaw,
             0xD82800, 0x5C94FC, 0xF8D878, 0x2A2A5A, walking, phase)
 
         Mini3D.render(canvas, cam, w, h, frame)
 
-        // Billboards: letreros de distrito, resplandores y señales de portales
+        // Billboards
         drawBillboards(canvas)
 
         drawHud(canvas)
     }
 
     private fun drawBillboards(canvas: Canvas) {
-        // Letreros de distrito flotando
         val bannerSpots = listOf(
             Triple(1050f, 235f, 0), Triple(1970f, 235f, 1),
             Triple(200f, 330f, 2), Triple(2200f, 330f, 3),
@@ -345,12 +337,10 @@ class WorldMapGame : Game {
             val (distName, colorHex) = districts[idx]
             drawSign(canvas, bx, by, 96f, "★ $distName", Color.parseColor(colorHex), textSizeBase = 17f)
         }
-        // Resplandor y cartel de cada portal
         for (p in portals) {
             val col = Color.parseColor(p.colorHex)
             val s = Mini3D.project(cam, w, h, p.x, p.y, 44f) ?: continue
             val scale = s[2]
-            // Resplandor pulsante del arco
             val pulse = 0.7f + 0.3f * sin(phase * 0.8f)
             val glowW = 30f * scale
             val glowH = 52f * scale
@@ -361,23 +351,19 @@ class WorldMapGame : Game {
                 RectF(s[0] - glowW, s[1] - glowH, s[0] + glowW, s[1] + glowH),
                 glowW * 0.5f, glowW * 0.5f, glowPaint
             )
-            // Cartel con nombre
             drawSign(canvas, p.x, p.y, 100f, p.gameName, Mini3D.lighten(col, 60), textSizeBase = 13f)
         }
-        // Prompt sobre el portal más cercano
         val near = nearestPortalWithin(75f)
         if (near >= 0 && dialogPortal < 0) {
             val p = portals[near]
             val bob = 5f * sin(phase * 2f)
             drawSign(canvas, p.x, p.y, 138f + bob, "¡PULSA A!", Color.parseColor("#F5C542"), textSizeBase = 15f)
         }
-        // Nombres de NPCs
         for (n in npcs) {
             drawSign(canvas, n.x, n.y, 78f, n.nome, Color.parseColor("#F8F8F8"), textSizeBase = 11f)
         }
     }
 
-    /** Cartel flotante siempre mirando a cámara. */
     private fun drawSign(canvas: Canvas, wx: Float, wy: Float, wz: Float, text: String, color: Int, textSizeBase: Float) {
         val s = Mini3D.project(cam, w, h, wx, wy, wz) ?: return
         val scale = s[2]
