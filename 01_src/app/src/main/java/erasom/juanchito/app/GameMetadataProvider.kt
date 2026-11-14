@@ -128,11 +128,116 @@ object GameMetadataProvider {
                 iconType = "brick"
             )
             "Mundo Pixel" -> GameMetadata(
-                synopsis = "El pueblo virtual de Pixel: 6 barrios temáticos, 30 portales de aventura y una plaza con fuente y vecinos que te dan misiones.",
+                synopsis = "El pueblo virtual de Pixel: 6 barrios temáticos, 26 portales de aventura y una plaza con fuente y vecinos que te dan misiones.",
                 chapterName = "Plaza Central: La Fuente de los Portales",
                 primaryColor = Color.parseColor("#D4A017"),
                 accentColor = Color.parseColor("#5C94FC"),
                 iconType = "globe"
+            )
+            "Serpiente 3D", "Serpiente Retro" -> GameMetadata(
+                synopsis = "Serpiente en mundo 3D isométrico. Come manzanas, crece y evita obstáculos.",
+                chapterName = "Arena 1: El Jardín de Manzanas",
+                primaryColor = Color.parseColor("#00A800"),
+                accentColor = Color.parseColor("#F8D878"),
+                iconType = "snake"
+            )
+            "Fusion Pixel" -> GameMetadata(
+                synopsis = "Fusiona tiles numéricos en un tablero 4x4. Alcanza el tile 2048.",
+                chapterName = "Fase 1: Orbes Numéricos",
+                primaryColor = Color.parseColor("#EDC22E"),
+                accentColor = Color.parseColor("#776E65"),
+                iconType = "puzzle"
+            )
+            "Bouncy Bird" -> GameMetadata(
+                synopsis = "Vuela entre tuberías esquivando obstáculos. Toca para subir.",
+                chapterName = "Vuelo 1: El Cielo Infinito",
+                primaryColor = Color.parseColor("#5C94FC"),
+                accentColor = Color.parseColor("#F8D878"),
+                iconType = "bird"
+            )
+            "Canal Control" -> GameMetadata(
+                synopsis = "Conecta tuberías para que el agua fluya del origen al desagüe.",
+                chapterName = "Nivel 1: El Primer Canal",
+                primaryColor = Color.parseColor("#00BFFF"),
+                accentColor = Color.parseColor("#5C94FC"),
+                iconType = "pipe"
+            )
+            "Ghost Blade" -> GameMetadata(
+                synopsis = "Shooter espacial. Dispara enemigos, esquiva proyectiles y recoge power-ups.",
+                chapterName = "Misión 1: La Flota Fantasma",
+                primaryColor = Color.parseColor("#D82800"),
+                accentColor = Color.parseColor("#5C94FC"),
+                iconType = "gun"
+            )
+            "Bounce" -> GameMetadata(
+                synopsis = "Pelota que rebota por niveles. Recoge anillos y evita obstáculos.",
+                chapterName = "Nivel 1: El Primer Rebote",
+                primaryColor = Color.parseColor("#F8D878"),
+                accentColor = Color.parseColor("#F5C542"),
+                iconType = "ball"
+            )
+            "Golf" -> GameMetadata(
+                synopsis = "Golf con swing meter y viento. Emboca en el menor número de golpes.",
+                chapterName = "Hoyo 1: El Tee de Salida",
+                primaryColor = Color.parseColor("#228B22"),
+                accentColor = Color.parseColor("#F5C542"),
+                iconType = "golf"
+            )
+            "Casino" -> GameMetadata(
+                synopsis = "Casino completo: Blackjack, Slots, Ruleta y Baccarat.",
+                chapterName = "Mesa 1: La Apuesta",
+                primaryColor = Color.parseColor("#0A4A1A"),
+                accentColor = Color.parseColor("#F5C542"),
+                iconType = "casino"
+            )
+            "Pixel Draw" -> GameMetadata(
+                synopsis = "Picross: revela imágenes ocultas marcando celdas. Paint by numbers.",
+                chapterName = "Imagen 1: El Primer Dibujo",
+                primaryColor = Color.parseColor("#F5C542"),
+                accentColor = Color.parseColor("#776E65"),
+                iconType = "draw"
+            )
+            "Pixel Charades" -> GameMetadata(
+                synopsis = "Juego de adivinanza de palabras. Pon el celular en la frente y adivina.",
+                chapterName = "Ronda 1: Las Primeras Palabras",
+                primaryColor = Color.parseColor("#8814A8"),
+                accentColor = Color.parseColor("#F5C542"),
+                iconType = "charades"
+            )
+            "Cronica del Tiempo" -> GameMetadata(
+                synopsis = "RPG de viaje en el tiempo. Derrota a Lavos y salva el mundo.",
+                chapterName = "Capítulo 1: El Reino de Valdoria",
+                primaryColor = Color.parseColor("#C41E24"),
+                accentColor = Color.parseColor("#E6B800"),
+                iconType = "sword"
+            )
+            "Pixel Blocks" -> GameMetadata(
+                synopsis = "Apila pisos para construir la torre más alta. Viento y combos.",
+                chapterName = "Edificio 1: La Primera Torre",
+                primaryColor = Color.parseColor("#5C94FC"),
+                accentColor = Color.parseColor("#F5C542"),
+                iconType = "blocks"
+            )
+            "Pixel Ritmo" -> GameMetadata(
+                synopsis = "Ritmo: atrapa notas al ritmo de la música. 5 lanes, combos.",
+                chapterName = "Canción 1: El Primer Ritmo",
+                primaryColor = Color.parseColor("#8814A8"),
+                accentColor = Color.parseColor("#F5C542"),
+                iconType = "music"
+            )
+            "Pixel Puzzles" -> GameMetadata(
+                synopsis = "Match-3 RPG: empareja runas y lanza hechizos.",
+                chapterName = "Batalla 1: El Primer Enemigo",
+                primaryColor = Color.parseColor("#00A800"),
+                accentColor = Color.parseColor("#F5C542"),
+                iconType = "puzzle"
+            )
+            "Payasito" -> GameMetadata(
+                synopsis = "Apila animales para alcanzar la altura. 5 mini-juegos, 25 niveles.",
+                chapterName = "Escena 1: El Primer Circo",
+                primaryColor = Color.parseColor("#C84C0C"),
+                accentColor = Color.parseColor("#F8B800"),
+                iconType = "circus"
             )
             else -> GameMetadata(
                 synopsis = "Desafío arcade clásico retro diseñado para probar tus habilidades con controles clásicos.",
