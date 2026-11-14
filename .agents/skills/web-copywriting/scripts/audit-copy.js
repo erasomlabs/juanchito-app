@@ -185,7 +185,7 @@ function auditReadme(file, md) {
   if (fence === -1 && !/```/.test(md)) add('info', 'Sin bloque de código', 'propio de repos de contenido');
   else if (wordsBefore > 250) add('warn', 'Demasiado texto antes del primer comando', `${wordsBefore} palabras`);
 
-  const statusRe = /\b(alpha|beta|experimental|activa|active|estable|stable|mantenida|archivada|deprecated|en pausa)\b/i;
+  const statusRe = /\b(alpha|beta|experimental|activo|activa|active|estable|stable|mantenid[oa]s?|archivad[oa]|deprecated|en pausa|en curso|operando)\b/i;
   if (statusRe.test(md)) add('pass', 'Declara estado del proyecto');
   else add('warn', 'No declara estado (beta, activa, experimental…)');
 
