@@ -106,51 +106,6 @@ class PixelSmashGame : Game {
     }
 }
 
-// 3. Pixel Blocks: Rompecabezas geométrico de caída y eliminación
-class PixelBlocksGame : Game {
-    override val name = "Pixel Blocks"
-    override val genre = "Puzzle"
-    private var w = 0; private var h = 0
-    override var isGameOver = false
-    override var score = 0
-    private var targetRow = 0
-    private var speed = 400f
-    private var blockX = 100f
-    private var dir = 1
-    private val paint = Paint().apply { isAntiAlias = true }
-
-    override fun init(width: Int, height: Int) { w = width; h = height }
-    override fun reset() { isGameOver = false; score = 0; blockX = 100f; dir = 1 }
-
-    override fun update(dt: Float, input: GameInput) {
-        if (isGameOver) return
-        blockX += dir * speed * dt
-        if (blockX > w - 160f) { blockX = w - 160f; dir = -1 }
-        if (blockX < 40f) { blockX = 40f; dir = 1 }
-        if (input.a) {
-            val center = w / 2f
-            if (kotlin.math.abs(blockX + 60f - center) < 80f) {
-                score += 100
-                speed += 25f
-            } else {
-                isGameOver = true
-            }
-        }
-    }
-
-    override fun draw(canvas: Canvas) {
-        // Ciudad nocturna: torre donde apilar bloques
-        NesScenery.drawSkyBands(canvas, w, h.toFloat(), "#080818", "#282858", 5)
-        NesScenery.drawStars(canvas, w, h, 30)
-        NesScenery.drawMoon(canvas, w - 60f, 70f, 26f)
-        NesScenery.drawCitySkyline(canvas, w, h.toFloat())
-        paint.color = Color.parseColor("#F8F8F8")
-        canvas.drawRect(RectF(w / 2f - 40f, 0f, w / 2f + 40f, h.toFloat()), Paint().apply { color = Color.parseColor("#2D3748") })
-        paint.color = Color.parseColor("#5C94FC")
-        canvas.drawRoundRect(RectF(blockX, h * 0.45f, blockX + 120f, h * 0.45f + 45f), 8f, 8f, paint)
-    }
-}
-
 // 4. Pixel Ritmo: Juego de tempo y reflejos con botones
 class PixelRitmoGame : Game {
     override val name = "Pixel Ritmo"
