@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en" class="has-navbar-fixed-top">
+<head><meta charset="ISO-8859-1">
+<base href="https://www.mobiles24.co">
+<title>Charades (Multiscreen) Java Game - Free JAR Download</title><meta name="Keywords" content=""><meta name="Description" content="Download Charades (Multiscreen) JAR Game for Java (J2ME) phones. Other game compatible with Nokia, Samsung, Sony Ericsson and classic mobile devices. Free download on Mobiles24."><meta name="Content-Language" content="en-UK"><meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="Robots" content="INDEX, FOLLOW"><link rel="stylesheet" href="https://img.mobiles24.net/public/css/primary.min.css"><script async data-cfasync="false" src="//d23uh58cc2jksn.cloudfront.net/?cchud=1530685"></script></head>
+<body>
+<header class="navbar is-fixed-top mo-bg">
+  
+  <div class="navbar-brand">
+    <a class="navbar-item" href="https://www.mobiles24.co/"><img src="https://img.mobiles24.net/static/images/logo-lt2.svg" width="112" height="28" alt="Mobiles24 Logo"></a>
+
+    <div class="mo-navbar-buttons">
+    <a role="button" id="btn-search" class="mo-navbar-button is-hidden-desktop" aria-label="Search">
+    <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="s1 stroke-black fa-lg" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
+    </a>
+    <a role="button" class="navbar-burger burger" aria-haspopup="menu" aria-controls="primary-nav" aria-label="Menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+    </div>
+  </div>
+
+  <!-- mobile search -->
+  <div id="search-container" class="is-hidden-touch">
+    <form id="search" action="https://www.mobiles24.co/search" method="get" autocomplete="off">
+        <div class="field is-grouped">
+            <p id="search-input" class="control is-expanded">
+            <input class="input acs" name="q" type="text" aria-label="Search" placeholder="Find downloads">
+            </p>
+            <p class="control">
+            <button type="submit" id="search-btn" class="button is-primary" aria-label="Search">
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="s1 stroke-white fa-lg" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
+            </button>
+            </p>
+        </div>
+
+        
+        <div id="search-category" class="field">
+            <div class="control">
+                <p class="select">
+                <select aria-label="Filter category" name="c" class="select">
+                <option value="">All Downloads</option>
+                <option value="free-mp3-ringtones">Free Ringtones</option><option value="wallpapers">Wallpapers</option><option value="video-wallpapers">Video Wallpapers</option><option value="free-android-games">Android Games</option><option value="free-android-apps">Android Apps</option><option value="free-mobile-games" selected>Java Games</option><option value="free-mobile-software">Java Apps</option><option value="symbian-s60-games">Symbian S60 Games</option><option value="symbian-s60-apps">Symbian S60 Apps</option><option value="phone">Phones</option>    
+            </select></p>
+            </div>
+        </div>
+    </form>
+  </div>
+  <!-- /mobile search -->
+
+<nav class="navbar-menu" aria-label="primary" role="navigation">
+  <div id="primary-nav" class="navbar-menu">
+    <div class="navbar-start">
+        <div class="navbar-item mo is-hidden-desktop">
+        <div class="buttons">
+         <a href="https://www.mobiles24.co/register" class="has-text-weight-medium button is-primary">
+            Sign up
+          </a>
+          <a href="https://www.mobiles24.co/login" class="button is-light">
+            Log in
+          </a>
+                  </div>
+      </div>
+      <ul>
+        
+              
+        <li class="navbar-item has-dropdown is-hoverable">  
+            <h2 class="navbar-link is-heading">Download</h2>
+            <ul class="navbar-dropdown">
+                <li><a href="https://www.mobiles24.co/downloads/free-mp3-ringtones" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#music" class="stroke-blue"/></svg></span><span>Ringtones</span></a></li><li><a href="https://www.mobiles24.co/downloads/wallpapers" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#wallpaper" class="stroke-red"/></svg></span><span>Wallpapers</span></a></li><li><a href="https://www.mobiles24.co/downloads/video-wallpapers" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#wallpaper" class="stroke-purple"/></svg></span><span>Video Wallpapers</span></a></li><li><a href="https://www.mobiles24.co/downloads/free-mobile-games" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#java" class="stroke-blue"/></svg></span><span>Java Games</span></a></li><li><a href="https://www.mobiles24.co/downloads/free-mobile-software" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#java" class="stroke-blue"/></svg></span><span>Java Apps</span></a></li><li><a href="https://www.mobiles24.co/downloads/free-android-games" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#android" class="stroke-green"/></svg></span><span>Android Games</span></a></li><li><a href="https://www.mobiles24.co/downloads/free-android-apps" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#android" class="stroke-green"/></svg></span><span>Android Apps</span></a></li><li><a href="https://www.mobiles24.co/downloads/symbian-s60-games" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#s60" class="stroke-blue"/></svg></span><span>Symbian S60 Games</span></a></li><li><a href="https://www.mobiles24.co/downloads/symbian-s60-apps" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#s60" class="stroke-blue"/></svg></span><span>Symbian S60 Apps</span></a></li>                <li><a href="https://www.mobiles24.co/downloads" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#arr-rt-cir" class="stroke-grey"/></svg></span><span>All Downloads</span></a></li>
+            </ul>
+        </li>
+        <li class="navbar-item has-dropdown is-hoverable">
+            <h2 class="navbar-link is-heading has-divider">Create</h2>            <ul class="navbar-dropdown">
+              <li><a href="https://www.mobiles24.co/ai-wallpaper-maker" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#sparkles" class="stroke-red"/></svg></span><span>Create AI Wallpaper</span></a></li>
+              <li><a href="https://www.mobiles24.co/ai-ringtone-maker" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#music-sparkle" class="stroke-blue"/></svg></span><span>Create AI Ringtone</span></a></li>
+              <li><a href="https://www.mobiles24.co/ringtone-maker" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#scissors" class="stroke-grey"/></svg></span><span>Ringtone Cutter</span></a></li>
+              </ul>
+        </li>
+        <li class="navbar-item has-dropdown is-hoverable">
+            <h2 class="navbar-link is-heading has-divider">Publish</h2>
+            <ul class="navbar-dropdown">
+              <li><a href="https://www.mobiles24.co/upload" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#upload" class="stroke-grey"/></svg></span><span>Upload & Publish</span></a></li>
+            </ul>
+        </li>
+        <li class="navbar-item has-dropdown is-hoverable">
+            <h2 class="navbar-link is-heading has-divider">Community</h2>
+            <ul class="navbar-dropdown">
+            
+            <li><a href="https://discord.gg/Ny24F9fRA9" target="_blank" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#message-square" class="stroke-grey"/></svg></span><span>Join Us On Discord</span></a></li>
+              <li><a href="https://forum.mobiles24.co/" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#message-square" class="stroke-grey"/></svg></span><span>Forum</span></a></li>
+                            <li><a href="https://phone.mobiles24.co/" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#smartphone" class="stroke-grey"/></svg></span><span>Phones & Devices</span></a></li>
+              <li><a href="https://www.mobiles24.co/top-creators" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#award" class="stroke-grey"/></svg></span><span>Top Creators</span></a></li>
+              <li><a href="https://www.mobiles24.co/apk2bar" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#cloud" class="stroke-grey"/></svg></span><span>APK to BAR</span></a></li>
+              <li><a href="https://www.mobiles24.co/our-story" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#arr-rt-cir" class="stroke-grey"/></svg></span><span>Our Story</span></a></li>
+            </ul>
+        </li>
+        <li class="navbar-item has-dropdown is-hoverable is-hidden-desktop">
+            <h2 class="navbar-link is-heading has-divider">Help</h2>
+            <ul class="navbar-dropdown">
+              <li><a href="https://www.mobiles24.co/help" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#arr-rt-cir" class="stroke-grey"/></svg></span><span>FAQ</span></a></li>
+              <li><a href="https://www.mobiles24.co/tos" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#arr-rt-cir" class="stroke-grey"/></svg></span><span>Terms Of Service</span></a></li>
+              <li><a href="https://www.mobiles24.co/content-policy" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#arr-rt-cir" class="stroke-grey"/></svg></span><span>Content Policy</span></a></li>
+              <li><a href="https://www.mobiles24.co/privacy" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#arr-rt-cir" class="stroke-grey"/></svg></span><span>Privacy Policy</span></a></li>
+              <li><a href="https://www.mobiles24.co/contact" class="navbar-item"><span class="icon"><svg aria-hidden="true"><use href="#arr-rt-cir" class="stroke-grey"/></svg></span><span>Contact Us</span></a></li>
+            </ul>
+        </li>
+    </ul>
+
+    </div><!-- /navbar-start -->
+
+    <div class="navbar-end is-hidden-mobile">
+            <div class="navbar-item mo">
+        <div class="buttons">
+          <a href="https://www.mobiles24.co/register" class="has-text-weight-medium button is-primary">
+            Sign up
+          </a>
+          <a href="https://www.mobiles24.co/login" class="button is-light">
+            Log in
+          </a>
+        </div>
+      </div>
+          </div><!-- /navbar-end -->
+  </div><!-- /navbar-menu -->
+</nav>
+
+</header>
+            
+
+<main>
+
+
+<div class="container mo-container">
+
+<nav class="mo-sub-content" role="navigation" aria-label="shortcuts"><ul class="mo-tags mo-tags-is-block"><li><a href="https://www.mobiles24.co/downloads/free-mp3-ringtones" class="bg-blue">Ringtones</a></li><li><a href="https://www.mobiles24.co/downloads/wallpapers" class="bg-red">Wallpapers</a></li><li><a href="https://www.mobiles24.co/downloads/video-wallpapers" class="bg-purple">Video Wallpapers</a></li><li><a href="https://www.mobiles24.co/downloads/free-mobile-games" class="bg-blue">Java Games</a></li><li><a href="https://www.mobiles24.co/downloads/free-mobile-software" class="bg-blue">Java Apps</a></li></ul></nav>
+<div class="mo-main-content">
+
+	<nav class="mo-btn-back-alt"><a href="/downloads/free-mobile-games" class="button mo-is-borderless"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="s0 fa-sm fa-sm" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></span><span class="mo-action-label">Mobile Games</span></a></nav>
+
+<article>
+
+<div class="is-flex mo-margin">
+
+<div style="flex-shrink:0"><img src="https://www.mobiles24.com/static/previews/downloads/icon/109/ICOS-92756-EboMRQLUMZ-1.png" class="mo-avatar" width="50" height="50" alt="Charades (Multiscreen) icon"></div>
+<div><h1 class="title is-5">Charades (Multiscreen)</h1>
+    <div class="subtitle is-size-6"> <span itemscope itemtype="https://schema.org/Person"><a href="https://profile.mobiles24.co/apoteka" itemprop="url" class="mo-author"><span itemprop="name" rel="author">apoteka</span></a> </div></div>
+</div>
+
+
+<div class="mo-margin has-text-centered has-text-left-desktop">
+	<div><p><a href="https://play.google.com/store/apps/details?id=com.mobiles24.downloads&amp;utm_source=website&amp;utm_medium=referral&amp;utm_campaign=download_button&amp;utm_term=92756" target="_blank" class="pbtn mo-btn-download-external button is-success" style="background-color:#01875f"><span class="icon"><svg aria-hidden="true"><use href="#arrow-down" class="stroke-white"/></svg></span><span>Download</span></a></p>
+	
+	</div>
+	</div>
+<div class="mo-margin has-text-centered is-relative">
+								<div style="overflow-x:auto;white-space:nowrap;padding-bottom:5px;min-height:262px"><a href="https://img.mobiles24.net/static/previews/downloads/default/109/P-92756-EboMRQLUMZ-1.jpg">
+									<img src="https://img.mobiles24.net/static/previews/downloads/default/109/P-92756-EboMRQLUMZ-1.jpg" alt="Charades (Multiscreen) Screenshot 1" height="250" /></a></div></div>
+
+<div id="btns-actions" class="mo-margin level is-mobile">
+    <div class="level-left"><button id="mo-btn-like" class="button mo-is-borderless" data-action="like" arial-label="Like">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" class="s0 fa-lg fa-3x" aria-hidden="true"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg></span>
+        <span id="res-like">2</span></button>  <button id="mo-btn-save" class="button mo-is-borderless nli"  data-action="save" arial-label="Save">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" class="s0 fa-lg fa-3x" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg></span>
+        <span class="mo-action-label">Save</span></button></div><div class="level-right has-text-right"><button id="mo-btn-share" class="button mo-is-borderless" data-url="https://www.mobiles24.co/downloads/s/92756-109-charades_multiscreen" data-title="Download Charades (Multiscreen) Mobile Game from Mobiles24" arial-label="Share">
+			<span class="icon"><svg viewBox="0 0 24 24" fill="none" class="s0 fa-lg fa-3x" aria-hidden="true"><path d="M22.9,8.4l-8.5,8.4v-4.5c0,0-7.9-0.5-12.9,10.3C0.6,5.8,14.3,5.8,14.3,5.8V1.3L22.9,8.4z"></path></svg></span>
+			</span><span class="mo-action-label">Share</span></button>     </div>
+</div>
+
+<div class="mo-margin has-text-centered mo-is-size-65">Download Charades (Multiscreen) Java game to your phone or emulator for free.</div>
+
+
+
+
+
+<div class="level is-mobile mo-download-buttons" style="align-items:start">
+	<div class="level-item has-text-centered has-text-left-desktop">
+        <div><p><a href="https://www.mobiles24.co/downloads/d/EboMRQLUMZ" data-fmt="jar" class="mo-btn-download button is-primary"><span class="icon"><svg aria-hidden="true"><use href="#arrow-down" class="stroke-white"/></svg></span><span>Download JAR</span></a></p>
+        <p class="mo-help"><button class="button mo-is-borderless mo-btn-safetyreport" data-download-id="92756" style="font-size:0.85rem;padding-left:0" aria-haspopup="dialog"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="vertical-align:text-top" viewBox="0 0 24 24" fill="none" stroke="#01875f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></span> <span>For Java / J2ME</span></button>  </p></div>
+		</div>	<div class="level-item has-text-centered">
+			<div><p><a href="https://www.mobiles24.co/downloads/d/EboMRQLUMZ?f=jad" data-fmt="jad" class="mo-btn-download button is-primary"><span class="icon"><svg aria-hidden="true"><use href="#arrow-down" class="stroke-white"/></svg></span><span>Download JAD</span></a></p>
+			<p class="mo-help" style="padding-top:7px">Required on some devices</p></div>
+		</div>		</div>
+
+
+
+
+
+<div class="mo-fileinfo mo-margin-lg mo-is-size-65"> 
+    <dl><div><dt>Published</dt><dd><time itemprop="datePublished" datetime="2008-04-17">17 Apr 08</time></dd></div><div><dt>File Type</dt><dd><span itemprop="fileFormat">JAR</span></dd></div><div><dt>File Size</dt><dd>41 KB<meta itemprop="fileSize" content="41587"></dd></div><div><dt>Downloads</dt><dd>3339</dd></div><div><dt>Category</dt><dd><a href="https://www.mobiles24.co/downloads/free-mobile-games/other"><span itemprop="applicationCategory">Other<span></a></dd></div></dl>	          
+</div>
+
+	<div class="mo-margin-lg mo-tags mo-tags-is-block">
+<a href="https://www.mobiles24.co/downloads/tag/Charades/free-mobile-games">Charades</a> <a href="https://www.mobiles24.co/downloads/tag/128x128/free-mobile-games">128x128</a> <a href="https://www.mobiles24.co/downloads/tag/128x160/free-mobile-games">128x160</a> <a href="https://www.mobiles24.co/downloads/tag/176x208/free-mobile-games">176x208</a> <a href="https://www.mobiles24.co/downloads/tag/176x220/free-mobile-games">176x220</a> <a href="https://www.mobiles24.co/downloads/tag/208x208/free-mobile-games">208x208</a> <a href="https://www.mobiles24.co/downloads/tag/240x320/free-mobile-games">240x320</a> <a href="https://www.mobiles24.co/downloads/tag/Multiscreen/free-mobile-games">Multiscreen</a> </div>
+
+
+
+
+
+
+
+<aside class="mo-margin-lg">
+<h2>Similar Mobile Games</h2>
+    <ul class="mo-ajax-content columns is-mobile is-multiline is-gapless mo-gallery mo-gallery-list">
+    <li>
+							<div>
+								<div class="thumb"><a href="https://www.mobiles24.co/downloads/s/659464-109-climate_mission_240x320_touchscreen"><img src="https://www.mobiles24.com/static/images/iconlist-java.png" width="60" height="60" alt="Climate Mission (240x320) (Touchscreen) Icon" loading="lazy"></a></div>
+								<div class="media-content">
+								<div class="name"><a href="https://www.mobiles24.co/downloads/s/659464-109-climate_mission_240x320_touchscreen" title="Climate Mission (240x320) (Touchscreen) ">Climate Mission (240x320) (Touchscreen)</a></div>
+								<p class="author"><a href="https://profile.mobiles24.co/joshuaclimate">JoshuaClimate</a></p>
+									<p class="desc"></p>
+									<p class="stats"><span class="icon"><svg aria-label="Total downloads"><use href="#arrow-down" class="stroke-grey"/></svg></span>76</p>
+									<a href="https://www.mobiles24.co/downloads/s/659464-109-climate_mission_240x320_touchscreen" class="click-target" aria-hidden="true" tabindex="-1"></a>
+								</div>
+							</div>
+						</li><li>
+							<div>
+								<div class="thumb"><a href="https://www.mobiles24.co/downloads/s/659463-109-ajxi_cosmic_climb_multiscreen"><img src="https://www.mobiles24.com/static/images/iconlist-java.png" width="60" height="60" alt="AJXI Cosmic Climb (Multiscreen) Icon" loading="lazy"></a></div>
+								<div class="media-content">
+								<div class="name"><a href="https://www.mobiles24.co/downloads/s/659463-109-ajxi_cosmic_climb_multiscreen" title="AJXI Cosmic Climb (Multiscreen) ">AJXI Cosmic Climb (Multiscreen)</a></div>
+								<p class="author"><a href="https://profile.mobiles24.co/jonathz">Jonathz</a></p>
+									<p class="desc"></p>
+									<p class="stats"><span class="icon"><svg aria-label="Total downloads"><use href="#arrow-down" class="stroke-grey"/></svg></span>60</p>
+									<a href="https://www.mobiles24.co/downloads/s/659463-109-ajxi_cosmic_climb_multiscreen" class="click-target" aria-hidden="true" tabindex="-1"></a>
+								</div>
+							</div>
+						</li><li>
+							<div>
+								<div class="thumb"><a href="https://www.mobiles24.co/downloads/s/659462-109-cut_the_rope_240x320_touchscreen"><img src="https://www.mobiles24.com/static/images/iconlist-java.png" width="60" height="60" alt="Cut The Rope {240x320) (Touchscreen) Icon" loading="lazy"></a></div>
+								<div class="media-content">
+								<div class="name"><a href="https://www.mobiles24.co/downloads/s/659462-109-cut_the_rope_240x320_touchscreen" title="Cut The Rope {240x320) (Touchscreen) ">Cut The Rope {240x320) (Touchscreen)</a></div>
+								<p class="author"><a href="https://profile.mobiles24.co/jonathz">Jonathz</a></p>
+									<p class="desc"></p>
+									<p class="stats"><span class="icon"><svg aria-label="Total downloads"><use href="#arrow-down" class="stroke-grey"/></svg></span>135</p>
+									<a href="https://www.mobiles24.co/downloads/s/659462-109-cut_the_rope_240x320_touchscreen" class="click-target" aria-hidden="true" tabindex="-1"></a>
+								</div>
+							</div>
+						</li><li>
+							<div>
+								<div class="thumb"><a href="https://www.mobiles24.co/downloads/s/659461-109-bubble_bash_2_240x320_touchscreen"><img src="https://www.mobiles24.com/static/images/iconlist-java.png" width="60" height="60" alt="Bubble Bash 2 (240x320) (Touchscreen) Icon" loading="lazy"></a></div>
+								<div class="media-content">
+								<div class="name"><a href="https://www.mobiles24.co/downloads/s/659461-109-bubble_bash_2_240x320_touchscreen" title="Bubble Bash 2 (240x320) (Touchscreen) ">Bubble Bash 2 (240x320) (Touchscreen)</a></div>
+								<p class="author"><a href="https://profile.mobiles24.co/thekingcow">TheKingCow</a></p>
+									<p class="desc"></p>
+									<p class="stats"><span class="icon"><svg aria-label="Total downloads"><use href="#arrow-down" class="stroke-grey"/></svg></span>47</p>
+									<a href="https://www.mobiles24.co/downloads/s/659461-109-bubble_bash_2_240x320_touchscreen" class="click-target" aria-hidden="true" tabindex="-1"></a>
+								</div>
+							</div>
+						</li><li>
+							<div>
+								<div class="thumb"><a href="https://www.mobiles24.co/downloads/s/659460-109-uno_240x320_touchscreen"><img src="https://www.mobiles24.com/static/images/iconlist-java.png" width="60" height="60" alt="UNO! (240x320) (Touchscreen) Icon" loading="lazy"></a></div>
+								<div class="media-content">
+								<div class="name"><a href="https://www.mobiles24.co/downloads/s/659460-109-uno_240x320_touchscreen" title="UNO! (240x320) (Touchscreen) ">UNO! (240x320) (Touchscreen)</a></div>
+								<p class="author"><a href="https://profile.mobiles24.co/thekingcow">TheKingCow</a></p>
+									<p class="desc"></p>
+									<p class="stats"><span class="icon"><svg aria-label="Total downloads"><use href="#arrow-down" class="stroke-grey"/></svg></span>95</p>
+									<a href="https://www.mobiles24.co/downloads/s/659460-109-uno_240x320_touchscreen" class="click-target" aria-hidden="true" tabindex="-1"></a>
+								</div>
+							</div>
+						</li><li>
+							<div>
+								<div class="thumb"><a href="https://www.mobiles24.co/downloads/s/659400-109-kumbh_karan_quest_for_sanjivani_240x320"><img src="https://www.mobiles24.com/static/images/iconlist-java.png" width="60" height="60" alt="Kumbh Karan Quest For Sanjivani (240x320) Icon" loading="lazy"></a></div>
+								<div class="media-content">
+								<div class="name"><a href="https://www.mobiles24.co/downloads/s/659400-109-kumbh_karan_quest_for_sanjivani_240x320" title="Kumbh Karan Quest For Sanjivani (240x320) ">Kumbh Karan Quest For Sanjivani (240x320)</a></div>
+								<p class="author"><a href="https://profile.mobiles24.co/ronluna">ronluna</a></p>
+									<p class="desc"></p>
+									<p class="stats"><span class="icon"><svg aria-label="Total downloads"><use href="#arrow-down" class="stroke-grey"/></svg></span>87</p>
+									<a href="https://www.mobiles24.co/downloads/s/659400-109-kumbh_karan_quest_for_sanjivani_240x320" class="click-target" aria-hidden="true" tabindex="-1"></a>
+								</div>
+							</div>
+						</li><li>
+							<div>
+								<div class="thumb"><a href="https://www.mobiles24.co/downloads/s/658963-109-bioshock_240x320"><img src="https://www.mobiles24.com/static/images/iconlist-java.png" width="60" height="60" alt="BioShock (240x320) Icon" loading="lazy"></a></div>
+								<div class="media-content">
+								<div class="name"><a href="https://www.mobiles24.co/downloads/s/658963-109-bioshock_240x320" title="BioShock (240x320) ">BioShock (240x320)</a></div>
+								<p class="author"><a href="https://profile.mobiles24.co/ronluna">ronluna</a></p>
+									<p class="desc"></p>
+									<p class="stats"><span class="icon"><svg aria-label="Total downloads"><use href="#arrow-down" class="stroke-grey"/></svg></span>455</p>
+									<a href="https://www.mobiles24.co/downloads/s/658963-109-bioshock_240x320" class="click-target" aria-hidden="true" tabindex="-1"></a>
+								</div>
+							</div>
+						</li><li>
+							<div>
+								<div class="thumb"><a href="https://www.mobiles24.co/downloads/s/658725-109-gauntlet_240x320"><img src="https://img.mobiles24.net/static/previews/downloads/icon/109/ICOS-658725-cbTBWKTVsA-1.png" width="60" height="60" alt="Gauntlet (240x320) Icon" loading="lazy"></a></div>
+								<div class="media-content">
+								<div class="name"><a href="https://www.mobiles24.co/downloads/s/658725-109-gauntlet_240x320" title="Gauntlet (240x320) ">Gauntlet (240x320)</a></div>
+								<p class="author">Electronic Arts Inc.</p>
+									<p class="desc"></p>
+									<p class="stats"><span class="icon"><svg aria-label="Total downloads"><use href="#arrow-down" class="stroke-grey"/></svg></span>654</p>
+									<a href="https://www.mobiles24.co/downloads/s/658725-109-gauntlet_240x320" class="click-target" aria-hidden="true" tabindex="-1"></a>
+								</div>
+							</div>
+						</li><li>
+							<div>
+								<div class="thumb"><a href="https://www.mobiles24.co/downloads/s/658207-109-driver_san_francisco_240x320"><img src="https://img.mobiles24.net/static/previews/downloads/icon/109/ICOS-658207-dYRMJeRW88-1.png" width="60" height="60" alt="Driver San Francisco (240x320) Icon" loading="lazy"></a></div>
+								<div class="media-content">
+								<div class="name"><a href="https://www.mobiles24.co/downloads/s/658207-109-driver_san_francisco_240x320" title="Driver San Francisco (240x320) ">Driver San Francisco (240x320)</a></div>
+								<p class="author">Gameloft SA</p>
+									<p class="desc"></p>
+									<p class="stats"><span class="icon"><svg aria-label="Total downloads"><use href="#arrow-down" class="stroke-grey"/></svg></span>8</p>
+									<a href="https://www.mobiles24.co/downloads/s/658207-109-driver_san_francisco_240x320" class="click-target" aria-hidden="true" tabindex="-1"></a>
+								</div>
+							</div>
+						</li><li>
+							<div>
+								<div class="thumb"><a href="https://www.mobiles24.co/downloads/s/658206-109-insaniquarium_deluxe_240x320"><img src="https://img.mobiles24.net/static/previews/downloads/icon/109/ICOS-658206-Qmo3FSdMal-1.png" width="60" height="60" alt="Insaniquarium Deluxe (240x320) Icon" loading="lazy"></a></div>
+								<div class="media-content">
+								<div class="name"><a href="https://www.mobiles24.co/downloads/s/658206-109-insaniquarium_deluxe_240x320" title="Insaniquarium Deluxe (240x320) ">Insaniquarium Deluxe (240x320)</a></div>
+								<p class="author">Glu Mobile</p>
+									<p class="desc"></p>
+									<p class="stats"><span class="icon"><svg aria-label="Total downloads"><use href="#arrow-down" class="stroke-grey"/></svg></span>1.2K</p>
+									<a href="https://www.mobiles24.co/downloads/s/658206-109-insaniquarium_deluxe_240x320" class="click-target" aria-hidden="true" tabindex="-1"></a>
+								</div>
+							</div>
+						</li>	</ul>
+<button data-action="similar" class="mo-btn-more mo-more button">Show More</button></aside>
+
+
+
+<section class="mo-margin-lg">
+    <h2>Comments</h2>
+	<p><button data-action="comments" class="mo-btn-comments button">Show comments &amp; add yours</button></p>
+</section>
+
+
+
+
+	<section class="mo-margin-lg">
+<h2>Help & Information</h2>
+	<article class="content notification" style="padding-left:0.7rem">
+	<h3 class="is-size-6">
+		<span class="icon"><svg viewBox="0 0 24 24" fill="none" class="s0" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></span>
+		License & Distribution
+	</h3>
+	<div style="margin-left:1.9rem">
+		<dl><div><dt style="display:inline;"><strong>License:</strong></dt><dd style="display:inline;margin:0 0.5em;">Proprietary (Freeware)</dd></div><div><dt style="display:inline;"><strong>Distribution:</strong></dt><dd style="display:inline;margin:0 0.5em;">Distributed for promotional and informational purposes.</dd></div></dl>	</div>
+	<hr>
+	<h3 class="is-size-6">
+		<span class="icon"><svg viewBox="0 0 24 24" fill="none" class="s0" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span>
+		Need help?
+	</h3>
+	<div style="margin-left:1.9rem;">
+	<p><a href="contact">Contact us</a> or join our java channel <a href="https://discord.gg/Ny24F9fRA9" target="_blank">on our Discord</a></p>
+	</div>
+</article>
+</section>
+
+<div> 
+	<button class="mo-btn-report button mo-is-borderless">
+		<span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="s0 fa-lg fa-3x" aria-hidden="true"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg></span>
+		</span><span class="mo-action-label">Report this Game</span>
+	</button>  
+		<br>
+				<a href="https://www.mobiles24.co/search/user/apoteka/free-mobile-games" class="button mo-is-borderless">
+        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="s0 fa-lg fa-3x" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
+        </span><span class="mo-action-label">Browse Mobile Games by apoteka</span></a> 
+		
+		
+		</div>
+
+</article> 
+<!-- mo-content-container --></div>
+
+<nav class="breadcrumb" aria-label="breadcrumbs">
+	<ol itemscope itemtype="https://schema.org/BreadcrumbList">
+            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="navbit"><a accesskey="1" itemprop="item" href="https://www.mobiles24.co/" itemprop="url"><span class="icon mo-is-size-65 is-marginless"><svg aria-hidden="true"><use href="#home" class="stroke-blue"/></svg></span><span itemprop="name" class="sr-only">Home</span></a><meta itemprop="position" content="1"></li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="navbit"><a href="/downloads" itemprop="item"><span itemprop="name">Downloads</span></a><meta itemprop="position" content="2"></li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="navbit"><a href="/downloads/free-mobile-games" itemprop="item"><span itemprop="name">Free Mobile Games</span></a><meta itemprop="position" content="3"></li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="navbit lastnavbit"><span itemprop="name">Charades (Multiscreen) Game</span><meta itemprop="position" content="4"></li> </ol></nav>
+
+
+
+</div><!-- /mo-container -->
+
+
+</main>
+
+
+<footer class="footer has-text-centered">
+    
+    <p class="mo-margin">
+      <a href="https://www.facebook.com/mobiles24" target="_blank" rel="noreferrer" aria-label="Facebook" style="margin-right:0.5em">
+        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="#fff"  aria-hidden="true" style="vertical-align:middle;background-color:#404040;border-radius:50%">
+          <path d="M13.5 22v-8h2.7l.4-3h-3.1V9.1c0-.9.3-1.6 1.6-1.6h1.7V4.8c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.3V11H8v3h2.5v8h3z"></path>
+        </svg>
+		
+      </a>  
+      <a href="https://x.com/mobiles24" target="_blank" rel="noreferrer" aria-label="X">
+        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="#404040" aria-hidden="true" style="vertical-align:middle">
+          <path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-5-6.6L6.1 22H3l7.3-8.4L.8 2h6.4l4.5 6L18.9 2zm-1.1 18h1.8L6.3 3.9H4.4L17.8 20z"></path>
+        </svg>
+      </a>
+    </p>
+	<p><a href="https://play.google.com/store/apps/details?id=com.mobiles24.downloads" target="_blank" style="color:#000;display:inline-block;padding-bottom:10px">Get the Mobiles24 app for ringtones &amp; wallpapers</a></p>
+	<p><a href="https://play.google.com/store/apps/details?id=com.mobiles24.downloads" target="_blank"><img src="https://img.mobiles24.net/public/img/google-play-badge.svg" alt="Get Mobiles24 - Ringtones & Wallpapers on Google Play" style="height:40px"></a>
+	</p>
+	<p class="mo-margin" style="font-size:.95em;line-height:1.8">
+		<a href="https://www.mobiles24.co/help">Help</a> |
+		<a href="https://www.mobiles24.co/tos">Terms</a> |
+		<a href="https://www.mobiles24.co/content-policy">Content Policy</a> |
+		<a href="https://www.mobiles24.co/privacy">Privacy</a> |
+		<a href="https://www.mobiles24.co/contact">Contact Us</a> |
+		<a href="https://www.mobiles24.co/tos#dmca">DMCA</a>
+	</p>
+    <p>&copy; 2026 Mobiles24</p>
+</footer>
+
+
+<!-- hidden -->
+<div class="mo-overlay" style="display:none"></div>
+ <svg style="display: none;">
+  <style>.s1{ stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;}.grecaptcha-badge{visibility:hidden;}</style>
+  <symbol id="music" viewBox="0 0 24 24" class="s1">
+  <path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle>
+  </symbol>
+  <symbol id="wallpaper" viewBox="0 0 24 24" class="s1">
+  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline>
+  </symbol>
+  <symbol id="bell" viewBox="0 0 24 24" class="s1">
+  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+  </symbol>
+  <symbol id="android" viewBox="0 0 24 24" class="s1">
+  <path d="M5,8h14v9c0,1.1-0.9,2-2,2  H7c-1.1,0-2-0.9-2-2V8z"/><path d="M5,11V7c0-2.8,2.7-5,7-5  c4.2,0,7,2.2,7,5v4"/><line x1="1.8" y1="10" x2="1.8" y2="17"/><line x1="22.2" y1="10" x2="22.2" y2="17"/><line x1="8.8" y1="20" x2="8.8" y2="22"/><line x1="15.4" y1="20" x2="15.4" y2="22"/>
+  </symbol>
+  <symbol id="film" viewBox="0 0 24 24" class="s1">
+  <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line>
+  </symbol>
+  <symbol id="upload" viewBox="0 0 24 24" class="s1">
+  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line>
+  </symbol>
+  <symbol id="scissors" viewBox="0 0 24 24" class="s1">
+  <circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line>
+  </symbol>
+  <symbol id="cloud" viewBox="0 0 24 24" class="s1">
+  <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
+  </symbol>
+  <symbol id="arr-rt-cir" viewBox="0 0 24 24" class="s1">
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line>
+  </symbol>
+  <symbol id="message-square" viewBox="0 0 24 24" class="s1">
+  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+  </symbol>
+  <symbol id="award" viewBox="0 0 24 24" class="s1">
+  <circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+  </symbol>
+  <symbol id="smartphone" viewBox="0 0 24 24" class="s1">
+  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line>
+  </symbol>
+  <symbol id="x" viewBox="0 0 24 24" class="s1">
+  <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+  </symbol>
+  <symbol id="download" viewBox="0 0 24 24" class="s1">
+  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line>
+  </symbol>
+  <symbol id="arrow-down" viewBox="0 0 24 24" class="s1">
+  <line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline>
+</symbol>
+<symbol id="s60" viewBox="0 0 24 24" class="s1">
+<line x1="2" y1="12.1" x2="9.4" y2="12.1"/><line x1="14.6" y1="12.1" x2="22" y2="12.1"/><line x1="13.3" y1="14.3" x2="17" y2="20.6"/><line x1="7.1" y1="3.6" x2="10.8" y2="9.9"/><line x1="17" y1="3.5" x2="13.3" y2="9.9"/>
+</symbol>
+<symbol id="java" viewBox="0 0 24 24" class="s1">
+<path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><path d="M8 7c-1.4-1-.9-2.2.1-3.1 1-.9 1.4-1.8.6-2.8" /><path d="M12 7c-1.4-1-.9-2.2.1-3.1 1-.9 1.4-1.8.6-2.8" />
+</symbol>
+<symbol id="home" viewBox="0 0 24 24" class="s1">
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline>
+</symbol>
+<symbol id="sparkles" viewBox="0 0 24 24" class="s1">
+ <polygon points="8,1 9.6,6.4 15,8 9.6,9.6 8,15 6.4,9.6 1,8 6.4,6.4"/><polygon points="18,12 19.1,15.9 23,17 19.1,18.1 18,22 16.9,18.1 13,17 16.9,15.9"/>
+</symbol>
+<symbol id="music-sparkle" viewBox="0 0 24 24" class="s1">
+ <path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle>
+  <polygon
+    points="5,1 5.7,3.3 8,4 5.7,4.7 5,7 4.3,4.7 2,4 4.3,3.3"
+  />
+</symbol>
+</svg>
+
+<div id="mo-toast-container" aria-live="polite" aria-atomic="false"></div>
+<div id="download_modal" class="m24modal" style="display:none">
+<div class="m24modalclose"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" aria-label="Close"><path fill="#ffffff" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" /></svg></div>
+<div class="m24modalcontent">
+<h1 class="mo-margin is-size-5">Your download will start automatically. <a class="mo-force-url">Not started?</a></h1>
+<div class="content mo-margin has-text-centered">
+<div class="mo-margin has-text-centered has-text-left-desktop">
+	<div><p><a href="https://play.google.com/store/apps/details?id=com.mobiles24.downloads&amp;utm_source=website&amp;utm_medium=referral&amp;utm_campaign=download_button&amp;utm_term=92756" target="_blank" class="mo-btn-download-external button is-success" style="background-color:#01875f"><span class="icon"><svg aria-hidden="true"><use href="#arrow-down" class="stroke-white"/></svg></span><span>Download on Google Play</span></a></p>
+	<p class="mo-help">Mobiles24 Official App</p>
+	</div>
+	</div></div><h2>More Games</h2>
+<p class="mo-placeholder-similar" style="max-height:150px;overflow-x:auto"></p>
+</div>
+</div>
+</div>
+		
+<form name="vars" id="vars"><input name="id" type="hidden" value="92756"><input name="securitytoken" id="page" type="hidden" value="guest"></form> 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+window.M24TurnstileEnabled = true;
+window.M24TurnstileSiteKey = '0x4AAAAAADqhZYOSxR9QBmPJ';
+</script>
+<script src="https://img.mobiles24.net/public/js/app/human-gate.min.js"></script>
+<script>
+
+var AC_SEARCH_CAT = '';
+const M24URL = 'https://www.mobiles24.co/';
+const SECURITYTOKEN = 'guest'; 
+
+function handleAjaxError(jqXHR, textStatus, errorThrown) {
+    alert("Something went wrong. Please try again.");
+}
+
+/**
+* Modal outside click
+*/
+function moEv(e, hideOnClose=false)
+{
+	$('.m24modal' ).on('click', function(e)
+            { if ($(e.target).closest('.m24modalcontent').length === 0){if(hideOnClose){ $(this).hide();}else{$(this).remove();}}
+            });
+}
+
+function isJSON(un) {
+
+    try {
+        JSON.parse(un);
+        
+    } catch (e) {
+        
+        return false;
+    }
+
+    return true;
+}
+
+$(document).ready(function() {
+
+    
+	function getAcScript(){$.getScript(M24URL+"public/js/autocomplete/jquery.autocomplete.min.js",(function(){$("#search select[name=c]").on("change",e=>{AC_SEARCH_CAT=$(e.target).val(),loadAC()}),loadAC()}))}function loadAC(){$(".acs").autocomplete({serviceUrl:M24URL+"ajax/autocomplete.php",paramName:"q",params:{c:AC_SEARCH_CAT},deferRequestBy:150,minChars:2,triggerSelectOnValidInput:!1,onSearchError:function(){return!1},onSelect:function(suggestion){gtag("event","ac_search",{event_category:AC_SEARCH_CAT,event_label:suggestion.value}),$(this).closest("form").submit()}})}$(".nli").on("click",(function(e){$.get("/ajax/login.php",{},(function(data){$("body").append(data),moEv(e)})).fail(handleAjaxError)})),$(".dropdown .button").click((function(){var dropdown=$(this).parents(".dropdown");dropdown.toggleClass("is-active"),dropdown.focusout((function(){}))})),$(".navbar-burger").click((function(){$("html").hasClass("search-active")?($(".navbar-burger").removeClass("is-active"),$("html").removeClass("search-active"),$("#search-container").addClass("is-hidden-touch")):($(".navbar-burger").toggleClass("is-active"),$(".navbar-menu").toggleClass("is-active"))})),$("#btn-search").click((function(){$(".navbar-menu").hasClass("is-active")&&$(".navbar-burger").trigger("click"),$("html").toggleClass("search-active"),$(".navbar-burger").addClass("is-active"),$("#search-container").toggleClass("is-hidden-touch"),$("#search-input input").focus()})),$(".mo-btn-familyfilter").on("click",(function(e){$.get("/ajax/familyfilter.php",$("#vars").serialize(),(function(data){$("body").append(data),moEv(e)})).fail(handleAjaxError)})),$("#search-input [name=q]").one("focus",(function(){getAcScript()}));$(".mo-btn-download").on("click",(function(a){a.preventDefault();var n=$(this).attr("href"),t=$("#download_modal").find(".mo-force-url");t.removeAttr("href"),$("#download_modal").show(),gtag("event","download",{event_category:$(this).data("fmt"),event_label:$("#vars").find("input[name=id]").val()});var e=function(a){t.attr("href",a),setTimeout((function(){location.href=a}),2e3)};return window.M24HumanGate&&"function"==typeof window.M24HumanGate.signDownloadUrl?window.M24HumanGate.signDownloadUrl(n).then((function(a){e(a||n)})).catch((function(){window.M24HumanGate&&"function"==typeof window.M24HumanGate.notifyGateError&&window.M24HumanGate.notifyGateError("Please complete the security check to continue.")})):e(n),moEv(a,!0),!1})),$(".mo-archive-dl").on("change",(function(){var a=$(this).val();a&&(window.M24HumanGate&&"function"==typeof window.M24HumanGate.signDownloadUrl?window.M24HumanGate.signDownloadUrl(a).then((function(n){location.href=n||a})).catch((function(){window.M24HumanGate&&"function"==typeof window.M24HumanGate.notifyGateError&&window.M24HumanGate.notifyGateError("Please complete the security check to continue.")})):location.href=a)}));var ratingGiven=!1;$("#mo-btn-like,#mo-btn-dislike").on("click",(function(a){var n=$(this).data("action");if(ratingGiven==n)return alert("You have already rated this download."),!1;$.post("/ajax/ajax_like.php","sf=touch&action="+n+"&"+$("#vars").serialize(),(function(a){a.status&&(ratingGiven&&ratingGiven!=n&&($("#res-"+ratingGiven).text(parseInt($("#res-"+ratingGiven).text())-1),$("#res-"+ratingGiven).removeClass("active")),$("#res-"+n).text(parseInt($("#res-"+n).text())+1),$("#res-"+n).addClass("active"),ratingGiven=n)}),"json")})),$("#mo-btn-share, .mo-btn-share").on("click",(function(a){navigator.share?navigator.share({title:$(this).data("title"),text:$(this).data("title"),url:$(this).data("url")}).then((()=>{gtag("event","share",{event_label:$(this).data("url")})})).catch((()=>{})):$.post("/ajax/share.php",{sf:"touch",url:$(this).data("url"),title:$(this).data("title")},(function(n){$("body").append(n),moEv(a)})).fail(handleAjaxError)})),$("#mo-btn-save:not(.nli)").on("click",(function(a){$.get("/ajax/collection.php",$("#vars").serialize(),(function(n){if(jsonData=isJSON(n))return"nopermission"==jsonData.error?alert("You must be logged in!"):handleAjaxError(jsonData),!1;$("body").append(n),moEv(a)})).fail(handleAjaxError)})),$(".mo-btn-report").on("click",(function(a){$.get("/ajax/report.php",$("#vars").serialize(),(function(n){$("body").append(n),moEv(a)})).fail(handleAjaxError)})),$(".mo-btn-safetyreport").on("click",(function(a){$.get("/ajax/safetyreport.php",$("#vars").serialize(),(function(n){$("body").append(n),moEv(a)})).fail(handleAjaxError)})),browse_similar_downloads_page_numbers={},$(".mo-btn-more").on("click",(function(a){var n=$(a.currentTarget),t=n.data("action")||"similar",e=browse_similar_downloads_page_numbers[t]||2;$.get("/ajax/browse_downloads.php","page="+e+"&action="+t+"&"+$("#vars").serialize(),(function(a){if(!a.can_show_more)return n.hide(),!1;a.html&&(browse_similar_downloads_page_numbers[t]=e+1,n.prev(".mo-ajax-content").append(a.html),$(".mplyr").length>0&&$(".mplyr").mediaPlayer())}),"json").fail(handleAjaxError)})),$(".mo-btn-comments").on("click",(function(){}));	
+	
+	$('.mo-placeholder-similar').html($('.mo-ajax-content').clone());
+	//.find('ul').addClass('mo-is-cards');
+});
+
+</script>
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-221971-4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-221971-4');
+</script>
+
+
+
+
+
+    
+</body>
+</html>
